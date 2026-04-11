@@ -14,11 +14,10 @@ import React from "react";
 export default function Login() {
   return (
     <form className="flex justify-center items-center h-dvh">
-      <Card className="max-w-md w-full">
+      <Card className="mx-5 md:max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-3xl">Login</CardTitle>
-          <hr className="my-2" />
-          <CardDescription>
+          <CardDescription className='my-2'>
             Selamat Datang di <strong>Spentaru Archive!</strong> Silahkan login.
           </CardDescription>
         </CardHeader>
