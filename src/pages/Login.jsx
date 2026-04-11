@@ -17,8 +17,9 @@ export default function Login() {
       <Card className="max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-3xl">Login</CardTitle>
+          <hr className="my-2" />
           <CardDescription>
-            Selamat Datang di Spentaru Archive! Silahkan login.
+            Selamat Datang di <strong>Spentaru Archive!</strong> Silahkan login.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -28,7 +29,7 @@ export default function Login() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="user@email.com"
                 required
               />
             </div>
