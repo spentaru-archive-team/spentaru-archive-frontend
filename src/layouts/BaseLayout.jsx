@@ -7,7 +7,7 @@ export default function BaseLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="p-5 md:p-10">
+      <main className="p-5 md:p-10 w-full">
         <SidebarTrigger />
         <Outlet />
       </main>
