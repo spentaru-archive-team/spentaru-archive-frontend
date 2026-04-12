@@ -13,7 +13,7 @@ import React from "react";
 
 export default function Login() {
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(109,140,235,0.18),_transparent_32%),linear-gradient(180deg,_rgba(247,249,255,1)_0%,_rgba(235,240,252,1)_100%)]">
+    <main>
       <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl items-center px-5 py-10 md:px-8 lg:px-12">
         <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <section className="hidden lg:block">
