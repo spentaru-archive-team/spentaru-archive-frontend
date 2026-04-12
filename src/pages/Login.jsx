@@ -13,42 +13,116 @@ import React from "react";
 
 export default function Login() {
   return (
-    <form className="flex justify-center items-center h-dvh">
-      <Card className="mx-5 md:max-w-md w-full">
-        <CardHeader>
-          <CardTitle className="text-3xl">Login</CardTitle>
-          <CardDescription className='my-2'>
-            Selamat Datang di <strong>Spentaru Archive!</strong> Silahkan login.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="user@email.com"
-                required
-              />
+    <main className="relative min-h-dvh overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(109,140,235,0.18),_transparent_32%),linear-gradient(180deg,_rgba(247,249,255,1)_0%,_rgba(235,240,252,1)_100%)]">
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl items-center px-5 py-10 md:px-8 lg:px-12">
+        <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
+          <section className="hidden lg:block">
+            <div className="max-w-xl space-y-6">
+              <div className="inline-flex items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+                Portal Arsip Digital SMP Negeri 1 Waru
+              </div>
+              <div className="space-y-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/70">
+                  Spentaru Archive
+                </p>
+                <h1 className="max-w-lg text-4xl font-semibold tracking-tight text-foreground lg:text-5xl">
+                  Akses dokumen sekolah dengan tampilan yang lebih rapi dan
+                  terpercaya.
+                </h1>
+                <p className="max-w-xl text-base leading-7 text-muted-foreground">
+                  Sistem arsip sekolah yang membantu pengelolaan dokumen
+                  penting, surat, dan administrasi internal agar tetap tertata
+                  dan mudah ditemukan.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-[0_18px_60px_-28px_rgba(36,54,115,0.35)] backdrop-blur">
+                  <p className="text-sm font-semibold text-primary">Tertata</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    Arsip sekolah dan dokumen tersusun lebih terstruktur untuk
+                    kebutuhan administrasi sekolah.
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-white/70 bg-primary p-5 text-primary-foreground shadow-[0_18px_60px_-28px_rgba(36,54,115,0.55)]">
+                  <p className="text-sm font-semibold">Aman Diakses</p>
+                  <p className="mt-2 text-sm leading-6 text-primary-foreground/80">
+                    Login diperlukan agar pengelolaan arsip tetap terjaga dan
+                    aman.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Masukkan password"
-                required
-              />
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-        </CardFooter>
-      </Card>
-    </form>
+          </section>
+
+          <form className="w-full">
+            <Card className="mx-auto w-full max-w-lg border-white/70 bg-white/90 shadow-[0_24px_80px_-32px_rgba(36,54,115,0.45)] backdrop-blur">
+              <CardHeader className="space-y-4 pb-2">
+                <div className="space-y-2">
+                  <CardTitle className="text-3xl font-semibold tracking-tight text-foreground">
+                    Login Arsip
+                  </CardTitle>
+                  <CardDescription className="text-sm leading-6 text-muted-foreground">
+                    Masuk ke{" "}
+                    <strong className="font-semibold text-primary">
+                      Spentaru Archive
+                    </strong>{" "}
+                    untuk mengelola arsip sekolah dengan lebih cepat dan
+                    terorganisir.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-5">
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-foreground"
+                    >
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="operator@spentaru.sch.id"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <Label
+                        htmlFor="password"
+                        className="text-sm font-medium text-foreground"
+                      >
+                        Password
+                      </Label>
+                      <button
+                        type="button"
+                        className="text-sm font-medium text-primary transition hover:text-primary/80"
+                      >
+                        Lupa password?
+                      </button>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Masukkan password"
+                      required
+                    />
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex-col gap-3 pt-2">
+                <Button type="submit">Masuk ke Dashboard</Button>
+                <p className="text-center text-sm leading-6 text-muted-foreground">
+                  Khusus untuk guru atau admin yang memiliki hak akses sistem
+                  arsip.
+                </p>
+              </CardFooter>
+            </Card>
+          </form>
+        </div>
+      </div>
+    </main>
   );
 }
