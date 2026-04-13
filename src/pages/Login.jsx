@@ -9,9 +9,45 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import { login } from "@/services/auth.service";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await login(form);
+      if (res.data.status) {
+        localStorage.setItem("token", res.data.data.token);
+        navigate("/dashboard");
+      } else {
+        setError(res.data.message || "Login gagal. Silakan coba lagi.");
+      }
+    } catch (error) {
+      setError(
+        error.response?.data?.message || "Login gagal. Silakan coba lagi.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main>
       <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl items-center px-5 py-10 md:px-8 lg:px-12">
@@ -55,7 +91,7 @@ export default function Login() {
             </div>
           </section>
 
-          <form className="w-full">
+          <form className="w-full" onSubmit={handleLogin}>
             <Card className="mx-auto w-full max-w-lg border-white/70 bg-white/90 shadow-[0_24px_80px_-32px_rgba(36,54,115,0.45)] backdrop-blur">
               <CardHeader className="space-y-4 pb-2">
                 <div className="space-y-2">
@@ -86,6 +122,9 @@ export default function Login() {
                       type="email"
                       placeholder="operator@spentaru.sch.id"
                       required
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="grid gap-2">
@@ -108,12 +147,17 @@ export default function Login() {
                       type="password"
                       placeholder="Masukkan password"
                       required
+                      name="password"
+                      value={form.password}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="flex-col gap-3 pt-2">
-                <Button type="submit">Masuk ke Dashboard</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Memproses..." : "Masuk ke Dashboard"}
+                </Button>
                 <p className="text-center text-sm leading-6 text-muted-foreground">
                   Khusus untuk guru atau admin yang memiliki hak akses sistem
                   arsip.
