@@ -8,6 +8,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { logout } from "@/services/auth.service";
 
 import {
   Archive,
@@ -17,9 +18,10 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export default function AppSidebar() {
+  const navigate = useNavigate();
   const location = useLocation();
 
   const menus = [
@@ -28,6 +30,19 @@ export default function AppSidebar() {
     { name: "Daftar Arsip", path: "/archives", icon: Archive },
     { name: "Pengaturan", path: "/settings", icon: Settings },
   ];
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await logout();
+      if (res.data.status) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
 
   return (
     <Sidebar className="border-r-0">
@@ -93,7 +108,10 @@ export default function AppSidebar() {
 
       <SidebarFooter className="px-3 pb-4">
         <SidebarMenuButton asChild className="min-h-14">
-          <button className="flex items-center justify-between gap-3 cursor-pointer">
+          <button
+            className="flex items-center justify-between gap-3 cursor-pointer"
+            onClick={handleLogout}
+          >
             <span className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-primary/10 bg-primary/10 text-primary">
                 <LogOut size={18} />
