@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const res = await me();
-        if (res.data.status) {
+        if (res.data.status == 'success') {
           setUser(res.data.data);
         }
       } catch (err) {

@@ -4,22 +4,28 @@ import Login from "./pages/Login";
 import { TooltipProvider } from "./components/ui/tooltip";
 import BaseLayout from "./layouts/BaseLayout";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <TooltipProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<Login />} />
+    <AuthProvider>
+      <TooltipProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/login" element={<Login />} />
 
-          {/* Main App */}
-          <Route element={<BaseLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            {/* Main App */}
+            <Route element={<BaseLayout />}>
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   );
 }
 
