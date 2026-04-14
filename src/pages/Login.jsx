@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import PopUp from "@/components/PopUp";
+import Logo from "@/assets/logo.png";
 import {
   Card,
   CardContent,
@@ -104,43 +105,35 @@ export default function Login() {
         }
       />
 
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl items-center px-5 py-10 md:px-8 lg:px-12">
+      <div className="flex justify-center mx-5 mt-5 lg:hidden gap-2 items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+        <img src={Logo} alt="Logo Spentaru Archive" className="w-10 h-10" />
+        Arsip Digital SMP Negeri 1 Waru
+      </div>
+
+      <div className="relative mx-auto flex lg:min-h-dvh w-full max-w-6xl items-center px-5 py-5 md:px-8 lg:px-12">
         <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <section className="hidden lg:block">
             <div className="max-w-xl space-y-6">
-              <div className="inline-flex items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+              <div className="inline-flex gap-2 items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+                <img
+                  src={Logo}
+                  alt="Logo Spentaru Archive"
+                  className="w-10 h-10"
+                />
                 Portal Arsip Digital SMP Negeri 1 Waru
               </div>
               <div className="space-y-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/70">
                   Spentaru Archive
                 </p>
-                <h1 className="max-w-lg text-4xl font-semibold tracking-tight text-foreground lg:text-5xl">
-                  Akses dokumen sekolah dengan tampilan yang lebih rapi dan
-                  terpercaya.
+                <h1 className="max-w-lg text-4xl font-semibold tracking-tight leading text-foreground lg:text-5xl">
+                  Dokumen Sekolah dalam Satu Tempat
                 </h1>
                 <p className="max-w-xl text-base leading-7 text-muted-foreground">
                   Sistem arsip sekolah yang membantu pengelolaan dokumen
                   penting, surat, dan administrasi internal agar tetap tertata
                   dan mudah ditemukan.
                 </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-[0_18px_60px_-28px_rgba(36,54,115,0.35)] backdrop-blur">
-                  <p className="text-sm font-semibold text-primary">Tertata</p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Arsip sekolah dan dokumen tersusun lebih terstruktur untuk
-                    kebutuhan administrasi sekolah.
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-white/70 bg-primary p-5 text-primary-foreground shadow-[0_18px_60px_-28px_rgba(36,54,115,0.55)]">
-                  <p className="text-sm font-semibold">Aman Diakses</p>
-                  <p className="mt-2 text-sm leading-6 text-primary-foreground/80">
-                    Login diperlukan agar pengelolaan arsip tetap terjaga dan
-                    aman.
-                  </p>
-                </div>
               </div>
             </div>
           </section>
@@ -208,13 +201,13 @@ export default function Login() {
                       />
                       {showPassword ? (
                         <Eye
-                          size={16}
+                          size={20}
                           onClick={handleViewPassword}
                           className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                         />
                       ) : (
                         <EyeOff
-                          size={16}
+                          size={20}
                           onClick={handleViewPassword}
                           className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                         />
@@ -223,14 +216,10 @@ export default function Login() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="flex-col gap-3 pt-2">
+              <CardFooter className="mt-4 flex-col gap-3 pt-4">
                 <Button type="submit" disabled={loading}>
                   {loading ? "Memproses..." : "Masuk ke Dashboard"}
                 </Button>
-                <p className="text-center text-sm leading-6 text-muted-foreground">
-                  Khusus untuk guru atau admin yang memiliki hak akses sistem
-                  arsip.
-                </p>
               </CardFooter>
             </Card>
           </form>
