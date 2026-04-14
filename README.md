@@ -7,6 +7,7 @@ Frontend untuk Spentaru Archive, sebuah aplikasi berbasis web untuk mengelola ar
 ## Teknologi yang Digunakan
 - React.js
 - Tailwind CSS
+- Shadcn UI
 - Vite
 
 Dibuat dengan ❤️ oleh [Naufal Rafa](https://github.com/Falrafa4)
