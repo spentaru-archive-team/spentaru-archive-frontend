@@ -28,10 +28,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   const menus = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
@@ -97,8 +99,7 @@ export default function AppSidebar() {
           {menus.map((menu) => {
             const Icon = menu.icon;
             const hasSubMenu = Array.isArray(menu.items);
-            const isActive =
-              menu.path && location.pathname === menu.path;
+            const isActive = menu.path && location.pathname === menu.path;
             const isSubMenuActive =
               hasSubMenu &&
               menu.items.some((subMenu) => location.pathname === subMenu.path);
@@ -127,11 +128,15 @@ export default function AppSidebar() {
                     <CollapsibleContent className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp">
                       <SidebarMenuSub className="mt-1">
                         {menu.items.map((subMenu) => {
-                          const isSubActive = location.pathname === subMenu.path;
+                          const isSubActive =
+                            location.pathname === subMenu.path;
 
                           return (
                             <SidebarMenuSubItem key={subMenu.path}>
-                              <SidebarMenuSubButton asChild isActive={isSubActive}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isSubActive}
+                              >
                                 <Link to={subMenu.path}>{subMenu.name}</Link>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
@@ -179,10 +184,10 @@ export default function AppSidebar() {
               </span>
               <span className="text-left">
                 <span className="block text-sm font-semibold text-foreground">
-                  Admin
+                  {user?.email || "User"}
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  Administrator
+                  {String(user?.role || "Role").charAt(0).toUpperCase() + String(user?.role || "Role").slice(1).toLowerCase()}
                 </span>
               </span>
             </span>
