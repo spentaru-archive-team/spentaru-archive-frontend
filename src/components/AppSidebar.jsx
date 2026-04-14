@@ -3,7 +3,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarSeparator,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -17,6 +16,7 @@ import {
   Home,
   LogOut,
   Settings,
+  User,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router";
 
@@ -27,7 +27,12 @@ export default function AppSidebar() {
   const menus = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
     { name: "Event", path: "/events", icon: Calendar },
-    { name: "Daftar Arsip", path: "/archives", icon: Archive },
+    { name: "Manajemen Arsip", path: "/archives", icon: Archive },
+    { name: "Manajemen Kategori", path: "/categories", icon: Archive },
+    { name: "Manajemen Lokasi Fisik", path: "/physical-locations", icon: Archive },
+    { name: "Storage Rules", path: "/storage-rules", icon: Archive },
+    { name: "Lokasi Arsip", path: "/archive-locations", icon: Archive },
+    { name: "Manajemen User", path: "/users", icon: User },
     { name: "Pengaturan", path: "/settings", icon: Settings },
   ];
 
@@ -35,9 +40,17 @@ export default function AppSidebar() {
     e.preventDefault();
     try {
       const res = await logout();
-      if (res.data.status) {
+      if (res.data.status == "success") {
         localStorage.removeItem("token");
-        navigate("/login");
+        navigate("/login", {
+          state: {
+            popup: {
+              title: "Logout berhasil",
+              description: "Sesi Anda telah diakhiri dengan aman.",
+              type: "logout",
+            },
+          },
+        });
       }
     } catch (err) {
       console.log(err.response);
@@ -107,6 +120,24 @@ export default function AppSidebar() {
       <hr className="mx-4 opacity-70" />
 
       <SidebarFooter className="px-3 pb-4">
+        <SidebarMenuButton asChild className="min-h-14">
+          <button className="flex items-center justify-between gap-3 cursor-pointer">
+            <span className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-primary/10 bg-primary/10 text-primary">
+                <User size={18} />
+              </span>
+              <span className="text-left">
+                <span className="block text-sm font-semibold text-foreground">
+                  Admin
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  Administrator
+                </span>
+              </span>
+            </span>
+            {/* <ChevronRight size={16} className="text-primary/45" /> */}
+          </button>
+        </SidebarMenuButton>
         <SidebarMenuButton asChild className="min-h-14">
           <button
             className="flex items-center justify-between gap-3 cursor-pointer"
