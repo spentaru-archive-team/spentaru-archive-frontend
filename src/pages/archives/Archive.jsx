@@ -116,7 +116,6 @@ export default function Archive() {
           <TableHeader className="bg-muted/35">
             <TableRow className="hover:bg-muted/35">
               <TableHead>No</TableHead>
-              <TableHead>Event</TableHead>
               <TableHead>Judul</TableHead>
               <TableHead>Tahun</TableHead>
               <TableHead>Kategori</TableHead>
@@ -132,9 +131,6 @@ export default function Archive() {
               <TableRow key={archive.id} className="hover:bg-muted/20">
                 <TableCell className=" font-medium text-foreground">
                   {archive.id}
-                </TableCell>
-                <TableCell className=" text-foreground">
-                  {archive.event}
                 </TableCell>
                 <TableCell>
                   <p className="font-semibold text-foreground whitespace-normal">
@@ -173,6 +169,13 @@ export default function Archive() {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Button
+                      variant="outline"
+                      className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                    >
+                      <FileSearch />
+                      Detail
+                    </Button>
+                    <Button
                       className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                       size="sm"
                     >
@@ -181,7 +184,7 @@ export default function Archive() {
                     </Button>
                     <Button
                       className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                     >
                       <Trash2 />
