@@ -6,7 +6,8 @@ import BaseLayout from "./layouts/BaseLayout";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
-import Archive from "./pages/archives/Archive";
+import Archive from "./pages/archive/ArchivePage";
+import Category from "./pages/category/CategoryPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/archives" element={<Archive />} />
+                <Route path="/categories" element={<Category />} />
               </Route>
             </Route>
           </Routes>
