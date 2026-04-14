@@ -6,12 +6,16 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import { logout } from "@/services/auth.service";
 
 import {
   Archive,
   Calendar,
+  ChevronDown,
   ChevronRight,
   Home,
   LogOut,
@@ -19,6 +23,11 @@ import {
   User,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 export default function AppSidebar() {
   const navigate = useNavigate();
@@ -27,12 +36,18 @@ export default function AppSidebar() {
   const menus = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
     { name: "Event", path: "/events", icon: Calendar },
-    { name: "Manajemen Arsip", path: "/archives", icon: Archive },
-    { name: "Manajemen Kategori", path: "/categories", icon: Archive },
-    { name: "Manajemen Lokasi Fisik", path: "/physical-locations", icon: Archive },
+    {
+      name: "Manajemen",
+      icon: Archive,
+      items: [
+        { name: "Arsip", path: "/archives" },
+        { name: "Kategori", path: "/categories" },
+        { name: "Lokasi Fisik", path: "/physical-locations" },
+        { name: "User", path: "/users" },
+      ],
+    },
     { name: "Storage Rules", path: "/storage-rules", icon: Archive },
     { name: "Lokasi Arsip", path: "/archive-locations", icon: Archive },
-    { name: "Manajemen User", path: "/users", icon: User },
     { name: "Pengaturan", path: "/settings", icon: Settings },
   ];
 
@@ -78,20 +93,56 @@ export default function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-3 pb-3">
-        {/* <div className="mb-3 rounded-sm border border-border/80 bg-white px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary/60">
-            Navigasi
-          </p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Kelola dokumen, agenda, dan pengaturan arsip Spentaru dari satu
-            panel.
-          </p>
-        </div> */}
-
         <SidebarMenu className="gap-2">
           {menus.map((menu) => {
             const Icon = menu.icon;
-            const isActive = location.pathname === menu.path;
+            const hasSubMenu = Array.isArray(menu.items);
+            const isActive =
+              menu.path && location.pathname === menu.path;
+            const isSubMenuActive =
+              hasSubMenu &&
+              menu.items.some((subMenu) => location.pathname === subMenu.path);
+
+            if (hasSubMenu) {
+              return (
+                <SidebarMenuItem key={menu.name}>
+                  <Collapsible defaultOpen={isSubMenuActive}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isSubMenuActive}
+                      className="group"
+                    >
+                      <CollapsibleTrigger className="group/collapsible flex items-center justify-between gap-3 cursor-pointer">
+                        <Icon size={18} />
+                        <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                          <span className="truncate">{menu.name}</span>
+                          <ChevronDown
+                            size={16}
+                            className="text-primary/40 transition-transform group-data-[state=open]/collapsible:rotate-180 group-data-[active=true]/menu-button:translate-x-0.5 group-data-[active=true]/menu-button:text-primary"
+                          />
+                        </span>
+                      </CollapsibleTrigger>
+                    </SidebarMenuButton>
+
+                    <CollapsibleContent className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp">
+                      <SidebarMenuSub className="mt-1">
+                        {menu.items.map((subMenu) => {
+                          const isSubActive = location.pathname === subMenu.path;
+
+                          return (
+                            <SidebarMenuSubItem key={subMenu.path}>
+                              <SidebarMenuSubButton asChild isActive={isSubActive}>
+                                <Link to={subMenu.path}>{subMenu.name}</Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </SidebarMenuItem>
+              );
+            }
 
             return (
               <SidebarMenuItem key={menu.path}>
