@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import PopUp from "@/components/PopUp";
 import {
   Card,
   CardContent,
@@ -10,17 +11,40 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth.service";
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [popup, setPopup] = useState({
+    open: false,
+    title: "",
+    description: "",
+    type: "success",
+  });
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const popupState = location.state?.popup;
+    if (!popupState) return;
+
+    setPopup({
+      open: true,
+      title: popupState.title,
+      description: popupState.description,
+      type: popupState.type || "success",
+    });
+
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -33,23 +57,53 @@ export default function Login() {
 
     try {
       const res = await login(form);
-      if (res.data.status) {
+      if (res.data.status == "success") {
         localStorage.setItem("token", res.data.data.token);
-        navigate("/dashboard");
+        navigate("/dashboard", {
+          state: {
+            popup: {
+              title: "Login berhasil",
+              description: "Selamat datang kembali di dashboard arsip sekolah.",
+              type: "login",
+              duration: 5000,
+            },
+          },
+        });
       } else {
         setError(res.data.message || "Login gagal. Silakan coba lagi.");
       }
     } catch (error) {
-      setError(
-        error.response?.data?.message || "Login gagal. Silakan coba lagi.",
-      );
+      const message =
+        error.response?.status === 401
+          ? "Email atau password salah."
+          : error.response?.data?.message || "Terjadi kesalahan.";
+
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleViewPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <main>
+      <PopUp
+        open={popup.open}
+        title={popup.title}
+        description={popup.description}
+        type={popup.type}
+        actionLabel="Tutup"
+        onClose={() =>
+          setPopup((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
+
       <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl items-center px-5 py-10 md:px-8 lg:px-12">
         <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <section className="hidden lg:block">
@@ -110,6 +164,12 @@ export default function Login() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-5">
+                  {error ? (
+                    <div className="rounded-sm border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+                      {error}
+                    </div>
+                  ) : null}
+
                   <div className="grid gap-2">
                     <Label
                       htmlFor="email"
@@ -135,22 +195,31 @@ export default function Login() {
                       >
                         Password
                       </Label>
-                      <button
-                        type="button"
-                        className="text-sm font-medium text-primary transition hover:text-primary/80"
-                      >
-                        Lupa password?
-                      </button>
                     </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Masukkan password"
-                      required
-                      name="password"
-                      value={form.password}
-                      onChange={handleChange}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Masukkan password"
+                        required
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                      />
+                      {showPassword ? (
+                        <Eye
+                          size={16}
+                          onClick={handleViewPassword}
+                          className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                        />
+                      ) : (
+                        <EyeOff
+                          size={16}
+                          onClick={handleViewPassword}
+                          className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>
