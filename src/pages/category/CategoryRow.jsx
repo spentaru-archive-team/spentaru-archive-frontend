@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Edit, FileSearch, FileText, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function CategoryRow({ category, statusStyles }) {
+export default function CategoryRow({ category }) {
   return (
     <>
       <TableRow key={category.id} className="hover:bg-muted/20">
@@ -12,51 +12,44 @@ export default function CategoryRow({ category, statusStyles }) {
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">
-            {category.title}
+            {category.name}
           </p>
         </TableCell>
-        <TableCell className=" text-foreground">{category.year}</TableCell>
-        <TableCell className=" text-foreground">{category.category}</TableCell>
-        <TableCell className=" text-foreground">
-          {category.subcategory}
+        <TableCell className="max-w-xs whitespace-pre-wrap text-foreground">
+          {category.description}
         </TableCell>
-        <TableCell>
-          <span
-            className={`inline-flex rounded-sm border px-2.5 py-1 text-xs font-semibold ${
-              statusStyles[category.status]
-            }`}
-          >
-            {category.status === 'pending_upload' ? 'Menunggu Upload' : 'Telah Upload'}
-          </span>
-        </TableCell>
-        <TableCell>
-          <a
-            href="#"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
-          >
-            <FileText size={16} />
-            Lihat File
-          </a>
+        <TableCell className="whitespace-normal text-foreground">
+          <ul className="grid grid-cols-2 w-fit gap-1">
+            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
+              <FileText className="h-3 w-3" />
+              Subkategori 1
+            </li>
+            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
+              <FileText className="h-3 w-3" />
+              Subkategori 2
+            </li>
+            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
+              <FileText className="h-3 w-3" />
+              Subkategori 3
+            </li>
+            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
+              <FileText className="h-3 w-3" />
+              Subkategori 4
+            </li>
+          </ul>
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
-              className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-            >
-              <FileSearch />
-            </Button>
-            <Button
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+              variant="secondary"
               size="sm"
             >
               <Edit />
             </Button>
             <Button
-              className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-              variant="secondary"
+              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+              variant="destructive"
               size="sm"
             >
               <Trash2 />
