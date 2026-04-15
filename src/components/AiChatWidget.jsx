@@ -365,7 +365,7 @@ export default function AiChatWidget() {
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              className="rounded-full w-10 h-5 hover:bg-destructive/10 hover:text-destructive"
             >
               <X className="size-4" />
             </Button>
