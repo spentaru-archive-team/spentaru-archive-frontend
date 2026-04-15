@@ -6,7 +6,7 @@ import LocationTable from "./LocationTable";
 const locations = [
   {
     id: "1",
-    archive: "Kelulusan",
+    archive: "Surat Keputusan Kelulusan 2024",
     cabinet: "Lemari 1 - Standar Isi",
     rack: "Rak 1",
     slot_number: "01",
@@ -14,7 +14,7 @@ const locations = [
   },
   {
     id: "2",
-    archive: "Kelulusan",
+    archive: "Data Presensi Siswa Semester Genap",
     cabinet: "Lemari 2 - Standar Kurikulum",
     rack: "Rak 2",
     slot_number: "25",
@@ -22,7 +22,7 @@ const locations = [
   },
   {
     id: "3",
-    archive: "Kelulusan",
+    archive: "Surat Masuk Dinas Pendidikan",
     cabinet: "Lemari 1 - Standar Isi",
     rack: "Rak 1",
     slot_number: "02",
@@ -30,7 +30,7 @@ const locations = [
   },
   {
     id: "4",
-    archive: "Kelulusan",
+    archive: "Laporan Rapat Komite Sekolah",
     cabinet: "Lemari 1 - Standar Isi",
     rack: "Rak 1",
     slot_number: "06",

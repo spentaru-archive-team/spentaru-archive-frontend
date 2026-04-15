@@ -7,7 +7,7 @@ import React from "react";
 
 export default function LocationHeader() {
   return (
-    <Header title="Manajemen Lokasi Fisik">
+    <Header title="Manajemen Lokasi Arsip" desc='Kelola lokasi arsip untuk penempatan arsip sekolah di ruang data.'>
       <div className="flex justify-between w-full">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative w-full sm:w-auto">
@@ -16,7 +16,7 @@ export default function LocationHeader() {
               className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
             />
             <Input
-              placeholder="Cari judul lokasi fisik"
+              placeholder="Cari judul lokasi arsip"
               className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
             />
           </div>
@@ -24,7 +24,7 @@ export default function LocationHeader() {
 
         <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
           <Plus />
-          Tambah Lokasi Fisik
+          Tambah Lokasi Arsip
         </Button>
       </div>
     </Header>

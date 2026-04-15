@@ -10,7 +10,7 @@ export default function LocationTable({ locations }) {
           <TableHeader className="bg-muted/35">
             <TableRow className="hover:bg-muted/35">
               <TableHead>No</TableHead>
-              <TableHead>Arsip</TableHead>
+              <TableHead>Judul Arsip</TableHead>
               <TableHead>Lemari</TableHead>
               <TableHead>Rak</TableHead>
               <TableHead>Nomor Slot</TableHead>
