@@ -32,6 +32,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export default function AppSidebar() {
   const navigate = useNavigate();
@@ -212,11 +213,19 @@ export default function AppSidebar() {
                 </span>
                 <span className="text-left">
                   <span className="block text-sm font-semibold text-foreground">
-                    {user?.email || "User"}
+                    {user?.email || (
+                      <Skeleton className="h-3 w-40" />
+                    )}
                   </span>
                   <span className="block text-xs text-muted-foreground">
-                    {String(user?.role || "Role").charAt(0).toUpperCase() +
-                      String(user?.role || "Role").slice(1).toLowerCase()}
+                    {user?.role ? (
+                      <>
+                        {String(user.role).charAt(0).toUpperCase() +
+                          String(user.role).slice(1).toLowerCase()}
+                      </>
+                    ) : (
+                      <Skeleton className="mt-1 h-3 w-12" />
+                    )}
                   </span>
                 </span>
               </span>

@@ -8,7 +8,7 @@ export default function ArchiveRow({ archive, statusStyles }) {
     <>
       <TableRow key={archive.id} className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
-          {archive.id}
+          {archive.row_num}
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">
