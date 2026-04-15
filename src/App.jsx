@@ -8,6 +8,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Archive from "./pages/archive/ArchivePage";
 import Category from "./pages/category/CategoryPage";
+import Location from "./pages/location/LocationPage";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/archives" element={<Archive />} />
                 <Route path="/categories" element={<Category />} />
+                <Route path="/physical-locations" element={<Location />} />
+                <Route path="/users" element={<Location />} />
               </Route>
             </Route>
           </Routes>
