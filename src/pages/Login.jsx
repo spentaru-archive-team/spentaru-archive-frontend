@@ -12,14 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth.service";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login: syncLoginState } = useAuth();
+  const { user, login: syncLoginState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -91,6 +91,12 @@ export default function Login() {
   const handleViewPassword = () => {
     setShowPassword((prev) => !prev);
   };
+
+  if (user) {
+    return (
+      <Navigate to='/dashboard' />
+    )
+  }
 
   return (
     <main>

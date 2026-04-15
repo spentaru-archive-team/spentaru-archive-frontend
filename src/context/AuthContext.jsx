@@ -34,8 +34,11 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         console.log(err);
-        localStorage.removeItem("token");
-        setUser(null);
+        if (err?.response?.status === 401) {
+          // Token is invalid or expired
+          localStorage.removeItem("token");
+          setUser(null);
+        }
       } finally {
         setLoading(false);
       }
