@@ -123,7 +123,7 @@ export default function Login() {
                   alt="Logo Spentaru Archive"
                   className="w-10 h-10"
                 />
-                Portal Arsip Digital SMP Negeri 1 Waru
+                Arsip Digital SMP Negeri 1 Waru
               </div>
               <div className="space-y-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary/70">

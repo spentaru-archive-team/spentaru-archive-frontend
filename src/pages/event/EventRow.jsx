@@ -8,14 +8,7 @@ export default function EventRow({ event, statusStyles }) {
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{event.id}</TableCell>
-      <TableCell>
-        <p className="font-semibold text-foreground whitespace-normal">
-          {event.title}
-        </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {event.description}
-        </p>
-      </TableCell>
+      <TableCell className='text-foreground font-semibold'>{event.title}</TableCell>
       <TableCell className="text-foreground max-w-24 whitespace-pre-wrap">
         {event.user}
       </TableCell>
@@ -44,7 +37,10 @@ export default function EventRow({ event, statusStyles }) {
             : "Sudah Diunggah"}
         </span>
         {event.status_upload === "pending_upload" && (
-          <Link to={`/event/${event.id}/upload`} className="text-xs! ml-2 hover:underline text-muted-foreground">
+          <Link
+            to={`/event/${event.id}/upload`}
+            className="text-xs! ml-2 hover:underline text-muted-foreground"
+          >
             Upload Arsip
           </Link>
         )}
