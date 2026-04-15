@@ -28,7 +28,7 @@ function App() {
                 <Route path="/events" element={<Event />} />
                 <Route path="/archives" element={<Archive />} />
                 <Route path="/categories" element={<Category />} />
-                <Route path="/physical-locations" element={<Location />} />
+                <Route path="/archive-locations" element={<Location />} />
                 <Route path="/users" element={<User />} />
               </Route>
             </Route>

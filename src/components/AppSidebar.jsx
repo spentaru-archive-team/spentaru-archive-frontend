@@ -17,9 +17,11 @@ import {
   Calendar,
   ChevronDown,
   ChevronRight,
+  Clipboard,
   Home,
   LogOut,
   Settings,
+  Signpost,
   User,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -43,13 +45,13 @@ export default function AppSidebar() {
       items: [
         { name: "Event", path: "/events" },
         { name: "Arsip", path: "/archives" },
-        { name: "Lokasi Fisik", path: "/physical-locations" },
+        { name: "Lokasi Arsip", path: "/archive-locations" },
         { name: "Kategori", path: "/categories" },
         { name: "User", path: "/users" },
       ],
     },
-    { name: "Storage Rules", path: "/storage-rules", icon: Archive },
-    { name: "Lokasi Arsip", path: "/archive-locations", icon: Archive },
+    { name: "Storage Rules", path: "/storage-rules", icon: Clipboard },
+    { name: "Lokasi Fisik", path: "/physical-locations", icon: Signpost },
     { name: "Pengaturan", path: "/settings", icon: Settings },
   ];
 
