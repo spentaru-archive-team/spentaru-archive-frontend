@@ -43,8 +43,8 @@ export default function AppSidebar() {
       items: [
         { name: "Event", path: "/events" },
         { name: "Arsip", path: "/archives" },
-        { name: "Kategori", path: "/categories" },
         { name: "Lokasi Fisik", path: "/physical-locations" },
+        { name: "Kategori", path: "/categories" },
         { name: "User", path: "/users" },
       ],
     },
