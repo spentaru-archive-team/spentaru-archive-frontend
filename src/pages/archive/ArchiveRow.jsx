@@ -16,9 +16,9 @@ export default function ArchiveRow({ archive, statusStyles }) {
           </p>
         </TableCell>
         <TableCell className=" text-foreground">{archive.year}</TableCell>
-        <TableCell className=" text-foreground">{archive.category}</TableCell>
+        <TableCell className=" text-foreground">{archive.category_id}</TableCell>
         <TableCell className=" text-foreground">
-          {archive.subcategory}
+          {archive.subcategory_id}
         </TableCell>
         <TableCell>
           <span

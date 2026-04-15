@@ -21,7 +21,7 @@ export default function ArchiveTable({ archives, statusStyles }) {
           </TableHeader>
 
           <TableBody className="bg-white">
-            {archives.map((archive) => (
+            {archives?.data?.map((archive) => (
               <ArchiveRow archive={archive} statusStyles={statusStyles} />
             ))}
           </TableBody>

@@ -2,53 +2,9 @@ import React, { useState } from "react";
 import ArchiveHeader from "./ArchiveHeader";
 import Pagination from "@/components/Pagination";
 import ArchiveTable from "./ArchiveTable";
-
-const archives = [
-  {
-    id: "1",
-    event: "Kelulusan",
-    title: "Surat Keputusan Kelulusan 2024",
-    year: "2024",
-    note: "Dokumen final untuk arsip akademik.",
-    category: "Akademik",
-    subcategory: "Surat Keputusan",
-    status: "pending_upload",
-    file: "SK-Kelulusan-2024.pdf",
-  },
-  {
-    id: "2",
-    event: "Kesiswaan",
-    title: "Data Presensi Siswa Semester Genap",
-    year: "2024",
-    note: "Rekap presensi per kelas semester genap.",
-    category: "Kesiswaan",
-    subcategory: "Presensi",
-    status: "uploaded",
-    file: "Presensi-Genap-2024.pdf",
-  },
-  {
-    id: "3",
-    event: "Tata Usaha",
-    title: "Surat Masuk Dinas Pendidikan",
-    year: "2023",
-    note: "Perlu pelabelan ulang lokasi fisik.",
-    category: "Administrasi",
-    subcategory: "Surat Masuk",
-    status: "uploaded",
-    file: "Surat-Masuk-Dinas.pdf",
-  },
-  {
-    id: "4",
-    event: "Humas",
-    title: "Laporan Rapat Komite Sekolah",
-    year: "2024",
-    note: "Sudah sinkron antara file dan dokumen fisik.",
-    category: "Kehumasan",
-    subcategory: "Laporan",
-    status: "pending_upload",
-    file: "Rapat-Komite-2024.pdf",
-  },
-];
+import { getArchives } from "@/services/archive.service";
+import { useQuery } from "@tanstack/react-query";
+import ArchiveTableSkeleton from "./ArchiveTableSkeleton";
 
 const statusStyles = {
   pending_upload: "border-primary/15 bg-primary/6 text-primary",
@@ -58,15 +14,39 @@ const statusStyles = {
 
 export default function ArchivePage() {
   const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchArchives = async () => {
+    try {
+      const res = await getArchives(currentPage);
+      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+    } catch (error) {
+      console.error("Error fetching archives:", error);
+      throw error;
+    }
+  };
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["archives", currentPage],
+    queryFn: fetchArchives,
+  });
+
   return (
     <section className="space-y-6">
       <ArchiveHeader />
-      <ArchiveTable archives={archives} statusStyles={statusStyles} />
+      {isLoading ? (
+        <ArchiveTableSkeleton />
+      ) : error ? (
+        <div className="p-4 bg-red-100 text-red-700 rounded-md">
+          Terjadi kesalahan saat memuat data arsip.
+        </div>
+      ) : (
+        <ArchiveTable archives={data} statusStyles={statusStyles} />
+      )}
       <Pagination
         currentPage={currentPage}
-        totalPages={10}
-        totalData={124}
-        dataPerPage={4}
+        totalPages={data?.last_page}
+        totalData={data?.total}
+        dataPerPage={data?.per_page}
         onPageChange={(page) => setCurrentPage(page)}
       />
     </section>
