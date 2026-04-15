@@ -4,7 +4,6 @@ import Logo from "@/assets/logo.png";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -20,7 +19,7 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login: syncLoginState, user } = useAuth();
+  const { login: syncLoginState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,21 +38,17 @@ export default function Login() {
     const popupState = location.state?.popup;
     if (!popupState) return;
 
-    setPopup({
+    setPopup((prev) => ({
+      ...prev,
       open: true,
       title: popupState.title,
       description: popupState.description,
       type: popupState.type || "success",
-    });
+      duration: popupState.duration || 3000,
+    }));
 
     navigate(location.pathname, { replace: true, state: null });
-  }, [location.pathname, location.state, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [user, navigate]);
+  }, [location.state, navigate, location.pathname]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -74,7 +69,7 @@ export default function Login() {
               title: "Login berhasil",
               description: "Selamat datang kembali di dashboard arsip sekolah.",
               type: "login",
-              duration: 5000,
+              duration: 3000,
             },
           },
         });
@@ -150,21 +145,13 @@ export default function Login() {
             <Card className="mx-auto w-full max-w-lg border-white/70 bg-white/90 shadow-[0_24px_80px_-32px_rgba(36,54,115,0.45)] backdrop-blur">
               <CardHeader className="space-y-4 pb-2">
                 <div className="space-y-2">
-                  <CardTitle className="text-3xl font-semibold tracking-tight text-foreground">
+                  <CardTitle className="mb-2 text-3xl font-semibold tracking-tight text-foreground">
                     Login Arsip
                   </CardTitle>
-                  <CardDescription className="text-sm leading-6 text-muted-foreground">
-                    Masuk ke{" "}
-                    <strong className="font-semibold text-primary">
-                      Spentaru Archive
-                    </strong>{" "}
-                    untuk mengelola arsip sekolah dengan lebih cepat dan
-                    terorganisir.
-                  </CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-3">
                   {error ? (
                     <div className="rounded-sm border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
                       {error}

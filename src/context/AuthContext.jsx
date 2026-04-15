@@ -7,15 +7,12 @@ export const AuthContext = createContext();
 const extractUserFromPayload = (payload) => {
   if (!payload || typeof payload !== "object") return null;
 
-  // Login response can be { token, user } or directly user fields.
+  // Login response can be { token, user } or just an auth payload.
   if (payload.user && typeof payload.user === "object") {
     return payload.user;
   }
 
-  const user = { ...payload };
-  delete user.token;
-
-  return Object.keys(user).length ? user : null;
+  return payload;
 };
 
 export const AuthProvider = ({ children }) => {
