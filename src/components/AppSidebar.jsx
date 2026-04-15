@@ -9,6 +9,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Confirm from "@/components/Confirm";
 import { logout } from "@/services/auth.service";
@@ -106,6 +107,8 @@ export default function AppSidebar() {
       />
 
       <Sidebar className="border-r-0">
+        <SidebarTrigger className="hidden md:flex absolute top-4 -right-14 z-10 p-4 bg-background border border-input" />
+
         <SidebarHeader className="gap-4 px-4 py-4">
           <div className="px-4 pt-4">
             <div className="flex items-start gap-3">
@@ -113,7 +116,7 @@ export default function AppSidebar() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-primary/65">
                   Dashboard
                 </p>
-                <h1 className="text-xl flex gap-1 items-center font-semibold tracking-tight text-foreground">
+                <h1 className="text-xl flex gap-1 mb-3 items-center font-semibold tracking-tight text-foreground">
                   <img src={Logo} alt="Logo" className="h-8 w-8" />
                   <span>Spentaru Archive</span>
                 </h1>

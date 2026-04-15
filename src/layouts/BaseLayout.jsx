@@ -49,7 +49,7 @@ export default function BaseLayout() {
       />
       <AppSidebar />
       <main className="p-5 md:pt-15 md:pb-20 md:px-10 w-full overflow-x-hidden relative">
-        <SidebarTrigger className='absolute top-4 left-4 z-10 p-4 bg-background border border-input' />
+        <SidebarTrigger className="flex md:hidden fixed top-4 left-4 z-10 p-4 bg-background border border-input" />
         <Outlet />
         <AiChatWidget />
       </main>
