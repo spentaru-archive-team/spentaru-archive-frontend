@@ -9,7 +9,7 @@ export default function EventHeader() {
   return (
     <Header
       title="Manajemen Event"
-      desc="Kelola agenda sekolah, kegiatan tahunan, dan event internal dengan tampilan yang lebih rapi dan mudah dipantau."
+      desc="Kelola kegiatan sekolah dari perencanaan hingga pengarsipan."
     >
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex flex-col gap-3 sm:flex-row">

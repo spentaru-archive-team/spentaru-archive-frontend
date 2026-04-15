@@ -5,7 +5,7 @@ import EventRow from "./EventRow";
 export default function EventTable({ events, statusStyles }) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
-      <Table className="lg:overflow-x-hidden min-w-280 text-sm text-muted-foreground">
+      <Table className="lg:overflow-x-hidden text-sm text-muted-foreground">
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
             <TableHead>No</TableHead>
