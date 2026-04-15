@@ -13,6 +13,7 @@ import {
 import Confirm from "@/components/Confirm";
 import { logout } from "@/services/auth.service";
 import { useAuth } from "@/hooks/use-auth";
+import Logo from "@/assets/logo.png";
 
 import {
   Archive,
@@ -106,18 +107,16 @@ export default function AppSidebar() {
 
       <Sidebar className="border-r-0">
         <SidebarHeader className="gap-4 px-4 py-4">
-          <div className="p-4">
+          <div className="px-4 pt-4">
             <div className="flex items-start gap-3">
-              <div className="min-w-0 space-y-1">
+              <div className="min-w-0 space-y-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-primary/65">
                   Dashboard
                 </p>
-                <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                  Spentaru Archive
+                <h1 className="text-xl flex gap-1 items-center font-semibold tracking-tight text-foreground">
+                  <img src={Logo} alt="Logo" className="h-8 w-8" />
+                  <span>Spentaru Archive</span>
                 </h1>
-                <p className="text-sm leading-5 text-muted-foreground">
-                  Dashboard arsip sekolah yang rapi dan terpusat.
-                </p>
               </div>
             </div>
           </div>
@@ -131,7 +130,9 @@ export default function AppSidebar() {
               const isActive = menu.path && location.pathname === menu.path;
               const isSubMenuActive =
                 hasSubMenu &&
-                menu.items.some((subMenu) => location.pathname === subMenu.path);
+                menu.items.some(
+                  (subMenu) => location.pathname === subMenu.path,
+                );
 
               if (hasSubMenu) {
                 return (
@@ -213,9 +214,7 @@ export default function AppSidebar() {
                 </span>
                 <span className="text-left">
                   <span className="block text-sm font-semibold text-foreground">
-                    {user?.email || (
-                      <Skeleton className="h-3 w-40" />
-                    )}
+                    {user?.email || <Skeleton className="h-3 w-40" />}
                   </span>
                   <span className="block text-xs text-muted-foreground">
                     {user?.role ? (
