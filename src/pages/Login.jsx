@@ -15,10 +15,12 @@ import { login } from "@/services/auth.service";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login: syncLoginState, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -47,6 +49,12 @@ export default function Login() {
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
 
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -59,7 +67,7 @@ export default function Login() {
     try {
       const res = await login(form);
       if (res.data.status == "success") {
-        localStorage.setItem("token", res.data.data.token);
+        syncLoginState(res.data.data);
         navigate("/dashboard", {
           state: {
             popup: {

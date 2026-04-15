@@ -4,6 +4,20 @@ import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
+const extractUserFromPayload = (payload) => {
+  if (!payload || typeof payload !== "object") return null;
+
+  // Login response can be { token, user } or directly user fields.
+  if (payload.user && typeof payload.user === "object") {
+    return payload.user;
+  }
+
+  const user = { ...payload };
+  delete user.token;
+
+  return Object.keys(user).length ? user : null;
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,8 +48,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (data) => {
-    localStorage.setItem("token", data.token);
-    setUser(data);
+    if (data?.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    const nextUser = extractUserFromPayload(data);
+    setUser(nextUser);
+    setLoading(false);
   };
 
   const logout = () => {
