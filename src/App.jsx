@@ -9,6 +9,8 @@ import { AuthProvider } from "./context/AuthContext";
 import Archive from "./pages/archive/ArchivePage";
 import Category from "./pages/category/CategoryPage";
 import Location from "./pages/location/LocationPage";
+import Event from "./pages/event/EventPage";
+import User from "./pages/user/UserPage";
 
 function App() {
   return (
@@ -23,10 +25,11 @@ function App() {
             <Route element={<BaseLayout />}>
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/events" element={<Event />} />
                 <Route path="/archives" element={<Archive />} />
                 <Route path="/categories" element={<Category />} />
                 <Route path="/physical-locations" element={<Location />} />
-                <Route path="/users" element={<Location />} />
+                <Route path="/users" element={<User />} />
               </Route>
             </Route>
           </Routes>
