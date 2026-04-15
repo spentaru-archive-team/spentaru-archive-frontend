@@ -37,11 +37,11 @@ export default function AppSidebar() {
 
   const menus = [
     { name: "Dashboard", path: "/dashboard", icon: Home },
-    { name: "Event", path: "/events", icon: Calendar },
     {
       name: "Manajemen",
       icon: Archive,
       items: [
+        { name: "Event", path: "/events" },
         { name: "Arsip", path: "/archives" },
         { name: "Kategori", path: "/categories" },
         { name: "Lokasi Fisik", path: "/physical-locations" },
