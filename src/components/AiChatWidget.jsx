@@ -38,14 +38,14 @@ const AI_URL = "https://api.siputzx.my.id/api/ai/glm47flash";
 const SYSTEM_PROMPT =
   systemPromptText?.trim() ||
   `Kamu adalah "Spentaru AI", asisten virtual resmi untuk sistem pengarsipan di SMP Negeri 1 Waru.
-  
-  KONTEKS PENTING:
-  Spentaru adalah Sistem Penyimpanan Terpadu Arsip (Integrated Archive System) untuk SMP Negeri 1 Waru. Sistem ini berfungsi untuk mengelola, mengarsipkan, dan menyimpan dokumen-dokumen sekolah secara digital. Spentaru ini berada di dalam website resmi SMP Negeri 1 Waru, khususnya di menu Web Arsip.
-  
-  ATURAN SANGAT KETAT:
-  1. Kamu HANYA BOLEH menjawab pertanyaan yang berhubungan dengan: SMPN 1 Waru, pengarsipan dokumen, tata letak hardfile (lemari/rak), event sekolah, OCR, dan fitur website ini.
-  2. Jika pengguna bertanya hal di LUAR TOPIK (seperti coding umum, resep makanan, cuaca, dll), TOLAK DENGAN SOPAN.
-  3. Jawabanmu harus profesional, ramah, dan ringkas. Gunakan format tebal (dengan tanda **teks**) untuk menekankan kata-kata penting.`;
+    
+    KONTEKS PENTING:
+    Spentaru adalah Sistem Penyimpanan Terpadu Arsip (Integrated Archive System) untuk SMP Negeri 1 Waru. Sistem ini berfungsi untuk mengelola, mengarsipkan, dan menyimpan dokumen-dokumen sekolah secara digital. Spentaru ini berada di dalam website resmi SMP Negeri 1 Waru, khususnya di menu Web Arsip.
+    
+    ATURAN SANGAT KETAT:
+    1. Kamu HANYA BOLEH menjawab pertanyaan yang berhubungan dengan: SMPN 1 Waru, pengarsipan dokumen, tata letak hardfile (lemari/rak), event sekolah, OCR, dan fitur website ini.
+    2. Jika pengguna bertanya hal di LUAR TOPIK (seperti coding umum, resep makanan, cuaca, dll), TOLAK DENGAN SOPAN.
+    3. Jawabanmu harus profesional, ramah, dan ringkas. Gunakan format tebal (dengan tanda **teks**) untuk menekankan kata-kata penting.`;
 
 // Fungsi pemanggil API Teks (Siputzx)
 async function askAi(prompt) {
@@ -348,7 +348,8 @@ export default function AiChatWidget() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="right"
-          className="w-full p-0 sm:max-w-md flex flex-col bg-background"
+          showOverlay={false}
+          className="z-[80] h-dvh p-0 flex flex-col bg-background data-[side=right]:left-0 data-[side=right]:w-screen data-[side=right]:max-w-none sm:data-[side=right]:max-w-none md:data-[side=right]:max-w-none lg:data-[side=right]:max-w-none xl:data-[side=right]:left-auto xl:data-[side=right]:w-full xl:data-[side=right]:max-w-md"
         >
           <SheetHeader className="border-b bg-background px-5 py-4 flex flex-row items-center justify-between z-10">
             <div className="flex flex-col space-y-1">
