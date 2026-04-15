@@ -22,7 +22,7 @@ export default function ArchiveTable({ archives, statusStyles }) {
 
           <TableBody className="bg-white">
             {archives?.data?.map((archive) => (
-              <ArchiveRow archive={archive} statusStyles={statusStyles} />
+              <ArchiveRow key={archive.id} archive={archive} statusStyles={statusStyles} />
             ))}
           </TableBody>
         </Table>

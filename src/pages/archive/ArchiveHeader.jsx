@@ -8,8 +8,8 @@ import React from "react";
 export default function ArchiveHeader() {
   return (
     <Header title="Manajemen Arsip">
-      <div className="flex justify-between w-full">
-        <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col md:flex-row justify-between w-full">
+        <div className="flex flex-col gap-3 md:flex-row">
           <div className="relative w-full sm:w-auto">
             <Search
               size={16}
@@ -21,7 +21,6 @@ export default function ArchiveHeader() {
             />
           </div>
           <NativeSelect className="w-full sm:w-auto" name="filter" id="filter">
-            <Filter />
             <NativeSelectOption value="">Filter Arsip</NativeSelectOption>
             <NativeSelectOption value="Akademik">Akademik</NativeSelectOption>
             <NativeSelectOption value="Kesiswaan">Kesiswaan</NativeSelectOption>

@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Edit, FileSearch, FileText, Trash2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Edit, Eye, FileText, Trash2 } from "lucide-react";
 import React from "react";
 
 export default function ArchiveRow({ archive, statusStyles }) {
   return (
     <>
-      <TableRow key={archive.id} className="hover:bg-muted/20">
+      <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
           {archive.row_num}
         </TableCell>
@@ -16,7 +17,9 @@ export default function ArchiveRow({ archive, statusStyles }) {
           </p>
         </TableCell>
         <TableCell className=" text-foreground">{archive.year}</TableCell>
-        <TableCell className=" text-foreground">{archive.category_id}</TableCell>
+        <TableCell className=" text-foreground">
+          {archive.category_id}
+        </TableCell>
         <TableCell className=" text-foreground">
           {archive.subcategory_id}
         </TableCell>
@@ -44,25 +47,47 @@ export default function ArchiveRow({ archive, statusStyles }) {
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
-            <Button
-              className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-            >
-              <FileSearch />
-            </Button>
-            <Button
-              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-              variant="secondary"
-              size="sm"
-            >
-              <Edit />
-            </Button>
-            <Button
-              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-              variant="destructive"
-              size="sm"
-            >
-              <Trash2 />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                  variant="outline"
+                >
+                  <Eye />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Lihat Detail</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                  variant="secondary"
+                >
+                  <Edit />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Arsip</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                  variant="destructive"
+                >
+                  <Trash2 />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Hapus Arsip</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </TableCell>
       </TableRow>
