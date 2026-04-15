@@ -13,7 +13,7 @@ export default function BaseLayout() {
     title: "",
     description: "",
     type: "success",
-    duration: 5000,
+    duration: 3000,
   });
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function BaseLayout() {
       title: popupState.title,
       description: popupState.description,
       type: popupState.type || "success",
-      duration: popupState.duration || 5000,
+      duration: popupState.duration || 3000,
     });
 
     navigate(location.pathname, { replace: true, state: null });
