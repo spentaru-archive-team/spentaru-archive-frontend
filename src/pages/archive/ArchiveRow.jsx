@@ -26,7 +26,9 @@ export default function ArchiveRow({ archive, statusStyles }) {
               statusStyles[archive.status]
             }`}
           >
-            {archive.status === 'pending_upload' ? 'Menunggu Upload' : 'Telah Upload'}
+            {archive.status === "pending_upload"
+              ? "Menunggu Upload"
+              : "Telah Upload"}
           </span>
         </TableCell>
         <TableCell>
@@ -43,20 +45,20 @@ export default function ArchiveRow({ archive, statusStyles }) {
         <TableCell>
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
               className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
             >
               <FileSearch />
             </Button>
             <Button
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+              variant="secondary"
               size="sm"
             >
               <Edit />
             </Button>
             <Button
-              className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-              variant="secondary"
+              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+              variant="destructive"
               size="sm"
             >
               <Trash2 />

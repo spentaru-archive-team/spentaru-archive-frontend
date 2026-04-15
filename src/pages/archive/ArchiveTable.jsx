@@ -15,7 +15,7 @@ export default function ArchiveTable({ archives, statusStyles }) {
               <TableHead>Kategori</TableHead>
               <TableHead>Subkategori</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>File</TableHead>
+              <TableHead>File Arsip</TableHead>
               <TableHead>Aksi</TableHead>
             </TableRow>
           </TableHeader>
