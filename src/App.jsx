@@ -11,6 +11,7 @@ import Category from "./pages/category/CategoryPage";
 import Location from "./pages/location/LocationPage";
 import Event from "./pages/event/EventPage";
 import User from "./pages/user/UserPage";
+import StorageRule from "./pages/storageRule/StorageRulePage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/categories" element={<Category />} />
                 <Route path="/archive-locations" element={<Location />} />
                 <Route path="/users" element={<User />} />
+                <Route path="/storage-rules" element={<StorageRule />} />
               </Route>
             </Route>
           </Routes>
