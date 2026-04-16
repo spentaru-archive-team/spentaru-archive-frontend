@@ -9,7 +9,7 @@ export default function StorageRuleHeader() {
   return (
     <Header
       title="Daftar Aturan Penyimpanan"
-      desc="Kelola aturan penyimpanan arsip digital untuk memastikan keamanan dan keteraturan dalam penyimpanan data."
+      desc="Tentukan prioritas penyimpanan arsip berdasarkan kategori dan subkategori yang ditetapkan."
     >
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         {/* <div className="flex flex-col gap-3 sm:flex-row">
