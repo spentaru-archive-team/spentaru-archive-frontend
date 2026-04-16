@@ -5,6 +5,8 @@ import ArchiveTable from "./ArchiveTable";
 import { getArchives } from "@/services/archive.service";
 import { useQuery } from "@tanstack/react-query";
 import ArchiveTableSkeleton from "./ArchiveTableSkeleton";
+import ArchiveModalDetail from "./ArchiveModalDetail";
+import ArchiveModalForm from "./ArchiveModalForm";
 
 const statusStyles = {
   pending_upload: "border-primary/15 bg-primary/6 text-primary",
@@ -13,7 +15,32 @@ const statusStyles = {
 };
 
 export default function ArchivePage() {
+  const [selectedArchive, setSelectedArchive] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const handleDetailClick = (archive) => {
+    setSelectedArchive(archive);
+    setIsDetailOpen(true);
+  };
+
+  const handleAddClick = () => {
+    setSelectedArchive(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditClick = (archive) => {
+    setSelectedArchive(archive);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteClick = (archive) => {
+    if (window.confirm(`Apakah Anda yakin ingin menghapus arsip "${archive.title}"?`)) {
+      console.log("Deleting archive:", archive.id);
+      // Logic for delete API call would go here
+    }
+  };
 
   const fetchArchives = async () => {
     try {
@@ -32,7 +59,7 @@ export default function ArchivePage() {
 
   return (
     <section className="space-y-6">
-      <ArchiveHeader />
+      <ArchiveHeader onAddClick={handleAddClick} />
       {isLoading ? (
         <ArchiveTableSkeleton />
       ) : error ? (
@@ -40,7 +67,13 @@ export default function ArchivePage() {
           Terjadi kesalahan saat memuat data arsip.
         </div>
       ) : (
-        <ArchiveTable archives={data} statusStyles={statusStyles} />
+        <ArchiveTable
+          archives={data}
+          statusStyles={statusStyles}
+          onDetailClick={handleDetailClick}
+          onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
+        />
       )}
       <Pagination
         currentPage={currentPage}
@@ -48,6 +81,18 @@ export default function ArchivePage() {
         totalData={data?.total}
         dataPerPage={data?.per_page}
         onPageChange={(page) => setCurrentPage(page)}
+      />
+
+      <ArchiveModalDetail
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        archive={selectedArchive}
+      />
+
+      <ArchiveModalForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        archive={selectedArchive}
       />
     </section>
   );

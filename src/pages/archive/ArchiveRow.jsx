@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { STORAGE_URL } from "@/config/api";
 import { Edit, Eye, FileText, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function ArchiveRow({ archive, statusStyles }) {
+export default function ArchiveRow({ archive, statusStyles, onDetailClick, onEditClick, onDeleteClick }) {
   return (
     <>
       <TableRow className="hover:bg-muted/20">
@@ -18,10 +19,10 @@ export default function ArchiveRow({ archive, statusStyles }) {
         </TableCell>
         <TableCell className=" text-foreground">{archive.year}</TableCell>
         <TableCell className=" text-foreground">
-          {archive.category_id}
+          {archive.category.name}
         </TableCell>
         <TableCell className=" text-foreground">
-          {archive.subcategory_id}
+          {archive.subcategory.name}
         </TableCell>
         <TableCell>
           <span
@@ -36,7 +37,7 @@ export default function ArchiveRow({ archive, statusStyles }) {
         </TableCell>
         <TableCell>
           <a
-            href="#"
+            href={`${STORAGE_URL}${archive?.files?.file_url}`}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
@@ -52,6 +53,7 @@ export default function ArchiveRow({ archive, statusStyles }) {
                 <Button
                   className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
                   variant="outline"
+                  onClick={() => onDetailClick(archive)}
                 >
                   <Eye />
                 </Button>
@@ -66,6 +68,7 @@ export default function ArchiveRow({ archive, statusStyles }) {
                 <Button
                   className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                   variant="secondary"
+                  onClick={() => onEditClick(archive)}
                 >
                   <Edit />
                 </Button>
@@ -80,6 +83,7 @@ export default function ArchiveRow({ archive, statusStyles }) {
                 <Button
                   className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                   variant="destructive"
+                  onClick={() => onDeleteClick(archive)}
                 >
                   <Trash2 />
                 </Button>

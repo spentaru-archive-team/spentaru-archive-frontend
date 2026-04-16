@@ -5,7 +5,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Filter, Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function ArchiveHeader() {
+export default function ArchiveHeader({ onAddClick }) {
   return (
     <Header title="Manajemen Arsip">
       <div className="flex flex-col md:flex-row justify-between w-full">
@@ -31,7 +31,7 @@ export default function ArchiveHeader() {
           </NativeSelect>
         </div>
 
-        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button onClick={onAddClick} className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
           <Plus />
           Tambah Arsip
         </Button>
