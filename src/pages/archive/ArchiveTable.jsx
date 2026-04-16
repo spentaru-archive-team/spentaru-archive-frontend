@@ -1,6 +1,7 @@
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -33,16 +34,24 @@ export default function ArchiveTable({
           </TableHeader>
 
           <TableBody className="bg-white">
-            {archives?.data?.map((archive) => (
-              <ArchiveRow
-                key={archive.id}
-                archive={archive}
-                statusStyles={statusStyles}
-                onDetailClick={onDetailClick}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
-            ))}
+            {archives?.data?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-8">
+                  Tidak ada arsip yang ditemukan.
+                </TableCell>
+              </TableRow>
+            ) : (
+              archives?.data?.map((archive) => (
+                <ArchiveRow
+                  key={archive.id}
+                  archive={archive}
+                  statusStyles={statusStyles}
+                  onDetailClick={onDetailClick}
+                  onEditClick={onEditClick}
+                  onDeleteClick={onDeleteClick}
+                />
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
