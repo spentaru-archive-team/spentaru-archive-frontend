@@ -17,7 +17,7 @@ export default function UserTable({ users, roleStyles }) {
         </TableHeader>
 
         <TableBody className="bg-white">
-          {users.map((user) => (
+          {users?.data?.map((user) => (
             <UserRow
               key={user.id}
               user={user}

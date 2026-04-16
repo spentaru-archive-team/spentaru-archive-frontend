@@ -2,6 +2,9 @@ import Pagination from "@/components/Pagination";
 import React, { useState } from "react";
 import UserHeader from "./UserHeader";
 import UserTable from "./UserTable";
+import { getUsers } from "@/services/user.service";
+import { useQuery } from "@tanstack/react-query";
+import UserTableSkeleton from "./UserTableSkeleton";
 
 const users = [
   {
@@ -47,18 +50,34 @@ const roleStyles = {
 export default function UserPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
+  const fetchUsers = async () => {
+    try {
+      const res = await getUsers(currentPage);
+      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      throw error;
+    }
+  };
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users", currentPage],
+    queryFn: fetchUsers,
+  });
+
   return (
     <section className="space-y-6">
       <UserHeader />
-      <UserTable
-        users={users}
-        roleStyles={roleStyles}
-      />
+      {isLoading ? (
+        <UserTableSkeleton />
+      ) : (
+        <UserTable users={data} roleStyles={roleStyles} />
+      )}
       <Pagination
         currentPage={currentPage}
-        totalPages={8}
-        totalData={50}
-        dataPerPage={4}
+        totalPages={data?.last_page}
+        totalData={data?.total}
+        dataPerPage={data?.per_page}
         onPageChange={(page) => setCurrentPage(page)}
       />
     </section>

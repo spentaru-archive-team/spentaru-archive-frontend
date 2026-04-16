@@ -26,10 +26,10 @@ export default function UserRow({ user, roleStyles }) {
             roleStyles[user.role]
           }`}
         >
-          {user.role_label}
+          {user.role}
         </span>
       </TableCell>
-      <TableCell className="text-foreground">{user.last_login}</TableCell>
+      <TableCell className="text-foreground">{user.last_login ?? "-"}</TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <Tooltip>

@@ -24,17 +24,10 @@ export default function UserHeader() {
             />
           </div>
 
-          <NativeSelect className="w-full sm:w-44" name="role" id="role">
+          <NativeSelect defaultValue="" className="w-full sm:w-44" name="role" id="role">
             <NativeSelectOption value="">Semua Role</NativeSelectOption>
             <NativeSelectOption value="admin">Admin</NativeSelectOption>
-            <NativeSelectOption value="operator">Operator</NativeSelectOption>
-            <NativeSelectOption value="teacher">Guru</NativeSelectOption>
-          </NativeSelect>
-
-          <NativeSelect className="w-full sm:w-44" name="active" id="active">
-            <NativeSelectOption value="">Semua Status</NativeSelectOption>
-            <NativeSelectOption value="active">Aktif</NativeSelectOption>
-            <NativeSelectOption value="inactive">Nonaktif</NativeSelectOption>
+            <NativeSelectOption value="guru">Guru</NativeSelectOption>
           </NativeSelect>
         </div>
 
