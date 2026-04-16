@@ -12,6 +12,7 @@ import Location from "./pages/location/LocationPage";
 import Event from "./pages/event/EventPage";
 import User from "./pages/user/UserPage";
 import StorageRule from "./pages/storageRule/StorageRulePage";
+import PhysicalLocation from "./pages/physicalLocation/PhysicalLocationPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/archive-locations" element={<Location />} />
                 <Route path="/users" element={<User />} />
                 <Route path="/storage-rules" element={<StorageRule />} />
+                <Route path="/physical-locations" element={<PhysicalLocation />} />
               </Route>
             </Route>
           </Routes>
