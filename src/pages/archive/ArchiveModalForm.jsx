@@ -13,7 +13,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import { PlusCircle, Save, X } from "lucide-react";
+import { CloudUpload, PlusCircle, Save, X } from "lucide-react";
 
 export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
   const isEdit = !!archive;
@@ -68,10 +68,10 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
         </ModalHeader>
 
         <form onSubmit={handleSubmit}>
-          <div className="p-6 space-y-5">
+          <div className="px-6 pb-6 space-y-5">
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
-                Judul Arsip
+                Judul Arsip <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="title"
@@ -87,7 +87,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="year" className="text-sm font-semibold">
-                  Tahun
+                  Tahun <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="year"
@@ -102,30 +102,50 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="status" className="text-sm font-semibold">
-                  Status
-                </Label>
-                <NativeSelect
-                  id="status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="w-full"
-                >
-                  <NativeSelectOption value="pending_upload">
-                    Menunggu Upload
-                  </NativeSelectOption>
-                  <NativeSelectOption value="uploaded">
-                    Telah Upload
-                  </NativeSelectOption>
-                </NativeSelect>
+                <div className="space-y-2">
+                  <Label htmlFor="notes" className="text-sm font-semibold">
+                    Catatan
+                  </Label>
+                  <Input
+                    id="notes"
+                    name="notes"
+                    placeholder="Tambahkan catatan (opsional)"
+                    value={formData.notes}
+                    onChange={handleChange}
+                    required={false}
+                    className="h-10 shadow-none py-0"
+                  ></Input>
+                </div>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="event_id" className="text-sm font-semibold">
+                Event (Opsional)
+              </Label>
+              <NativeSelect
+                id="event_id"
+                name="event_id"
+                value={formData.event_id}
+                onChange={handleChange}
+                required={false}
+                className="w-full"
+                defaultValue=""
+              >
+                <NativeSelectOption value="" disabled>
+                  Pilih Event
+                </NativeSelectOption>
+                <NativeSelectOption value="1">Event 1</NativeSelectOption>
+                <NativeSelectOption value="2">Event 2</NativeSelectOption>
+                <NativeSelectOption value="3">Event 3</NativeSelectOption>
+                <NativeSelectOption value="4">Event 4</NativeSelectOption>
+              </NativeSelect>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="category_id" className="text-sm font-semibold">
-                  Kategori
+                  Kategori <span className="text-red-500">*</span>
                 </Label>
                 <NativeSelect
                   id="category_id"
@@ -152,7 +172,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   htmlFor="subcategory_id"
                   className="text-sm font-semibold"
                 >
-                  Sub Kategori
+                  Sub Kategori <span className="text-red-500">*</span>
                 </Label>
                 <NativeSelect
                   id="subcategory_id"
@@ -172,6 +192,42 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   <NativeSelectOption value="3">Keuangan</NativeSelectOption>
                 </NativeSelect>
               </div>
+            </div>
+
+            <div className="upload-archive space-y-2">
+              <Label htmlFor="status" className="text-sm font-semibold">
+                Upload Arsip <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="file"
+                name="file"
+                type="hidden"
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    file: e.target.files[0],
+                  }))
+                }
+                accept=".pdf,.doc,.docx,.xls,.xlsx"
+                maxLength={10485760} // 10MB
+                required={!isEdit}
+                className="h-10 leading-10 shadow-none py-0"
+              />
+              {/* drag and drop */}
+              <Label
+                htmlFor="file"
+                className="flex flex-col gap-0 border-2 border-dashed border-border rounded-md p-4 justify-center items-center cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <CloudUpload
+                  size={24}
+                  className="mx-auto mb-2 text-muted-foreground"
+                />
+                <p className="text-sm text-muted-foreground">
+                  {isEdit
+                    ? "Ganti file arsip (opsional)"
+                    : "Klik atau seret file ke sini untuk mengunggah"}
+                </p>
+              </Label>
             </div>
           </div>
 
