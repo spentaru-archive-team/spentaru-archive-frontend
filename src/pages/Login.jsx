@@ -30,7 +30,7 @@ export default function Login() {
     type: "success",
   });
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -79,7 +79,7 @@ export default function Login() {
     } catch (error) {
       const message =
         error.response?.status === 401
-          ? "Email atau password salah."
+          ? "Username atau password salah."
           : error.response?.data?.message || "Terjadi kesalahan.";
 
       setError(message);
@@ -166,18 +166,18 @@ export default function Login() {
 
                   <div className="grid gap-2">
                     <Label
-                      htmlFor="email"
+                      htmlFor="username"
                       className="text-sm font-medium text-foreground"
                     >
-                      Email
+                      Username
                     </Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="operator@spentaru.sch.id"
+                      id="username"
+                      type="username"
+                      placeholder="Masukkan username"
                       required
-                      name="email"
-                      value={form.email}
+                      name="username"
+                      value={form.username}
                       onChange={handleChange}
                     />
                   </div>

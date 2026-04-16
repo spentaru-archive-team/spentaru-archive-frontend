@@ -217,7 +217,7 @@ export default function AppSidebar() {
                 </span>
                 <span className="text-left">
                   <span className="block text-sm font-semibold text-foreground">
-                    {user?.email || <Skeleton className="h-3 w-40" />}
+                    {user?.name || <Skeleton className="h-3 w-40" />}
                   </span>
                   <span className="block text-xs text-muted-foreground">
                     {user?.role ? (
