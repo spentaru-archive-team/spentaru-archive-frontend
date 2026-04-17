@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, LogOut, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Confirm({
   open,
@@ -12,27 +12,6 @@ export default function Confirm({
   onConfirm,
   onClose,
 }) {
-  const [isRendered, setIsRendered] = useState(open);
-  const [isVisible, setIsVisible] = useState(open);
-
-  useEffect(() => {
-    if (open) {
-      setIsRendered(true);
-      const frame = window.requestAnimationFrame(() => {
-        setIsVisible(true);
-      });
-
-      return () => window.cancelAnimationFrame(frame);
-    }
-
-    setIsVisible(false);
-    const timer = window.setTimeout(() => {
-      setIsRendered(false);
-    }, 220);
-
-    return () => window.clearTimeout(timer);
-  }, [open]);
-
   useEffect(() => {
     if (!open) return undefined;
 
@@ -46,17 +25,16 @@ export default function Confirm({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose, open]);
 
-  if (!isRendered) return null;
-
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center px-4 py-6 transition-all duration-200 ${
-        isVisible ? "bg-primary/18 opacity-100" : "bg-primary/0 opacity-0"
+        open ? "bg-primary/18 opacity-100" : "pointer-events-none bg-primary/0 opacity-0"
       }`}
+      aria-hidden={!open}
     >
       <div
         className={`w-full max-w-md rounded-sm border border-primary/15 bg-white text-foreground shadow-[0_18px_56px_-26px_rgba(36,54,115,0.42)] transition-all duration-200 ease-out ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+          open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
         }`}
         role="dialog"
         aria-modal="true"
