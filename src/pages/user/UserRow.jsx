@@ -29,7 +29,7 @@ export default function UserRow({ user, roleStyles }) {
           {user.role}
         </span>
       </TableCell>
-      <TableCell className="text-foreground">{user.last_login ?? "-"}</TableCell>
+      <TableCell className="text-foreground">{user.last_login_at ?? "-"}</TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <Tooltip>
