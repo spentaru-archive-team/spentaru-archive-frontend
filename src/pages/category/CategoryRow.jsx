@@ -19,23 +19,16 @@ export default function CategoryRow({ category }) {
           {category.description}
         </TableCell>
         <TableCell className="whitespace-normal text-foreground">
-          <ul className="grid grid-cols-2 w-fit gap-1">
-            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
-              <FileText className="h-3 w-3" />
-              Subkategori 1
-            </li>
-            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
-              <FileText className="h-3 w-3" />
-              Subkategori 2
-            </li>
-            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
-              <FileText className="h-3 w-3" />
-              Subkategori 3
-            </li>
-            <li className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs">
-              <FileText className="h-3 w-3" />
-              Subkategori 4
-            </li>
+          <ul className="grid grid-cols-1 w-fit gap-1">
+            {category.subcategories?.map((subcat) => (
+              <li
+                key={subcat.id}
+                className="flex items-center gap-1 rounded-md border border-border/80 bg-muted/50 px-2 py-1 text-xs"
+              >
+                <FileText className="h-3 w-3" />
+                {subcat.name}
+              </li>
+            ))}
           </ul>
         </TableCell>
         <TableCell>
