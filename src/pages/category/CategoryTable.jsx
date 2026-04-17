@@ -18,7 +18,7 @@ export default function CategoryTable({ categories }) {
           </TableHeader>
 
           <TableBody className="bg-white">
-            {categories.map((category) => (
+            {categories?.data?.map((category) => (
               <CategoryRow category={category} />
             ))}
           </TableBody>
