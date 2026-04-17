@@ -1,11 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { STORAGE_URL } from "@/config/api";
 import { Edit, Eye, FileText, Trash2 } from "lucide-react";
 import React from "react";
+import { Link } from "react-router";
 
-export default function ArchiveRow({ archive, statusStyles, onDetailClick, onEditClick, onDeleteClick }) {
+export default function ArchiveRow({
+  archive,
+  statusStyles,
+  onDetailClick,
+  onEditClick,
+  onDeleteClick,
+}) {
   return (
     <>
       <TableRow className="hover:bg-muted/20">
@@ -36,15 +47,27 @@ export default function ArchiveRow({ archive, statusStyles, onDetailClick, onEdi
           </span>
         </TableCell>
         <TableCell>
-          <a
-            href={`${STORAGE_URL}${archive?.files?.file_url}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
-          >
-            <FileText size={16} />
-            Lihat File
-          </a>
+          {archive.files?.file_url ? (
+            <a
+              href={`${STORAGE_URL}${archive?.files?.file_url}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
+            >
+              <FileText size={16} />
+              Lihat File
+            </a>
+          ) : (
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <Link
+                to={`/archive/${archive.event_id}/upload`}
+                className="hover:underline flex items-center gap-1 text-sm font-medium text-muted-foreground transition hover:text-muted-foreground/80"
+              >
+                <FileText size={16} />
+                Upload File
+              </Link>
+            </span>
+          )}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
