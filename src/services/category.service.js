@@ -1,8 +1,15 @@
 import api from "./axios";
 
-export function getCategories(page = 1) {
-  const res = api.get("/categories", { params: { page } });
-  return res;
+export function getCategories({ page = 1, all = false } = {}) {
+  const params = {};
+
+  if (all) {
+    params.all = true;
+  } else {
+    params.page = page;
+  }
+
+  return api.get("/categories", { params });
 }
 
 export function getCategoryById(id) {

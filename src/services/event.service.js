@@ -1,7 +1,7 @@
 import api from "./axios";
 
-export function getEvents(page = 1) {
-  const res = api.get("/events", { params: { page } });
+export function getEvents({page = 1, all = false} = {}) {
+  const res = api.get("/events", { params: { page, all } });
   return res;
 }
 
