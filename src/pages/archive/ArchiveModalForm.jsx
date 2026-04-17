@@ -14,8 +14,13 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { CloudUpload, PlusCircle, Save, X } from "lucide-react";
+import { getCategories } from "@/services/category.service";
+import { useQuery } from "@tanstack/react-query";
+import { getSubcategoriesByCategoryId } from "@/services/subcategory.service";
+import { getEvents } from "@/services/event.service";
 
 export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
+  const [selectedCategory, setSelectedCategory] = useState("");
   const isEdit = !!archive;
   const [formData, setFormData] = useState({
     title: "",
@@ -25,6 +30,68 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
     status: "pending_upload",
   });
 
+  const fetchEvents = async () => {
+    try {
+      const res = await getEvents({ all: true });
+      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      throw error;
+    }
+  };
+
+  const {
+    data: events,
+    isLoading: isLoadingEvents,
+    error: errorEvents,
+  } = useQuery({
+    queryKey: ["events"],
+    queryFn: fetchEvents,
+    staleTime: 1000 * 60 * 5, // cache 5 menit
+  });
+
+  const fetchSubcategories = async (categoryId) => {
+    if (!categoryId) return [];
+    try {
+      const res = await getSubcategoriesByCategoryId(categoryId, { all: true });
+      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+    } catch (error) {
+      console.error("Error fetching subcategories:", error);
+      throw error;
+    }
+  };
+
+  const {
+    data: subcategories,
+    isLoading: isLoadingSubcategories,
+    error: errorSubcategories,
+  } = useQuery({
+    queryKey: ["subcategories", selectedCategory],
+    queryFn: () => fetchSubcategories(selectedCategory),
+    enabled: !!selectedCategory, // Hanya jalankan jika kategori dipilih
+    staleTime: 1000 * 60 * 5, // cache 5 menit
+  });
+
+  const fetchCategories = async () => {
+    try {
+      const res = await getCategories({ all: true });
+      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw error;
+    }
+  };
+
+  const {
+    data: categories,
+    isLoading: isLoadingCategories,
+    error: errorCategories,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 1000 * 60 * 5, // cache 5 menit
+  });
+
   useEffect(() => {
     if (archive) {
       setFormData({
@@ -32,8 +99,11 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
         year: archive.year || new Date().getFullYear().toString(),
         category_id: archive.category_id || archive.category?.id || "",
         subcategory_id: archive.subcategory_id || archive.subcategory?.id || "",
+        notes: archive.notes || "",
+        event_id: archive.event_id || archive.event?.id || "",
         status: archive.status || "pending_upload",
       });
+      setSelectedCategory(archive.category_id || archive.category?.id || "");
     } else {
       setFormData({
         title: "",
@@ -130,15 +200,31 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                 onChange={handleChange}
                 required={false}
                 className="w-full"
-                defaultValue=""
               >
-                <NativeSelectOption value="" disabled>
+                <NativeSelectOption value="">
                   Pilih Event
                 </NativeSelectOption>
-                <NativeSelectOption value="1">Event 1</NativeSelectOption>
-                <NativeSelectOption value="2">Event 2</NativeSelectOption>
-                <NativeSelectOption value="3">Event 3</NativeSelectOption>
-                <NativeSelectOption value="4">Event 4</NativeSelectOption>
+                {isLoadingEvents ? (
+                  <NativeSelectOption value="" disabled>
+                    Memuat event...
+                  </NativeSelectOption>
+                ) : errorEvents ? (
+                  <NativeSelectOption value="" disabled>
+                    Gagal memuat event
+                  </NativeSelectOption>
+                ) : (
+                  Array.isArray(events) &&
+                  events.map((event) => {
+                    const eventDate = new Date(event.date);
+                    const option = { year: "numeric", month: "long", day: "numeric" };
+                    const formattedDate = eventDate.toLocaleDateString("id-ID", option);
+                    return (
+                      <NativeSelectOption key={event.id} value={String(event.id)}>
+                        {event.title} - {formattedDate}
+                      </NativeSelectOption>
+                    );
+                  })
+                )}
               </NativeSelect>
             </div>
 
@@ -151,19 +237,36 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   id="category_id"
                   name="category_id"
                   value={formData.category_id}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setSelectedCategory(e.target.value);
+                  }}
                   required
                   className="w-full"
                 >
-                  <NativeSelectOption value="">
+                  <NativeSelectOption value="" disabled>
                     Pilih Kategori
                   </NativeSelectOption>
-                  <NativeSelectOption value="1">Akademik</NativeSelectOption>
-                  <NativeSelectOption value="2">Kesiswaan</NativeSelectOption>
-                  <NativeSelectOption value="3">
-                    Administrasi
-                  </NativeSelectOption>
-                  <NativeSelectOption value="4">Kehumasan</NativeSelectOption>
+
+                  {isLoadingCategories ? (
+                    <NativeSelectOption value="" disabled>
+                      Memuat kategori...
+                    </NativeSelectOption>
+                  ) : errorCategories ? (
+                    <NativeSelectOption value="" disabled>
+                      Gagal memuat kategori
+                    </NativeSelectOption>
+                  ) : (
+                    Array.isArray(categories) &&
+                    categories.map((category) => (
+                      <NativeSelectOption
+                        key={category.id}
+                        value={String(category.id)}
+                      >
+                        {category.name}
+                      </NativeSelectOption>
+                    ))
+                  )}
                 </NativeSelect>
               </div>
 
@@ -182,26 +285,40 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   required
                   className="w-full"
                 >
-                  <NativeSelectOption value="">
-                    Pilih Sub Kategori
+                  <NativeSelectOption value="" disabled>
+                    Harap pilih kategori terlebih dahulu
                   </NativeSelectOption>
-                  <NativeSelectOption value="1">Kurikulum</NativeSelectOption>
-                  <NativeSelectOption value="2">
-                    Kesiswaan Umum
-                  </NativeSelectOption>
-                  <NativeSelectOption value="3">Keuangan</NativeSelectOption>
+                  {isLoadingSubcategories ? (
+                    <NativeSelectOption value="" disabled>
+                      Memuat subkategori...
+                    </NativeSelectOption>
+                  ) : errorSubcategories ? (
+                    <NativeSelectOption value="" disabled>
+                      Gagal memuat subkategori
+                    </NativeSelectOption>
+                  ) : (
+                    Array.isArray(subcategories) &&
+                    subcategories.map((subcategory) => (
+                      <NativeSelectOption
+                        key={subcategory.id}
+                        value={String(subcategory.id)}
+                      >
+                        {subcategory.name}
+                      </NativeSelectOption>
+                    ))
+                  )}
                 </NativeSelect>
               </div>
             </div>
 
             <div className="upload-archive space-y-2">
-              <Label htmlFor="status" className="text-sm font-semibold">
+              <Label htmlFor="file" className="text-sm font-semibold">
                 Upload Arsip <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="file"
                 name="file"
-                type="hidden"
+                type="file"
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
@@ -211,7 +328,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                 accept=".pdf,.doc,.docx,.xls,.xlsx"
                 maxLength={10485760} // 10MB
                 required={!isEdit}
-                className="h-10 leading-10 shadow-none py-0"
+                className="hidden h-10 leading-10 shadow-none py-0"
               />
               {/* drag and drop */}
               <Label
