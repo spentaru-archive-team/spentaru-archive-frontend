@@ -19,7 +19,7 @@ export default function EventTable({ events, statusStyles }) {
         </TableHeader>
 
         <TableBody className="bg-white">
-          {events.map((event) => (
+          {events?.data?.map((event) => (
             <EventRow key={event.id} event={event} statusStyles={statusStyles} />
           ))}
         </TableBody>

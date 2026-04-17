@@ -5,14 +5,18 @@ import React from "react";
 import { Link } from "react-router";
 
 export default function EventRow({ event, statusStyles }) {
+  const eventDate = new Date(event.date);
+  const option = { year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = eventDate.toLocaleDateString("id-ID", option);
+  
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{event.id}</TableCell>
       <TableCell className='text-foreground font-semibold'>{event.title}</TableCell>
       <TableCell className="text-foreground max-w-24 whitespace-pre-wrap">
-        {event.user}
+        {event.user.name}
       </TableCell>
-      <TableCell className="text-foreground">{event.date}</TableCell>
+      <TableCell className="text-foreground">{formattedDate}</TableCell>
       <TableCell>
         <span
           className={`inline-flex rounded-sm border px-2.5 py-1 text-xs font-semibold ${
