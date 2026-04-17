@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { CheckCircle2, LogIn, LogOut, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const iconMap = {
   login: LogIn,
@@ -15,27 +14,6 @@ export default function PopUp({
   duration = 3000,
   onClose,
 }) {
-  const [isRendered, setIsRendered] = useState(open);
-  const [isVisible, setIsVisible] = useState(open);
-
-  useEffect(() => {
-    if (open) {
-      setIsRendered(true);
-      const frame = window.requestAnimationFrame(() => {
-        setIsVisible(true);
-      });
-
-      return () => window.cancelAnimationFrame(frame);
-    }
-
-    setIsVisible(false);
-    const timer = window.setTimeout(() => {
-      setIsRendered(false);
-    }, 240);
-
-    return () => window.clearTimeout(timer);
-  }, [open]);
-
   useEffect(() => {
     if (!open || !duration) return undefined;
 
@@ -46,15 +24,18 @@ export default function PopUp({
     return () => window.clearTimeout(timer);
   }, [duration, onClose, open]);
 
-  if (!isRendered) return null;
-
   const Icon = iconMap[type] || CheckCircle2;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 flex items-start justify-center px-4 py-6 sm:items-start sm:justify-end">
+    <div
+      className={`pointer-events-none fixed inset-0 z-50 flex items-start justify-center px-4 py-6 sm:items-start sm:justify-end ${
+        open ? "" : "invisible"
+      }`}
+      aria-hidden={!open}
+    >
       <div
         className={`pointer-events-auto w-full max-w-sm rounded-sm border border-primary/15 bg-white text-foreground shadow-[0_14px_40px_-24px_rgba(36,54,115,0.38)] transition-all duration-300 ease-out ${
-          isVisible
+          open
             ? "translate-y-0 opacity-100 sm:translate-x-0"
             : "-translate-y-4 opacity-0 sm:translate-x-96"
         }`}
