@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/services/auth.service";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -22,33 +22,22 @@ export default function Login() {
   const { user, login: syncLoginState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasNavigatedAfterLogin, setHasNavigatedAfterLogin] = useState(false);
+  const [localPopup, setLocalPopup] = useState(null);
   const [error, setError] = useState(null);
-  const [popup, setPopup] = useState({
-    open: false,
-    title: "",
-    description: "",
-    type: "success",
-  });
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
 
-  useEffect(() => {
-    const popupState = location.state?.popup;
-    if (!popupState) return;
-
-    setPopup((prev) => ({
-      ...prev,
-      open: true,
-      title: popupState.title,
-      description: popupState.description,
-      type: popupState.type || "success",
-      duration: popupState.duration || 3000,
-    }));
-
-    navigate(location.pathname, { replace: true, state: null });
-  }, [location.state, navigate, location.pathname]);
+  const popupState = localPopup || location.state?.popup;
+  const popup = {
+    open: Boolean(popupState),
+    title: popupState?.title || "",
+    description: popupState?.description || "",
+    type: popupState?.type || "success",
+    duration: popupState?.duration || 3000,
+  };
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -63,16 +52,17 @@ export default function Login() {
       const res = await login(form);
       if (res.data.status == "success") {
         syncLoginState(res.data.data);
-        navigate("/dashboard", {
-          state: {
-            popup: {
-              title: "Login berhasil",
-              description: "Selamat datang kembali di dashboard arsip sekolah.",
-              type: "login",
-              duration: 3000,
-            },
-          },
+        setHasNavigatedAfterLogin(true);
+        setLocalPopup({
+          title: "Login berhasil",
+          description: "Selamat datang kembali di dashboard arsip sekolah.",
+          type: "login",
+          duration: 1000,
         });
+
+        window.setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 1500);
       } else {
         setError(res.data.message || "Login gagal. Silakan coba lagi.");
       }
@@ -92,9 +82,9 @@ export default function Login() {
     setShowPassword((prev) => !prev);
   };
 
-  if (user) {
+  if (user && !loading && !hasNavigatedAfterLogin) {
     return (
-      <Navigate to='/dashboard' />
+      <Navigate to="/dashboard" replace />
     )
   }
 
@@ -105,13 +95,16 @@ export default function Login() {
         title={popup.title}
         description={popup.description}
         type={popup.type}
+        duration={popup.duration}
         actionLabel="Tutup"
-        onClose={() =>
-          setPopup((prev) => ({
-            ...prev,
-            open: false,
-          }))
-        }
+        onClose={() => {
+          if (localPopup) {
+            setLocalPopup(null);
+            return;
+          }
+
+          navigate(location.pathname, { replace: true, state: null });
+        }}
       />
 
       <div className="flex justify-center mx-5 mt-5 lg:hidden gap-2 items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
