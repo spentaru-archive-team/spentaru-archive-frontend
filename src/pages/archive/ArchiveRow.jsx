@@ -22,7 +22,7 @@ export default function ArchiveRow({ archive, statusStyles, onDetailClick, onEdi
           {archive.category.name}
         </TableCell>
         <TableCell className=" text-foreground">
-          {archive.subcategory.name}
+          {archive.subcategory?.name || "-"}
         </TableCell>
         <TableCell>
           <span

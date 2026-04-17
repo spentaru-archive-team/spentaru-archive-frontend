@@ -113,7 +113,7 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                     Arsip dari Event
                   </p>
                   <p className="text-sm font-semibold text-foreground">
-                    {archive.event.title || "-"}
+                    {archive.event?.title || "-"}
                   </p>
                 </div>
               </div>
@@ -127,14 +127,17 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                     Status Event
                   </p>
                   <span
-                    className={`mt-1 inline-flex items-center px-2.5 py-0.5 rounded-sm border text-xs font-medium ${archive.event.status === "ongoing"
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      : "border-slate-200 bg-slate-100 text-slate-700"
+                    className={`mt-1 inline-flex items-center px-2.5 py-0.5 rounded-sm border text-xs font-medium ${
+                      archive.event?.status === "ongoing"
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-slate-200 bg-slate-100 text-slate-700"
                     }`}
                   >
-                    {archive.event.status === "ongoing"
+                    {archive.event?.status === "ongoing"
                       ? "Berlangsung"
-                      : "Selesai"}
+                      : archive.event?.status === "done"
+                        ? "Selesai"
+                        : "-"}
                   </span>
                 </div>
               </div>
