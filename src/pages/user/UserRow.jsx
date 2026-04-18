@@ -5,10 +5,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit, KeyRound, Table, Trash2, UserRoundCheck } from "lucide-react";
+import { Edit, KeyRound, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function UserRow({ user, roleStyles }) {
+export default function UserRow({
+  user,
+  roleStyles,
+  onDeleteClick,
+  onEditClick,
+  onResetPasswordClick,
+}) {
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{user.id}</TableCell>
@@ -29,7 +35,9 @@ export default function UserRow({ user, roleStyles }) {
           {user.role}
         </span>
       </TableCell>
-      <TableCell className="text-foreground">{user.last_login_at ?? "-"}</TableCell>
+      <TableCell className="text-foreground">
+        {user.last_login_at ?? "-"}
+      </TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <Tooltip>
@@ -37,6 +45,7 @@ export default function UserRow({ user, roleStyles }) {
               <Button
                 aria-label="Reset Password"
                 className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                onClick={() => onResetPasswordClick(user)}
               >
                 <KeyRound />
               </Button>
@@ -53,6 +62,7 @@ export default function UserRow({ user, roleStyles }) {
                 className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                 variant="secondary"
                 size="sm"
+                onClick={() => onEditClick(user)}
               >
                 <Edit />
               </Button>
@@ -69,6 +79,7 @@ export default function UserRow({ user, roleStyles }) {
                 className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                 variant="destructive"
                 size="sm"
+                onClick={() => onDeleteClick(user)}
               >
                 <Trash2 />
               </Button>

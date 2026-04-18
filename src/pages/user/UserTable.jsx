@@ -2,7 +2,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import React from "react";
 import UserRow from "./UserRow";
 
-export default function UserTable({ users, roleStyles }) {
+export default function UserTable({ users, onDeleteClick, onEditClick, roleStyles, onResetPasswordClick }) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
       <Table className="text-sm text-muted-foreground">
@@ -23,6 +23,9 @@ export default function UserTable({ users, roleStyles }) {
               key={user.id}
               user={user}
               roleStyles={roleStyles}
+              onDeleteClick={onDeleteClick}
+              onEditClick={onEditClick}
+              onResetPasswordClick={onResetPasswordClick}
             />
           ))}
         </TableBody>
