@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -16,42 +16,41 @@ import {
 import { PlusCircle, Save } from "lucide-react";
 import { createUsers, updateUsers } from "@/services/user.service";
 
+const createInitialUserFormData = (user) => ({
+  name: user?.name || "",
+  username: user?.username || "",
+  password: user?.password || "",
+  role: user?.role || "guru",
+});
+
 export default function UserModalForm({
   isOpen,
   onClose,
   user = null,
   fetchUsers,
 }) {
+  if (!isOpen) return null;
+
+  const formKey = user?.id ? `user-edit-${user.id}` : "user-create";
+  return (
+    <UserModalFormContent
+      key={formKey}
+      onClose={onClose}
+      user={user}
+      fetchUsers={fetchUsers}
+    />
+  );
+}
+
+function UserModalFormContent({ onClose, user = null, fetchUsers }) {
   const isEdit = !!user;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    password: "",
-    role: "guru",
-  });
-
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        username: user.username || "",
-        password: user.password || "",
-        role: user.role || "guru",
-      });
-    } else {
-      setFormData({
-        name: "",
-        username: "",
-        password: "",
-        role: "guru",
-      });
-    }
-  }, [user, isOpen]);
+  const [formData, setFormData] = useState(() => createInitialUserFormData(user));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (error) setError(null);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -110,7 +109,7 @@ export default function UserModalForm({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={onClose}>
+    <Modal open={true} onOpenChange={onClose}>
       <ModalContent className="max-w-xl">
         <ModalHeader>
           <ModalTitle className="flex items-center gap-2">
@@ -169,7 +168,7 @@ export default function UserModalForm({
                   placeholder="Masukkan password"
                   value={formData.password}
                   onChange={handleChange}
-                  required
+                  required={!isEdit}
                   className="h-10 shadow-none py-0"
                 />
                 {error?.password && (
