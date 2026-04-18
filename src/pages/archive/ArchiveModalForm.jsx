@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -13,22 +13,49 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import { CloudUpload, PlusCircle, Save, X } from "lucide-react";
+import { CloudUpload, PlusCircle, Save } from "lucide-react";
 import { getCategories } from "@/services/category.service";
 import { useQuery } from "@tanstack/react-query";
 import { getSubcategoriesByCategoryId } from "@/services/subcategory.service";
 import { getEvents } from "@/services/event.service";
 
+const toFormId = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+  return String(value);
+};
+
+const createInitialArchiveFormData = (archive) => ({
+  title: archive?.title || "",
+  year: String(archive?.year || new Date().getFullYear()),
+  category_id: toFormId(archive?.category_id ?? archive?.category?.id),
+  subcategory_id: toFormId(
+    archive?.subcategory_id ?? archive?.subcategory?.id,
+  ),
+  notes: archive?.notes || "",
+  event_id: toFormId(archive?.event_id ?? archive?.event?.id),
+  status: archive?.status || "pending_upload",
+  file: null,
+});
+
 export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
-  const [selectedCategory, setSelectedCategory] = useState("");
+  if (!isOpen) return null;
+
+  const formKey = archive?.id ? `archive-edit-${archive.id}` : "archive-create";
+  return (
+    <ArchiveModalFormContent
+      key={formKey}
+      onClose={onClose}
+      archive={archive}
+    />
+  );
+}
+
+function ArchiveModalFormContent({ onClose, archive = null }) {
   const isEdit = !!archive;
-  const [formData, setFormData] = useState({
-    title: "",
-    year: new Date().getFullYear().toString(),
-    category_id: "",
-    subcategory_id: "",
-    status: "pending_upload",
-  });
+  const [formData, setFormData] = useState(() =>
+    createInitialArchiveFormData(archive),
+  );
+  const selectedCategory = formData.category_id;
 
   const fetchEvents = async () => {
     try {
@@ -92,29 +119,6 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
     staleTime: 1000 * 60 * 5, // cache 5 menit
   });
 
-  useEffect(() => {
-    if (archive) {
-      setFormData({
-        title: archive.title || "",
-        year: archive.year || new Date().getFullYear().toString(),
-        category_id: archive.category_id || archive.category?.id || "",
-        subcategory_id: archive.subcategory_id || archive.subcategory?.id || "",
-        notes: archive.notes || "",
-        event_id: archive.event_id || archive.event?.id || "",
-        status: archive.status || "pending_upload",
-      });
-      setSelectedCategory(archive.category_id || archive.category?.id || "");
-    } else {
-      setFormData({
-        title: "",
-        year: new Date().getFullYear().toString(),
-        category_id: "",
-        subcategory_id: "",
-        status: "pending_upload",
-      });
-    }
-  }, [archive, isOpen]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -128,7 +132,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={onClose}>
+    <Modal open={true} onOpenChange={onClose}>
       <ModalContent className="max-w-xl">
         <ModalHeader>
           <ModalTitle className="flex items-center gap-2">
@@ -201,9 +205,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                 required={false}
                 className="w-full"
               >
-                <NativeSelectOption value="">
-                  Pilih Event
-                </NativeSelectOption>
+                <NativeSelectOption value="">Pilih Event</NativeSelectOption>
                 {isLoadingEvents ? (
                   <NativeSelectOption value="" disabled>
                     Memuat event...
@@ -216,10 +218,20 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   Array.isArray(events) &&
                   events.map((event) => {
                     const eventDate = new Date(event.date);
-                    const option = { year: "numeric", month: "long", day: "numeric" };
-                    const formattedDate = eventDate.toLocaleDateString("id-ID", option);
+                    const option = {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    };
+                    const formattedDate = eventDate.toLocaleDateString(
+                      "id-ID",
+                      option,
+                    );
                     return (
-                      <NativeSelectOption key={event.id} value={String(event.id)}>
+                      <NativeSelectOption
+                        key={event.id}
+                        value={String(event.id)}
+                      >
                         {event.title} - {formattedDate}
                       </NativeSelectOption>
                     );
@@ -238,8 +250,12 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
                   name="category_id"
                   value={formData.category_id}
                   onChange={(e) => {
-                    handleChange(e);
-                    setSelectedCategory(e.target.value);
+                    const nextCategory = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      category_id: nextCategory,
+                      subcategory_id: "",
+                    }));
                   }}
                   required
                   className="w-full"
