@@ -212,7 +212,7 @@ export default function Login() {
               </CardContent>
               <CardFooter className="mt-4 flex-col gap-3 pt-4">
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Memproses..." : "Masuk ke Dashboard"}
+                  {loading ? "Loading..." : "Masuk ke Dashboard"}
                 </Button>
               </CardFooter>
             </Card>

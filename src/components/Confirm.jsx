@@ -91,7 +91,7 @@ export default function Confirm({
             disabled={loading}
           >
             <LogOut />
-            {loading ? "Memproses..." : confirmLabel}
+            {loading ? "Loading..." : confirmLabel}
           </Button>
         </div>
       </div>
