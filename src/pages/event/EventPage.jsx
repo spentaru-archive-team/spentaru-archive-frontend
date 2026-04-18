@@ -39,7 +39,7 @@ export default function EventPage() {
         <EventTableSkeleton />
       ) : error ? (
         <div className="p-4 bg-red-100 text-red-700 rounded-md">
-          Terjadi kesalahan saat memuat data arsip.
+          Terjadi kesalahan saat memuat data event.
         </div>
       ) : (
         <EventTable events={data} statusStyles={statusStyles} />
