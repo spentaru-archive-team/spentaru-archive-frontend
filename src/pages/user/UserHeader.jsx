@@ -5,7 +5,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Plus, Search, Shield } from "lucide-react";
 import React from "react";
 
-export default function UserHeader() {
+export default function UserHeader({ onAddClick }) {
   return (
     <Header
       title="Manajemen User"
@@ -31,7 +31,7 @@ export default function UserHeader() {
           </NativeSelect>
         </div>
 
-        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit" onClick={onAddClick}>
           <Plus />
           Tambah User
         </Button>

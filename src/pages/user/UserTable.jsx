@@ -10,6 +10,7 @@ export default function UserTable({ users, roleStyles }) {
           <TableRow className="hover:bg-muted/35">
             <TableHead>No</TableHead>
             <TableHead>Nama User</TableHead>
+            <TableHead>Username</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Login Terakhir</TableHead>
             <TableHead>Aksi</TableHead>

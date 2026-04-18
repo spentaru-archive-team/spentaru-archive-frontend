@@ -5,41 +5,7 @@ import UserTable from "./UserTable";
 import { getUsers } from "@/services/user.service";
 import { useQuery } from "@tanstack/react-query";
 import UserTableSkeleton from "./UserTableSkeleton";
-
-const users = [
-  {
-    id: "1",
-    name: "Fathur Rahman",
-    email: "operator@spentaru.sch.id",
-    role: "admin",
-    role_label: "Admin",
-    last_login: "15 Apr 2026, 07:45",
-  },
-  {
-    id: "2",
-    name: "Dewi Lestari",
-    email: "admin@spentaru.sch.id",
-    role: "admin",
-    role_label: "Admin",
-    last_login: "15 Apr 2026, 06:20",
-  },
-  {
-    id: "3",
-    name: "Ahmad Fauzi",
-    email: "kurikulum@spentaru.sch.id",
-    role: "guru",
-    role_label: "Guru",
-    last_login: "14 Apr 2026, 14:10",
-  },
-  {
-    id: "4",
-    name: "Siti Nur Aeni",
-    email: "kesiswaan@spentaru.sch.id",
-    role: "admin",
-    role_label: "Admin",
-    last_login: "14 Apr 2026, 09:32",
-  },
-];
+import UserModalForm from "./UserModalForm";
 
 const roleStyles = {
   admin: "border-primary/15 bg-primary/6 text-primary",
@@ -48,7 +14,19 @@ const roleStyles = {
 };
 
 export default function UserPage() {
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const handleAddClick = () => {
+    setSelectedUser(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditClick = (user) => {
+    setSelectedUser(user);
+    setIsFormOpen(true);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -60,16 +38,18 @@ export default function UserPage() {
     }
   };
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["users", currentPage],
     queryFn: fetchUsers,
   });
 
   return (
     <section className="space-y-6">
-      <UserHeader />
+      <UserHeader onAddClick={handleAddClick} />
       {isLoading ? (
         <UserTableSkeleton />
+      ) : error ? (
+        <div className="text-center text-red-500">Error: {error.message}</div>
       ) : (
         <UserTable users={data} roleStyles={roleStyles} />
       )}
@@ -79,6 +59,13 @@ export default function UserPage() {
         totalData={data?.total}
         dataPerPage={data?.per_page}
         onPageChange={(page) => setCurrentPage(page)}
+      />
+
+      <UserModalForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        user={selectedUser}
+        fetchUsers={refetch}
       />
     </section>
   );

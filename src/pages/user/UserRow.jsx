@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit, KeyRound, Trash2, UserRoundCheck } from "lucide-react";
+import { Edit, KeyRound, Table, Trash2, UserRoundCheck } from "lucide-react";
 import React from "react";
 
 export default function UserRow({ user, roleStyles }) {
@@ -17,9 +17,9 @@ export default function UserRow({ user, roleStyles }) {
           <p className="font-semibold text-foreground whitespace-normal">
             {user.name}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
         </div>
       </TableCell>
+      <TableCell className="text-foreground">{user.username}</TableCell>
       <TableCell className="text-foreground">
         <span
           className={`inline-flex rounded-sm border px-2.5 py-1 text-xs font-semibold ${
