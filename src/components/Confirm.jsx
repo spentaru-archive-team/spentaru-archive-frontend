@@ -27,7 +27,7 @@ export default function Confirm({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center px-4 py-6 transition-all duration-200 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center px-4 py-6 m-0 transition-all duration-200 ${
         open ? "bg-primary/18 opacity-100" : "pointer-events-none bg-primary/0 opacity-0"
       }`}
       aria-hidden={!open}
