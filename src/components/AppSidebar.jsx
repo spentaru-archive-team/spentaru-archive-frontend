@@ -107,7 +107,7 @@ export default function AppSidebar() {
       />
 
       <Sidebar className="border-r-0">
-        <SidebarTrigger className="hidden md:flex absolute top-4 -right-14 z-10 p-4 bg-background border border-input" />
+        <SidebarTrigger className="hidden lg:flex absolute top-4 -right-14 z-10 p-4 bg-background border border-input" />
 
         <SidebarHeader className="gap-4 px-4 py-4">
           <div className="px-4 pt-4">
