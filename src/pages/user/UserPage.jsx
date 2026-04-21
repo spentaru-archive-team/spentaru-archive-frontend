@@ -81,7 +81,7 @@ export default function UserPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await getUsers(currentPage);
+      const res = await getUsers({ page: currentPage });
       return res.data.data; // Sesuaikan dengan struktur respons API Anda
     } catch (error) {
       console.error("Error fetching users:", error);

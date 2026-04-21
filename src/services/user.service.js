@@ -1,7 +1,15 @@
 import api from "./axios";
 
-export function getUsers(page = 1) {
-  const res = api.get("/users", { params: { page } });
+export function getUsers({ page = 1, all = false } = {}) {
+  const params = {};
+
+  if (all) {
+    params.all = true;
+  } else {
+    params.page = page;
+  }
+
+  const res = api.get("/users", { params });
   return res;
 }
 
