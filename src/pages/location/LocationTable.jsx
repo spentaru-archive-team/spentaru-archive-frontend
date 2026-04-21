@@ -2,7 +2,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import React from "react";
 import LocationRow from "./LocationRow";
 
-export default function LocationTable({ locations }) {
+export default function LocationTable({ locations, onEditClick, onDeleteClick }) {
   return (
     <>
       <div className="overflow-hidden rounded-sm border border-border/80">
@@ -20,8 +20,13 @@ export default function LocationTable({ locations }) {
           </TableHeader>
 
           <TableBody className="bg-white">
-            {locations.map((location) => (
-              <LocationRow location={location} />
+            {locations?.data?.map((location) => (
+              <LocationRow
+                key={location.id}
+                location={location}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+              />
             ))}
           </TableBody>
         </Table>

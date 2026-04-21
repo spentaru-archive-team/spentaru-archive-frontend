@@ -1,25 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Edit, FileSearch, FileText, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function LocationRow({ location }) {
+export default function LocationRow({ location, onEditClick, onDeleteClick }) {
+  const archiveTitle = location?.archive?.title || location?.archive || "-";
+  const cabinetName = location?.cabinet?.name || location?.cabinet || "-";
+  const rackName = location?.rack?.name || `Rak ${location?.rack?.rack_number || "-"}`;
+
   return (
     <>
-      <TableRow key={location.id} className="hover:bg-muted/20">
+      <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
           {location.id}
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">
-            {location.archive}
+            {archiveTitle}
           </p>
         </TableCell>
         <TableCell className=" text-foreground">
-          {location.cabinet}
+          {cabinetName}
         </TableCell>
         <TableCell className=" text-foreground">
-          {location.rack}
+          {rackName}
         </TableCell>
         <TableCell className=" text-foreground">
           {location.slot_number}
@@ -33,6 +37,8 @@ export default function LocationRow({ location }) {
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
               variant="secondary"
               size="sm"
+              type="button"
+              onClick={() => onEditClick?.(location)}
             >
               <Edit />
             </Button>
@@ -40,6 +46,8 @@ export default function LocationRow({ location }) {
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
               variant="destructive"
               size="sm"
+              type="button"
+              onClick={() => onDeleteClick?.(location)}
             >
               <Trash2 />
             </Button>

@@ -1,11 +1,10 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Filter, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function LocationHeader() {
+export default function LocationHeader({ onAddClick }) {
   return (
     <Header title="Manajemen Lokasi Arsip" desc='Kelola lokasi arsip untuk penempatan arsip sekolah di ruang data.'>
       <div className="flex justify-between w-full">
@@ -22,7 +21,11 @@ export default function LocationHeader() {
           </div>
         </div>
 
-        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button
+          className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
+          type="button"
+          onClick={onAddClick}
+        >
           <Plus />
           Tambah Lokasi Arsip
         </Button>
