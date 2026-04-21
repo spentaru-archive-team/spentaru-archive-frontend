@@ -1,11 +1,10 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Filter, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function CategoryHeader() {
+export default function CategoryHeader({ onAddClick }) {
   return (
     <Header title="Manajemen Kategori">
       <div className="flex justify-between w-full">
@@ -22,7 +21,11 @@ export default function CategoryHeader() {
           </div>
         </div>
 
-        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button
+          className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
+          onClick={onAddClick}
+          type="button"
+        >
           <Plus />
           Tambah Kategori
         </Button>

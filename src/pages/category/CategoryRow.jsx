@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Edit, FileSearch, FileText, Trash2 } from "lucide-react";
+import { Edit, FileText, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function CategoryRow({ category }) {
+export default function CategoryRow({ category, onEditClick, onDeleteClick }) {
   return (
     <>
-      <TableRow key={category.id} className="hover:bg-muted/20">
+      <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
           {category.id}
         </TableCell>
@@ -37,6 +37,8 @@ export default function CategoryRow({ category }) {
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
               variant="secondary"
               size="sm"
+              type="button"
+              onClick={() => onEditClick?.(category)}
             >
               <Edit />
             </Button>
@@ -44,6 +46,8 @@ export default function CategoryRow({ category }) {
               className="h-9 w-fit px-3 py-2 text-sm shadow-none"
               variant="destructive"
               size="sm"
+              type="button"
+              onClick={() => onDeleteClick?.(category)}
             >
               <Trash2 />
             </Button>

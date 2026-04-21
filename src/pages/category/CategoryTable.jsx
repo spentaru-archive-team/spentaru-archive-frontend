@@ -2,7 +2,11 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import React from "react";
 import CategoryRow from "./CategoryRow";
 
-export default function CategoryTable({ categories }) {
+export default function CategoryTable({
+  categories,
+  onEditClick,
+  onDeleteClick,
+}) {
   return (
     <>
       <div className="overflow-hidden rounded-sm border border-border/80">
@@ -19,7 +23,12 @@ export default function CategoryTable({ categories }) {
 
           <TableBody className="bg-white">
             {categories?.data?.map((category) => (
-              <CategoryRow category={category} />
+              <CategoryRow
+                key={category.id}
+                category={category}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+              />
             ))}
           </TableBody>
         </Table>
