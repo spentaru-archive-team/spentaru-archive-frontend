@@ -9,7 +9,9 @@ export default function UserTable({ users, onDeleteClick, onEditClick, roleStyle
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
             <TableHead>No</TableHead>
-            <TableHead>Nama User</TableHead>
+            <TableHead>Nama</TableHead>
+            <TableHead>Mata Pelajaran</TableHead>
+            <TableHead>Jabatan</TableHead>
             <TableHead>Username</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Login Terakhir</TableHead>

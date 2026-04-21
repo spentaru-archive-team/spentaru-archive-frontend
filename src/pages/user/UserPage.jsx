@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import UserTableSkeleton from "./UserTableSkeleton";
 import UserModalForm from "./UserModalForm";
 import Confirm from "@/components/Confirm";
+import { useLocation, useNavigate } from "react-router";
 
 const roleStyles = {
   admin: "border-primary/15 bg-primary/6 text-primary",
@@ -15,6 +16,9 @@ const roleStyles = {
 };
 
 export default function UserPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +57,18 @@ export default function UserPage() {
 
     setIsDeletingUser(true);
     try {
-      await deleteUsers(selectedDeleteUser.id);
+      const res = await deleteUsers(selectedDeleteUser.id);
+      if (res.data.status === "success") {
+        navigate(location.pathname, {
+          state: {
+            popup: {
+              title: "User berhasil dihapus.",
+              type: "success",
+              duration: 3000,
+            },
+          },
+        });
+      }
       await refetch();
       setConfirmDelete(false);
       setSelectedDeleteUser(null);

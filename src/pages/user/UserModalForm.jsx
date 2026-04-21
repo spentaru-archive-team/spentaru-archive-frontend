@@ -15,9 +15,12 @@ import {
 } from "@/components/ui/native-select";
 import { PlusCircle, Save } from "lucide-react";
 import { createUsers, updateUsers } from "@/services/user.service";
+import { useLocation, useNavigate } from "react-router";
 
 const createInitialUserFormData = (user) => ({
   name: user?.name || "",
+  subject: user?.subject || "",
+  position: user?.position || "",
   username: user?.username || "",
   password: user?.password || "",
   role: user?.role || "guru",
@@ -44,9 +47,13 @@ export default function UserModalForm({
 
 function UserModalFormContent({ onClose, user = null, fetchUsers }) {
   const isEdit = !!user;
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState(() => createInitialUserFormData(user));
+  const [formData, setFormData] = useState(() =>
+    createInitialUserFormData(user),
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,9 +72,12 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
       return false;
     } catch (error) {
       console.error("Error creating user:", error.response);
-      setError(
-        error.response?.data?.errors || "Terjadi kesalahan saat membuat user.",
-      );
+      setError({
+        fields: error.response?.data?.errors || null,
+        general: !error.response?.data?.errors
+          ? "Terjadi kesalahan saat membuat user."
+          : null,
+      });
       return false;
     }
   };
@@ -83,10 +93,12 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
       return false;
     } catch (error) {
       console.error("Error updating user:", error.response);
-      setError(
-        error.response?.data?.errors ||
-          "Terjadi kesalahan saat mengupdate user.",
-      );
+      setError({
+        fields: error.response?.data?.errors || null,
+        general: !error.response?.data?.errors
+          ? "Terjadi kesalahan saat memperbarui user."
+          : null,
+      });
       return false;
     }
   };
@@ -102,6 +114,17 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
 
       if (isSuccess) {
         onClose();
+        navigate(location.pathname, {
+          state: {
+            popup: {
+              title: isEdit
+                ? "User berhasil diperbarui."
+                : "User berhasil ditambahkan.",
+              type: "success",
+              duration: 3000,
+            },
+          },
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -120,6 +143,11 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
 
         <form onSubmit={handleSubmit}>
           <div className="px-6 pb-6 space-y-5">
+            {error?.general && (
+              <p className="mt-1 text-sm text-destructive bg-red-100/40 p-3 rounded-sm">
+                {error.general}
+              </p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-semibold">
                 Nama Lengkap <span className="text-red-500">*</span>
@@ -133,9 +161,51 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
                 required
                 className="h-10 shadow-none py-0"
               />
-              {error?.name && (
-                <p className="mt-1 text-xs text-destructive">{error.name[0]}</p>
+              {error?.fields?.name && (
+                <p className="mt-1 text-xs text-destructive">{error.fields.name[0]}</p>
               )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="subject" className="text-sm font-semibold">
+                  Subject <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="subject"
+                  name="subject"
+                  placeholder="Contoh: Matematika"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className="h-10 shadow-none py-0"
+                />
+                {error?.fields?.subject && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.subject[0]}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="position" className="text-sm font-semibold">
+                  Position <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="position"
+                  name="position"
+                  placeholder="Masukkan jabatan"
+                  value={formData.position}
+                  onChange={handleChange}
+                  required={!isEdit}
+                  className="h-10 shadow-none py-0"
+                />
+                {error?.fields?.position && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.position[0]}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -152,8 +222,10 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
                   required
                   className="h-10 shadow-none py-0"
                 />
-                {error?.username && (
-                  <p className="mt-1 text-xs text-destructive">{error.username[0]}</p>
+                {error?.fields?.username && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.username[0]}
+                  </p>
                 )}
               </div>
 
@@ -171,8 +243,10 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
                   required={!isEdit}
                   className="h-10 shadow-none py-0"
                 />
-                {error?.password && (
-                  <p className="mt-1 text-xs text-destructive">{error.password[0]}</p>
+                {error?.fields?.password && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.password[0]}
+                  </p>
                 )}
               </div>
             </div>

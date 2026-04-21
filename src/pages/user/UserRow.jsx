@@ -25,6 +25,8 @@ export default function UserRow({
           </p>
         </div>
       </TableCell>
+      <TableCell className="text-foreground">{user.subject}</TableCell>
+      <TableCell className="text-foreground">{user.position}</TableCell>
       <TableCell className="text-foreground">{user.username}</TableCell>
       <TableCell className="text-foreground">
         <span
