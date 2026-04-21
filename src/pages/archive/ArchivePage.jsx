@@ -44,7 +44,7 @@ export default function ArchivePage() {
 
   const fetchArchives = async () => {
     try {
-      const res = await getArchives(currentPage);
+      const res = await getArchives({ page: currentPage });
       return res.data.data; // Sesuaikan dengan struktur respons API Anda
     } catch (error) {
       console.error("Error fetching archives:", error);

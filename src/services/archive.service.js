@@ -1,7 +1,15 @@
 import api from "./axios";
 
-export function getArchives(page = 1) {
-  const res = api.get("/archives", { params: { page } });
+export function getArchives({ page = 1, all = false } = {}) {
+  const params = {};
+
+  if (all) {
+    params.all = true;
+  } else {
+    params.page = page;
+  }
+
+  const res = api.get("/archives", { params });
   return res;
 }
 
