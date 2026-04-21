@@ -2,6 +2,9 @@ import Pagination from "@/components/Pagination";
 import React, { useState } from "react";
 import PhysicalLocationHeader from "./PhysicalLocationHeader";
 import PhysicalLocationCard from "./PhysicalLocationCard";
+import { getCabinets } from "@/services/physicalLocation.service";
+import { useQuery } from "@tanstack/react-query";
+import PhysicalLocationSkeleton from "./PhysicalLocationSkeleton";
 
 const physicalLocations = [
   {
@@ -127,15 +130,34 @@ const physicalLocations = [
 ];
 
 export default function PhysicalLocationPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const fetchPhysicalLocations = async (page) => {
+    try {
+      const res = await getCabinets();
+      return res.data.data;
+    } catch (error) {
+      console.error("Error fetching cabinets:", error);
+      throw error;
+    }
+  };
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["cabinets"],
+    queryFn: fetchPhysicalLocations,
+  });
 
   return (
     <section className="space-y-6">
       <PhysicalLocationHeader />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {physicalLocations.map((cabinet) => (
-          <PhysicalLocationCard key={cabinet.id} cabinet={cabinet} />
-        ))}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {isLoading ? (
+          Array(8).fill(0).map((_, i) => <PhysicalLocationSkeleton key={i} />)
+        ) : error ? (
+          <div className="text-center text-red-500">Error: {error.message}</div>
+        ) : (
+          data?.map((cabinet) => (
+            <PhysicalLocationCard key={cabinet.id} cabinet={cabinet} />
+          ))
+        )}
       </div>
     </section>
   );
