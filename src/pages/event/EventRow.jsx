@@ -4,7 +4,12 @@ import { CalendarDays, Edit, Eye, Trash2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
 
-export default function EventRow({ event, statusStyles }) {
+export default function EventRow({
+  event,
+  statusStyles,
+  onEditClick,
+  onDeleteClick,
+}) {
   const eventDate = new Date(event.date);
   const option = { year: "numeric", month: "long", day: "numeric" };
   const formattedDate = eventDate.toLocaleDateString("id-ID", option);
@@ -23,11 +28,11 @@ export default function EventRow({ event, statusStyles }) {
             statusStyles[event.status]
           }`}
         >
-          {event.status === "upcoming"
-            ? "Akan Datang"
-            : event.status === "ongoing"
-              ? "Berlangsung"
-              : "Selesai"}
+          {event.status === "ongoing"
+            ? "Berlangsung"
+            : event.status === "done" || event.status === "completed"
+              ? "Selesai"
+              : "Akan Datang"}
         </span>
       </TableCell>
       <TableCell>
@@ -61,6 +66,8 @@ export default function EventRow({ event, statusStyles }) {
             className="h-9 w-fit px-3 py-2 text-sm shadow-none"
             variant="secondary"
             size="sm"
+            onClick={() => onEditClick?.(event)}
+            type="button"
           >
             <Edit />
           </Button>
@@ -68,6 +75,8 @@ export default function EventRow({ event, statusStyles }) {
             className="h-9 w-fit px-3 py-2 text-sm shadow-none"
             variant="destructive"
             size="sm"
+            onClick={() => onDeleteClick?.(event)}
+            type="button"
           >
             <Trash2 />
           </Button>

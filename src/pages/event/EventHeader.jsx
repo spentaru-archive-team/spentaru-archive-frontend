@@ -5,7 +5,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { CalendarRange, Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function EventHeader() {
+export default function EventHeader({ onAddClick }) {
   return (
     <Header
       title="Manajemen Event"
@@ -43,7 +43,11 @@ export default function EventHeader() {
           </NativeSelect>
         </div>
 
-        <Button className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button
+          className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
+          onClick={onAddClick}
+          type="button"
+        >
           <Plus />
           Tambah Event
         </Button>

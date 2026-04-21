@@ -2,7 +2,12 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import React from "react";
 import EventRow from "./EventRow";
 
-export default function EventTable({ events, statusStyles }) {
+export default function EventTable({
+  events,
+  statusStyles,
+  onEditClick,
+  onDeleteClick,
+}) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
       <Table className="lg:overflow-x-hidden text-sm text-muted-foreground">
@@ -20,7 +25,13 @@ export default function EventTable({ events, statusStyles }) {
 
         <TableBody className="bg-white">
           {events?.data?.map((event) => (
-            <EventRow key={event.id} event={event} statusStyles={statusStyles} />
+            <EventRow
+              key={event.id}
+              event={event}
+              statusStyles={statusStyles}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
+            />
           ))}
         </TableBody>
       </Table>
