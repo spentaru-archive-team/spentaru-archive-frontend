@@ -17,6 +17,9 @@ import { CloudUpload, PlusCircle, Save } from "lucide-react";
 import { getCategories } from "@/services/category.service";
 import { useQuery } from "@tanstack/react-query";
 import { getSubcategoriesByCategoryId } from "@/services/subcategory.service";
+import { updateArchives } from "@/services/archive.service";
+import { createArchives } from "@/services/archive.service";
+import { useLocation, useNavigate } from "react-router";
 import { getEvents } from "@/services/event.service";
 
 const toFormId = (value) => {
@@ -28,16 +31,14 @@ const createInitialArchiveFormData = (archive) => ({
   title: archive?.title || "",
   year: String(archive?.year || new Date().getFullYear()),
   category_id: toFormId(archive?.category_id ?? archive?.category?.id),
-  subcategory_id: toFormId(
-    archive?.subcategory_id ?? archive?.subcategory?.id,
-  ),
+  subcategory_id: toFormId(archive?.subcategory_id ?? archive?.subcategory?.id),
   notes: archive?.notes || "",
   event_id: toFormId(archive?.event_id ?? archive?.event?.id),
   status: archive?.status || "pending_upload",
   file: null,
 });
 
-export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
+export default function ArchiveModalForm({ isOpen, onClose, archive = null, fetchArchives }) {
   if (!isOpen) return null;
 
   const formKey = archive?.id ? `archive-edit-${archive.id}` : "archive-create";
@@ -46,12 +47,17 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null }) {
       key={formKey}
       onClose={onClose}
       archive={archive}
+      fetchArchives={fetchArchives}
     />
   );
 }
 
-function ArchiveModalFormContent({ onClose, archive = null }) {
+function ArchiveModalFormContent({ onClose, archive = null, fetchArchives }) {
   const isEdit = !!archive;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState(() =>
     createInitialArchiveFormData(archive),
   );
@@ -121,14 +127,79 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (error) setError(null);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleCreate = async () => {
+    try {
+      const res = await createArchives(formData);
+      if (res.data.status === "success") {
+        await fetchArchives();
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Error creating archive:", error.response);
+      setError({
+        fields: error.response?.data?.errors || null,
+        general: !error.response?.data?.errors
+          ? "Terjadi kesalahan saat membuat archive."
+          : null,
+      });
+      return false;
+    }
+  };
+
+  const handleEdit = async () => {
+    try {
+      const res = await updateArchives(archive.id, formData);
+      if (res.data.status === "success") {
+        await fetchArchives();
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Error updating archive:", error.response);
+      setError({
+        fields: error.response?.data?.errors || null,
+        general: !error.response?.data?.errors
+          ? "Terjadi kesalahan saat memperbarui archive."
+          : null,
+      });
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting:", formData);
-    // Logic for API call would go here
-    onClose();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const isSuccess = isEdit ? await handleEdit() : await handleCreate();
+
+      if (isSuccess) {
+        onClose();
+        navigate(location.pathname, {
+          state: {
+            popup: {
+              title: isEdit
+                ? "Archive berhasil diperbarui."
+                : "Archive berhasil ditambahkan.",
+              type: "success",
+              duration: 3000,
+            },
+          },
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -143,6 +214,12 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
 
         <form onSubmit={handleSubmit}>
           <div className="px-6 pb-6 space-y-5">
+            {error?.general && (
+              <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
+                {error.general}
+              </p>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
                 Judul Arsip <span className="text-red-500">*</span>
@@ -156,6 +233,9 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                 required
                 className="h-10 shadow-none py-0"
               />
+              {error?.fields?.title && (
+                <p className="mt-1 text-xs text-destructive">{error.fields.title[0]}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,6 +253,9 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                   required
                   className="h-10 shadow-none py-0"
                 />
+                {error?.fields?.year && (
+                  <p className="mt-1 text-xs text-destructive">{error.fields.year[0]}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -189,6 +272,11 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                     required={false}
                     className="h-10 shadow-none py-0"
                   ></Input>
+                  {error?.fields?.notes && (
+                    <p className="mt-1 text-xs text-destructive">
+                      {error.fields.notes[0]}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -238,6 +326,11 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                   })
                 )}
               </NativeSelect>
+              {error?.fields?.event_id && (
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.event_id[0]}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -284,6 +377,11 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                     ))
                   )}
                 </NativeSelect>
+                {error?.fields?.category_id && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.category_id[0]}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -324,6 +422,11 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                     ))
                   )}
                 </NativeSelect>
+                {error?.fields?.subcategory_id && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.subcategory_id[0]}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -346,6 +449,9 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
                 required={!isEdit}
                 className="hidden h-10 leading-10 shadow-none py-0"
               />
+              {error?.fields?.file && (
+                <p className="mt-1 text-xs text-destructive">{error.fields.file[0]}</p>
+              )}
               {/* drag and drop */}
               <Label
                 htmlFor="file"
@@ -369,15 +475,21 @@ function ArchiveModalFormContent({ onClose, archive = null }) {
               type="button"
               variant="outline"
               onClick={onClose}
+              disabled={isSubmitting}
               className="w-1/2 rounded-sm border-border/80"
             >
               Batal
             </Button>
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
             >
-              {isEdit ? "Simpan Perubahan" : "Simpan Arsip"}
+              {isSubmitting
+                ? "Menyimpan..."
+                : isEdit
+                  ? "Simpan Perubahan"
+                  : "Simpan Arsip"}
             </Button>
           </ModalFooter>
         </form>

@@ -6,7 +6,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { STORAGE_URL } from "@/config/api";
-import { Edit, Eye, FileText, Trash2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { ArchiveX, Edit, Eye, FileEdit, FileText, Trash2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
 
@@ -17,6 +18,7 @@ export default function ArchiveRow({
   onEditClick,
   onDeleteClick,
 }) {
+  const { user } = useAuth();
   return (
     <>
       <TableRow className="hover:bg-muted/20">
@@ -70,52 +72,101 @@ export default function ArchiveRow({
           )}
         </TableCell>
         <TableCell>
-          <div className="flex items-center gap-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-                  variant="outline"
-                  onClick={() => onDetailClick(archive)}
-                >
-                  <Eye />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Lihat Detail</p>
-              </TooltipContent>
-            </Tooltip>
+          {user?.role === "admin" || archive?.event?.user_id === user?.id ? (
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                    variant="outline"
+                    onClick={() => onDetailClick(archive)}
+                  >
+                    <Eye />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Lihat Detail</p>
+                </TooltipContent>
+              </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                  variant="secondary"
-                  onClick={() => onEditClick(archive)}
-                >
-                  <Edit />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Edit Arsip</p>
-              </TooltipContent>
-            </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="secondary"
+                    onClick={() => onEditClick(archive)}
+                  >
+                    <Edit />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit Arsip</p>
+                </TooltipContent>
+              </Tooltip>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                  variant="destructive"
-                  onClick={() => onDeleteClick(archive)}
-                >
-                  <Trash2 />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Hapus Arsip</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="destructive"
+                    onClick={() => onDeleteClick(archive)}
+                  >
+                    <Trash2 />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Hapus Arsip</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                    variant="outline"
+                    onClick={() => onDetailClick(archive)}
+                  >
+                    <Eye />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Lihat Detail</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="secondary"
+                    onClick={() => onEditClick(archive)}
+                  >
+                    <FileEdit />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Ajukan Perubahan</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="destructive"
+                    onClick={() => onDeleteClick(archive)}
+                  >
+                    <ArchiveX />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Ajukan Penghapusan</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          )}
         </TableCell>
       </TableRow>
     </>

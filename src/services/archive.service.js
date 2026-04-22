@@ -1,5 +1,24 @@
 import api from "./axios";
 
+const toMultipartFormData = (data = {}) => {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (key === "file") {
+      if (value instanceof File) {
+        formData.append(key, value);
+      }
+      return;
+    }
+
+    formData.append(key, value);
+  });
+
+  return formData;
+};
+
 export function getArchives({ page = 1, all = false } = {}) {
   const params = {};
 
@@ -19,12 +38,22 @@ export function getArchiveById(id) {
 }
 
 export function createArchives(data) {
-  const res = api.post("/archives", data);
+  const payload = toMultipartFormData(data);
+  const res = api.post("/archives", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res;
 }
 
 export function updateArchives(id, data) {
-  const res = api.put(`/archives/${id}`, data);
+  const payload = toMultipartFormData(data);
+  const res = api.put(`/archives/${id}`, payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res;
 }
 

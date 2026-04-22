@@ -20,14 +20,23 @@ export default function ArchiveHeader({ onAddClick }) {
               className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
             />
           </div>
+          
           <NativeSelect className="w-full sm:w-auto" name="filter" id="filter">
-            <NativeSelectOption value="">Filter Arsip</NativeSelectOption>
+            <NativeSelectOption value="">Semua Kategori</NativeSelectOption>
             <NativeSelectOption value="Akademik">Akademik</NativeSelectOption>
             <NativeSelectOption value="Kesiswaan">Kesiswaan</NativeSelectOption>
             <NativeSelectOption value="Administrasi">
               Administrasi
             </NativeSelectOption>
             <NativeSelectOption value="Kehumasan">Kehumasan</NativeSelectOption>
+          </NativeSelect>
+
+          <NativeSelect className="w-full sm:w-auto" name="filter" id="filter">
+            <NativeSelectOption value="">Filter Arsip</NativeSelectOption>
+            <NativeSelectOption value="newest">Terbaru ke Terlama</NativeSelectOption>
+            <NativeSelectOption value="oldest">Terlama ke Terbaru</NativeSelectOption>
+            <NativeSelectOption value="title-asc">Judul A-Z</NativeSelectOption>
+            <NativeSelectOption value="title-desc">Judul Z-A</NativeSelectOption>
           </NativeSelect>
         </div>
 

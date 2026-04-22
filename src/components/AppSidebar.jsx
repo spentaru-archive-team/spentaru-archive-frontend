@@ -6,6 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
@@ -23,6 +24,7 @@ import {
   Clipboard,
   Home,
   LogOut,
+  MapPinSearch,
   Settings,
   Signpost,
   User,
@@ -33,33 +35,46 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
+
+const initMenus = [
+  { name: "Dashboard", path: "/dashboard", icon: Home },
+  {
+    name: "Manajemen",
+    icon: Archive,
+    items: [
+      { name: "Event", path: "/events" },
+      { name: "Arsip", path: "/archives" },
+      { name: "Lokasi Arsip", path: "/archive-locations" },
+      { name: "Kategori", path: "/categories" },
+      { name: "User", path: "/users" },
+    ],
+  },
+  { name: "Storage Rules", path: "/storage-rules", icon: Clipboard },
+  { name: "Lokasi Fisik", path: "/physical-locations", icon: Signpost },
+  { name: "Pengaturan", path: "/settings", icon: Settings },
+];
+
+const guruMenus = [
+  { name: "Dashboard", path: "/dashboard", icon: Home },
+  { name: "Arsip", path: "/archives", icon: Archive },
+  { name: "Lokasi Arsip", path: "/archive-locations", icon: MapPinSearch },
+  { name: "Pengaturan", path: "/settings", icon: Settings },
+];
 
 export default function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout: clearAuthState } = useAuth();
+  const { user, loading, logout: clearAuthState } = useAuth();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const menus = [
-    { name: "Dashboard", path: "/dashboard", icon: Home },
-    {
-      name: "Manajemen",
-      icon: Archive,
-      items: [
-        { name: "Event", path: "/events" },
-        { name: "Arsip", path: "/archives" },
-        { name: "Lokasi Arsip", path: "/archive-locations" },
-        { name: "Kategori", path: "/categories" },
-        { name: "User", path: "/users" },
-      ],
-    },
-    { name: "Storage Rules", path: "/storage-rules", icon: Clipboard },
-    { name: "Lokasi Fisik", path: "/physical-locations", icon: Signpost },
-    { name: "Pengaturan", path: "/settings", icon: Settings },
-  ];
+  const menus = useMemo(() => {
+    if (loading) return [];
+    if (user?.role === "guru") return guruMenus;
+    if (user?.role === "admin") return initMenus;
+    return [];
+  }, [loading, user?.role]);
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -127,6 +142,13 @@ export default function AppSidebar() {
 
         <SidebarContent className="px-3 pb-3">
           <SidebarMenu className="gap-2">
+            {loading &&
+              Array.from({ length: 5 }).map((_, idx) => (
+                <SidebarMenuItem key={`menu-skeleton-${idx}`}>
+                  <SidebarMenuSkeleton showIcon />
+                </SidebarMenuItem>
+              ))}
+
             {menus.map((menu) => {
               const Icon = menu.icon;
               const hasSubMenu = Array.isArray(menu.items);
