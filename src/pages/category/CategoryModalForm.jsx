@@ -18,8 +18,11 @@ const createInitialCategoryFormData = (category) => ({
   description: category?.description || "",
   subcategories:
     category?.subcategories?.length > 0
-      ? category.subcategories.map((subcat) => subcat?.name || "")
-      : [""],
+      ? category.subcategories.map((subcat) => ({
+        id: subcat?.id ?? null,
+        name: subcat?.name || "",
+      }))
+      : [{ id: null, name: "" }],
 });
 
 export default function CategoryModalForm({
@@ -61,7 +64,10 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
     if (error) setError(null);
     setFormData((prev) => {
       const nextSubcategories = [...prev.subcategories];
-      nextSubcategories[index] = value;
+      nextSubcategories[index] = {
+        ...nextSubcategories[index],
+        name: value,
+      };
       return { ...prev, subcategories: nextSubcategories };
     });
   };
@@ -69,14 +75,14 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
   const handleAddSubcategory = () => {
     setFormData((prev) => ({
       ...prev,
-      subcategories: [...prev.subcategories, ""],
+      subcategories: [...prev.subcategories, { id: null, name: "" }],
     }));
   };
 
   const handleRemoveSubcategory = (index) => {
     setFormData((prev) => {
       if (prev.subcategories.length === 1) {
-        return { ...prev, subcategories: [""] };
+        return { ...prev, subcategories: [{ id: null, name: "" }] };
       }
       return {
         ...prev,
@@ -87,8 +93,12 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
 
   const buildPayload = () => {
     const cleanedSubcategories = formData.subcategories
-      .map((item) => item.trim())
-      .filter(Boolean);
+      .map((item) => ({
+        id: item.id,
+        name: item.name.trim(),
+      }))
+      .filter((item) => Boolean(item.name))
+      .map((item) => (item.id ? { id: item.id, name: item.name } : { name: item.name }));
 
     return {
       name: formData.name,
@@ -141,6 +151,7 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(buildPayload());
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -236,10 +247,13 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
 
               <div className="space-y-2">
                 {formData.subcategories.map((subcategory, index) => (
-                  <div key={`subcat-${index}`} className="flex items-center gap-2">
+                  <div
+                    key={subcategory.id ? `subcat-${subcategory.id}` : `subcat-new-${index}`}
+                    className="flex items-center gap-2"
+                  >
                     <Input
                       placeholder={`Subkategori ${index + 1}`}
-                      value={subcategory}
+                      value={subcategory.name}
                       onChange={(e) =>
                         handleSubcategoryChange(index, e.target.value)
                       }
