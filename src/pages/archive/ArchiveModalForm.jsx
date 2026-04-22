@@ -39,12 +39,11 @@ const createInitialArchiveFormData = (archive) => ({
 });
 
 export default function ArchiveModalForm({ isOpen, onClose, archive = null, fetchArchives }) {
-  if (!isOpen) return null;
-
   const formKey = archive?.id ? `archive-edit-${archive.id}` : "archive-create";
   return (
     <ArchiveModalFormContent
       key={formKey}
+      isOpen={isOpen}
       onClose={onClose}
       archive={archive}
       fetchArchives={fetchArchives}
@@ -52,7 +51,7 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null, fetc
   );
 }
 
-function ArchiveModalFormContent({ onClose, archive = null, fetchArchives }) {
+function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchives }) {
   const isEdit = !!archive;
   const location = useLocation();
   const navigate = useNavigate();
@@ -203,7 +202,7 @@ function ArchiveModalFormContent({ onClose, archive = null, fetchArchives }) {
   };
 
   return (
-    <Modal open={true} onOpenChange={onClose}>
+    <Modal open={isOpen} onOpenChange={onClose}>
       <ModalContent className="max-w-xl">
         <ModalHeader>
           <ModalTitle className="flex items-center gap-2">
