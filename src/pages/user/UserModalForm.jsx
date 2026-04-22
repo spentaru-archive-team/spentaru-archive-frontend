@@ -13,7 +13,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import { PlusCircle, Save } from "lucide-react";
+import { Eye, EyeOff, PlusCircle, Save } from "lucide-react";
 import { createUsers, updateUsers } from "@/services/user.service";
 import { useLocation, useNavigate } from "react-router";
 
@@ -22,7 +22,7 @@ const createInitialUserFormData = (user) => ({
   subject: user?.subject || "",
   position: user?.position || "",
   username: user?.username || "",
-  password: user?.password || "",
+  password: user?.password || "Password123",
   role: user?.role || "guru",
 });
 
@@ -49,11 +49,16 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
   const isEdit = !!user;
   const location = useLocation();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState(() =>
     createInitialUserFormData(user),
   );
+
+  const handleViewPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -162,7 +167,9 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
                 className="h-10 shadow-none py-0"
               />
               {error?.fields?.name && (
-                <p className="mt-1 text-xs text-destructive">{error.fields.name[0]}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.name[0]}
+                </p>
               )}
             </div>
 
@@ -231,18 +238,34 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-semibold">
-                  Password <span className="text-red-500">*</span>
+                  {isEdit ? "Password Baru" : "Password (Default: Password123)"}
+                  {!isEdit && <span className="text-red-500">*</span>}
                 </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Masukkan password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required={!isEdit}
-                  className="h-10 shadow-none py-0"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukkan password"
+                    value={isEdit ? "" : "Password123"}
+                    onChange={handleChange}
+                    required={!isEdit}
+                    className="h-10 shadow-none py-0"
+                  />
+                  {showPassword ? (
+                    <Eye
+                      size={18}
+                      onClick={handleViewPassword}
+                      className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                    />
+                  ) : (
+                    <EyeOff
+                      size={18}
+                      onClick={handleViewPassword}
+                      className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                    />
+                  )}
+                </div>
                 {error?.fields?.password && (
                   <p className="mt-1 text-xs text-destructive">
                     {error.fields.password[0]}
