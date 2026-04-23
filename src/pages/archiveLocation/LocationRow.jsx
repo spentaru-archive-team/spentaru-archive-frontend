@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { STORAGE_URL } from "@/config/api";
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
@@ -15,9 +16,9 @@ export default function LocationRow({ location, onEditClick, onDeleteClick }) {
           {location.id}
         </TableCell>
         <TableCell>
-          <p className="font-semibold text-foreground whitespace-normal">
+          <a href={`${STORAGE_URL}${location?.archive?.files?.file_url}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground whitespace-normal hover:underline">
             {archiveTitle}
-          </p>
+          </a>
         </TableCell>
         <TableCell className=" text-foreground">
           {cabinetName}

@@ -116,18 +116,10 @@ export default function LocationPage() {
     }
   };
 
-  // const { data, isLoading, error, refetch } = useQuery({
-  //   queryKey: ["archive-locations", currentPage],
-  //   queryFn: fetchLocations,
-  // });
-  const isLoading = false;
-  const error = null;
-  const data = {
-    data: locations,
-    last_page: 1,
-    total: locations.length,
-    per_page: locations.length,
-  };
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["archive-locations", currentPage],
+    queryFn: fetchLocations,
+  });
 
   return (
     <section className="space-y-6">

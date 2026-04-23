@@ -19,6 +19,11 @@ const toMultipartFormData = (data = {}) => {
   return formData;
 };
 
+export function getArchivesWithoutLocation() {
+  const res = api.get("/archives/without-location");
+  return res;
+}
+
 export function getArchives({ page = 1, all = false } = {}) {
   const params = {};
 

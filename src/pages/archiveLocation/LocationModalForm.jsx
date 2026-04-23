@@ -14,7 +14,7 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { PlusCircle, Save } from "lucide-react";
-import { getArchives } from "@/services/archive.service";
+import { getArchives, getArchivesWithoutLocation } from "@/services/archive.service";
 import { getCabinets } from "@/services/physicalLocation.service";
 import {
   createArchiveLocations,
@@ -74,7 +74,7 @@ function LocationModalFormContent({ onClose, locationData = null, fetchLocations
       setIsLoadingMeta(true);
       try {
         const [archiveRes, cabinetRes] = await Promise.all([
-          getArchives({ all: true }),
+          getArchivesWithoutLocation(),
           getCabinets(),
         ]);
 
