@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,43 +6,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getDashboardData } from "@/services/dashboard.service";
 import {
   Archive,
-  ArrowUpRight,
   BookOpenText,
   Clock3,
   FolderKanban,
-  ShieldCheck,
   UserRound,
 } from "lucide-react";
-import React from "react";
-
-const stats = [
-  {
-    title: "Total Arsip",
-    value: "1.248",
-    detail: "Dokumen aktif yang sudah terdigitalisasi",
-    icon: Archive,
-  },
-  {
-    title: "Kategori Arsip",
-    value: "13",
-    detail: "Pembagian map dan jenis dokumen sekolah",
-    icon: FolderKanban,
-  },
-  {
-    title: "Lemari Penyimpanan",
-    value: "14",
-    detail: "Lemari fisik yang terhubung dengan kode arsip",
-    icon: BookOpenText,
-  },
-  {
-    title: "Pengguna Aktif",
-    value: "50",
-    detail: "Guru dan admin yang memiliki akses sistem",
-    icon: UserRound,
-  },
-];
+import React, { useEffect, useState } from "react";
+import DashboardSkeleton from "./DashboardSkeleton";
 
 const recentActivities = [
   {
@@ -82,9 +54,68 @@ const recentNotifications = [
 ];
 
 export default function Dashboard() {
+  const [loading, setLoading] = useState(true);
+  const [archiveTotal, setArchiveTotal] = useState(0);
+  const [categoryTotal, setCategoryTotal] = useState(0);
+  const [cabinetTotal, setCabinetTotal] = useState(0);
+  const [userTotal, setUserTotal] = useState(0);
+
+  const stats = [
+    {
+      title: "Total Arsip",
+      value: archiveTotal,
+      detail: "Dokumen aktif yang sudah terdigitalisasi",
+      icon: Archive,
+    },
+    {
+      title: "Kategori Arsip",
+      value: categoryTotal,
+      detail: "Pembagian map dan jenis dokumen sekolah",
+      icon: FolderKanban,
+    },
+    {
+      title: "Lemari Penyimpanan",
+      value: cabinetTotal,
+      detail: "Lemari fisik yang terhubung dengan kode arsip",
+      icon: BookOpenText,
+    },
+    {
+      title: "Total Pengguna",
+      value: userTotal,
+      detail: "Guru dan admin yang memiliki akses sistem",
+      icon: UserRound,
+    },
+  ];
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        const res = await getDashboardData();
+        setArchiveTotal(res.data.data.archive_total);
+        setCategoryTotal(res.data.data.archive_category_total);
+        setCabinetTotal(res.data.data.archive_subcategory_total);
+        setUserTotal(res.data.data.user_total);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <section className="space-y-6">
-      <Header title="Dashboard Pengelolaan Arsip" desc="Monitoring arsip dan aktivitas pengelolaan dalam satu tempat." />
+      <Header
+        title="Dashboard Pengelolaan Arsip"
+        desc="Monitoring arsip dan aktivitas pengelolaan dalam satu tempat."
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => {
