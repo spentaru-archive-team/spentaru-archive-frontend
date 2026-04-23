@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/services/auth.service";
 import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
@@ -19,7 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, login: syncLoginState } = useAuth();
+  const { user, loading: authLoading, login: syncLoginState } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasNavigatedAfterLogin, setHasNavigatedAfterLogin] = useState(false);
@@ -49,9 +48,8 @@ export default function Login() {
     setError(null);
 
     try {
-      const res = await login(form);
+      const res = await syncLoginState(form);
       if (res.data.status == "success") {
-        syncLoginState(res.data.data);
         setHasNavigatedAfterLogin(true);
         setLocalPopup({
           title: "Login berhasil",
@@ -82,7 +80,7 @@ export default function Login() {
     setShowPassword((prev) => !prev);
   };
 
-  if (user && !loading && !hasNavigatedAfterLogin) {
+  if (user && !authLoading && !loading && !hasNavigatedAfterLogin) {
     return (
       <Navigate to="/dashboard" replace />
     )

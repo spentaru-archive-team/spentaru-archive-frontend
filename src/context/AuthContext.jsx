@@ -1,69 +1,68 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
-import { me } from "@/services/auth.service";
+import { csrf, login as loginRequest, logout as logoutRequest, me } from "@/services/auth.service";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
-
-const extractUserFromPayload = (payload) => {
-  if (!payload || typeof payload !== "object") return null;
-
-  // Login response can be { token, user } or just an auth payload.
-  if (payload.user && typeof payload.user === "object") {
-    return payload.user;
-  }
-
-  return payload;
-};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await me();
-        if (res.data.status == 'success') {
-          setUser(res.data.data);
-        }
-      } catch (err) {
-        console.log(err);
-        if (err?.response?.status === 401) {
-          // Token is invalid or expired
-          localStorage.removeItem("token");
-          setUser(null);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    verifyToken();
-  }, []);
-
-  const login = (data) => {
-    if (data?.token) {
-      localStorage.setItem("token", data.token);
+  const fetchUser = async ({ silent = false } = {}) => {
+    if (!silent) {
+      setLoading(true);
     }
 
-    const nextUser = extractUserFromPayload(data);
-    setUser(nextUser);
-    setLoading(false);
+    try {
+      const res = await me();
+      const nextUser = res?.data?.data ?? res?.data ?? null;
+      setUser(nextUser);
+      return nextUser;
+
+    } catch (err) {
+      setUser(null);
+      return null;
+      
+    } finally {
+      if (!silent) {
+        setLoading(false);
+      }
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
+  useEffect(() => {
+    fetchUser().catch(() => null);
+  }, []);
+
+  const login = async (credentials) => {
+    await csrf();
+    const response = await loginRequest(credentials);
+    await fetchUser({ silent: true }).catch(() => null);
+
+    return response;
+  };
+
+  const logout = async () => {
+    try {
+      await logoutRequest();
+    } catch {
+      // Keep local state clean even if server session is already invalid.
+    }
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        isAuthenticated: !!user,
+        login,
+        logout,
+        refreshUser: fetchUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,16 +1,17 @@
-import api from "./axios";
+import api, { refreshCsrfCookie } from "./axios";
 
 export function login(data) {
-  const res = api.post("/auth/login", data);
-  return res;
+  return api.post("/auth/login", data);
 }
 
 export function me() {
-  const res = api.get("/auth/me");
-  return res;
+  return api.get("/auth/me");
 }
 
 export function logout() {
-  const res = api.post("/auth/logout");
-  return res;
+  return api.post("/auth/logout");
+}
+
+export function csrf() {
+  return refreshCsrfCookie();
 }

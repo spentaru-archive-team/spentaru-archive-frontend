@@ -13,7 +13,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Confirm from "@/components/Confirm";
-import { logout } from "@/services/auth.service";
 import { useAuth } from "@/hooks/use-auth";
 import Logo from "@/assets/logo.png";
 
@@ -81,12 +80,10 @@ export default function AppSidebar() {
     setIsLoggingOut(true);
 
     try {
-      await logout();
+      await clearAuthState();
     } catch (err) {
       console.log(err.response);
     }
-
-    clearAuthState();
     setConfirmOpen(false);
 
     setTimeout(() => {

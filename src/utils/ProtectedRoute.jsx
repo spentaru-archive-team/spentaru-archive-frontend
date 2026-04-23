@@ -4,11 +4,11 @@ import React from "react";
 import { Navigate, Outlet } from "react-router";
 
 export default function ProtectedRoute() {
-  const { user, loading } = useAuth();
+  const { loading, isAuthenticated } = useAuth();
 
   if (loading) return <FullScreenLoader />;
 
-  if (!user) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
