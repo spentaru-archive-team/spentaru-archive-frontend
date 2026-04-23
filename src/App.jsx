@@ -8,7 +8,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Archive from "./pages/archive/ArchivePage";
 import Category from "./pages/category/CategoryPage";
-import Location from "./pages/location/LocationPage";
+import Location from "./pages/archiveLocation/LocationPage";
 import Event from "./pages/event/EventPage";
 import User from "./pages/user/UserPage";
 import StorageRule from "./pages/storageRule/StorageRulePage";

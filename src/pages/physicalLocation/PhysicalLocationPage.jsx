@@ -1,136 +1,75 @@
-import Pagination from "@/components/Pagination";
 import React, { useState } from "react";
 import PhysicalLocationHeader from "./PhysicalLocationHeader";
 import PhysicalLocationCard from "./PhysicalLocationCard";
-import { getCabinets } from "@/services/physicalLocation.service";
+import {
+  deleteCabinets,
+  getCabinets,
+} from "@/services/physicalLocation.service";
 import { useQuery } from "@tanstack/react-query";
 import PhysicalLocationSkeleton from "./PhysicalLocationSkeleton";
-
-const physicalLocations = [
-  {
-    id: "1",
-    name: "Lemari 1",
-    racks: [
-      {
-        id: "1",
-        rack_number: 1,
-        capacity: 20,
-        capacity_used: 10,
-      },
-      {
-        id: "2",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 5,
-      },
-      {
-        id: "3",
-        rack_number: 3,
-        capacity: 20,
-        capacity_used: 15,
-      },
-      {
-        id: "4",
-        rack_number: 4,
-        capacity: 20,
-        capacity_used: 0,
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Lemari 2",
-    racks: [
-      {
-        id: "5",
-        rack_number: 1,
-        capacity: 20,
-        capacity_used: 20,
-      },
-      {
-        id: "6",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 10,
-      },
-      {
-        id: "7",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 10,
-      },
-      {
-        id: "8",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 10,
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Lemari 3",
-    racks: [
-      {
-        id: "9",
-        rack_number: 1,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "10",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "11",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "12",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "Lemari 4",
-    racks: [
-      {
-        id: "13",
-        rack_number: 1,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "14",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "15",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-      {
-        id: "16",
-        rack_number: 2,
-        capacity: 20,
-        capacity_used: 0,
-      },
-    ],
-  },
-];
+import Confirm from "@/components/Confirm";
+import PhysicalLocationModalForm from "./PhysicalLocationModalForm";
+import { useLocation, useNavigate } from "react-router";
 
 export default function PhysicalLocationPage() {
-  const fetchPhysicalLocations = async (page) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [selectedCabinet, setSelectedCabinet] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [selectedDeleteCabinet, setSelectedDeleteCabinet] = useState(null);
+  const [isDeletingCabinet, setIsDeletingCabinet] = useState(false);
+
+  const handleAddClick = () => {
+    setSelectedCabinet(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditClick = (cabinet) => {
+    setSelectedCabinet(cabinet);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteClick = (cabinet) => {
+    setSelectedDeleteCabinet(cabinet);
+    setConfirmDelete(true);
+  };
+
+  const handleCloseDeleteConfirm = () => {
+    if (isDeletingCabinet) return;
+    setConfirmDelete(false);
+    setSelectedDeleteCabinet(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedDeleteCabinet) return;
+
+    setIsDeletingCabinet(true);
+    try {
+      const res = await deleteCabinets(selectedDeleteCabinet.id);
+      if (res.data.status === "success") {
+        navigate(location.pathname, {
+          state: {
+            popup: {
+              title: "Lokasi fisik berhasil dihapus.",
+              type: "success",
+              duration: 3000,
+            },
+          },
+        });
+      }
+      await refetch();
+      setConfirmDelete(false);
+      setSelectedDeleteCabinet(null);
+    } catch (error) {
+      console.error("Error deleting cabinet:", error.response);
+    } finally {
+      setIsDeletingCabinet(false);
+    }
+  };
+
+  const fetchPhysicalLocations = async () => {
     try {
       const res = await getCabinets();
       return res.data.data;
@@ -147,7 +86,18 @@ export default function PhysicalLocationPage() {
 
   return (
     <section className="space-y-6">
-      <PhysicalLocationHeader />
+      <Confirm
+        open={confirmDelete}
+        title="Konfirmasi Hapus Lokasi Fisik"
+        description={`Apakah Anda yakin ingin menghapus lemari "${selectedDeleteCabinet?.name || "ini"}"? Tindakan ini tidak dapat dibatalkan.`}
+        confirmLabel="Ya, Hapus"
+        cancelLabel="Batalkan"
+        loading={isDeletingCabinet}
+        onConfirm={handleDeleteConfirm}
+        onClose={handleCloseDeleteConfirm}
+      />
+
+      <PhysicalLocationHeader onAddClick={handleAddClick} />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
           Array(8).fill(0).map((_, i) => <PhysicalLocationSkeleton key={i} />)
@@ -155,10 +105,22 @@ export default function PhysicalLocationPage() {
           <div className="text-center text-red-500">Error: {error.message}</div>
         ) : (
           data?.map((cabinet) => (
-            <PhysicalLocationCard key={cabinet.id} cabinet={cabinet} />
+            <PhysicalLocationCard
+              key={cabinet.id}
+              cabinet={cabinet}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteClick}
+            />
           ))
         )}
       </div>
+
+      <PhysicalLocationModalForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        cabinet={selectedCabinet}
+        fetchCabinets={refetch}
+      />
     </section>
   );
 }

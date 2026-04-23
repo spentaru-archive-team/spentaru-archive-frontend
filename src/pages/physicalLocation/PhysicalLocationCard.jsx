@@ -8,7 +8,13 @@ import {
 import { Edit, Trash2, Archive, Layers } from "lucide-react";
 import React from "react";
 
-export default function PhysicalLocationCard({ cabinet }) {
+export default function PhysicalLocationCard({
+  cabinet,
+  onEditClick,
+  onDeleteClick,
+}) {
+  const racks = cabinet?.racks || [];
+
   return (
     <Card className="py-0 rounded-sm border border-border/80 bg-white shadow-none ring-0 overflow-hidden transition-all hover:border-primary/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 pb-3 border-b border-border/50 bg-muted/10">
@@ -23,11 +29,11 @@ export default function PhysicalLocationCard({ cabinet }) {
       </CardHeader>
 
       <CardContent className="p-4 space-y-4">
-        {cabinet.racks.length > 0 ? (
+        {racks.length > 0 ? (
           <div className="space-y-3">
-            {cabinet.racks.map((rack) => {
+            {racks.map((rack) => {
               const usagePercent = Math.round(
-                (rack.used_capacity / rack.capacity) * 100,
+                ((rack.used_capacity || 0) / (rack.capacity || 1)) * 100,
               );
               const isFull = usagePercent >= 100;
               const isHigh = usagePercent >= 80;
@@ -83,6 +89,8 @@ export default function PhysicalLocationCard({ cabinet }) {
                 className="w-1/2 border-none py-0"
                 variant="secondary"
                 size="sm"
+                type="button"
+                onClick={() => onEditClick?.(cabinet)}
               >
                 <Edit size={16} />
                 
@@ -100,6 +108,8 @@ export default function PhysicalLocationCard({ cabinet }) {
                 className="w-1/2 border-none py-0"
                 variant="destructive"
                 size="sm"
+                type="button"
+                onClick={() => onDeleteClick?.(cabinet)}
               >
                 <Trash2 size={16} />
                 
