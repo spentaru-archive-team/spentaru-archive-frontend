@@ -8,6 +8,7 @@ import EventTableSkeleton from "./EventTableSkeleton";
 import EventModalForm from "./EventModalForm";
 import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
+import EventModalDetail from "./EventModalDetail";
 
 const statusStyles = {
   ongoing: "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -22,7 +23,9 @@ export default function EventPage() {
   const navigate = useNavigate();
 
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedDetailEvent, setSelectedDetailEvent] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteEvent, setSelectedDeleteEvent] = useState(null);
@@ -36,6 +39,11 @@ export default function EventPage() {
   const handleEditClick = (event) => {
     setSelectedEvent(event);
     setIsFormOpen(true);
+  };
+
+  const handleDetailClick = (event) => {
+    setSelectedDetailEvent(event);
+    setIsDetailOpen(true);
   };
 
   const handleDeleteClick = (event) => {
@@ -116,6 +124,7 @@ export default function EventPage() {
         <EventTable
           events={data}
           statusStyles={statusStyles}
+          onDetailClick={handleDetailClick}
           onEditClick={handleEditClick}
           onDeleteClick={handleDeleteClick}
         />
@@ -134,6 +143,15 @@ export default function EventPage() {
         onClose={() => setIsFormOpen(false)}
         event={selectedEvent}
         fetchEvents={refetch}
+      />
+
+      <EventModalDetail
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setSelectedDetailEvent(null);
+        }}
+        event={selectedDetailEvent}
       />
     </section>
   );

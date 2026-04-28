@@ -8,17 +8,20 @@ export default function EventRow({
   index,
   event,
   statusStyles,
+  onDetailClick,
   onEditClick,
   onDeleteClick,
 }) {
   const eventDate = new Date(event.date);
   const option = { year: "numeric", month: "long", day: "numeric" };
   const formattedDate = eventDate.toLocaleDateString("id-ID", option);
-  
+
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{index + 1}</TableCell>
-      <TableCell className='text-foreground font-semibold'>{event.title}</TableCell>
+      <TableCell className="text-foreground font-semibold">
+        {event.title}
+      </TableCell>
       <TableCell className="text-foreground max-w-24 whitespace-pre-wrap">
         {event.user.name}
       </TableCell>
@@ -60,6 +63,8 @@ export default function EventRow({
           <Button
             className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
             variant="outline"
+            onClick={() => onDetailClick?.(event)}
+            type="button"
           >
             <Eye />
           </Button>

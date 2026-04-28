@@ -84,6 +84,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
   };
 
   const handleCreate = async () => {
+    console.log(formData);
     try {
       const res = await createEvents(formData);
       if (res.data.status === "success") {

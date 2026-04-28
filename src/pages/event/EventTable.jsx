@@ -1,10 +1,17 @@
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 import EventRow from "./EventRow";
 
 export default function EventTable({
   events,
   statusStyles,
+  onDetailClick,
   onEditClick,
   onDeleteClick,
 }) {
@@ -30,6 +37,7 @@ export default function EventTable({
               key={event.id}
               event={event}
               statusStyles={statusStyles}
+              onDetailClick={onDetailClick}
               onEditClick={onEditClick}
               onDeleteClick={onDeleteClick}
             />
