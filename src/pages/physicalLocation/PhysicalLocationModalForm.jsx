@@ -276,6 +276,17 @@ function PhysicalLocationModalFormContent({
               </div>
 
               <div className="space-y-2">
+                <div className="grid grid-cols-3">
+                  <p className="text-sm text-muted-foreground">
+                    No Rak
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Kapasitas
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Terpakai
+                  </p>
+                </div>
                 {formData.racks.map((rack, index) => (
                   <div
                     key={rack.id ? `rack-${rack.id}` : `rack-new-${index}`}
