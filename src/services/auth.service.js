@@ -15,3 +15,7 @@ export function logout() {
 export function csrf() {
   return refreshCsrfCookie();
 }
+
+export function updateProfile(data) {
+  return api.put("/users/me", data);
+}

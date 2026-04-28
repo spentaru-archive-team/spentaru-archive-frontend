@@ -10,17 +10,61 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
+import { updateProfile } from "@/services/auth.service";
 import { BadgeCheck, ShieldCheck, UserRound } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function Settings() {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, refreshUser } = useAuth();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState({
+    fields: null,
+    general: null,
+  });
+  const [formData, setFormData] = useState({
+    name: user?.name || "",
+    username: user?.username || "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setIsUpdating(true);
+      setError({ fields: null, general: null });
+      const res = await updateProfile(formData);
+
+      if (res.data.status === "success") {
+        await refreshUser();
+
+        navigate(location.pathname, {
+          state: {
+            popup: {
+              title: "Profil berhasil diperbarui",
+              description: "Perubahan profil Anda telah disimpan.",
+              type: "success",
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error updating user:", error.response);
+      setError({
+        fields: error.response?.data?.errors || null,
+        general: !error.response?.data?.errors
+          ? "Terjadi kesalahan saat memperbarui user."
+          : null,
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <section className="space-y-5">
-      <Header
-        title="Pengaturan Profil Akun"
-      />
+      <Header title="Pengaturan Profil Akun" />
 
       <div className="grid gap-4 xl:grid-cols-[1fr_0.85fr]">
         <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
@@ -40,7 +84,7 @@ export default function Settings() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4 px-5 py-5">
-            <form action="" className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-1.5">
                 <Label
                   htmlFor="name"
@@ -52,8 +96,16 @@ export default function Settings() {
                   type="text"
                   id="name"
                   placeholder="Masukkan nama lengkap Anda"
-                  defaultValue={user?.name}
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                 />
+                {error.fields?.name && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {error.fields.name[0]}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label
@@ -66,8 +118,16 @@ export default function Settings() {
                   type="text"
                   id="username"
                   placeholder="Ubah username Anda"
-                  defaultValue={user?.username}
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
                 />
+                {error.fields?.username && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {error.fields.username[0]}
+                  </p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label
@@ -80,11 +140,24 @@ export default function Settings() {
                   type="password"
                   id="password"
                   placeholder="Masukkan password Anda"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
+                {error.fields?.password && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {error.fields.password[0]}
+                  </p>
+                )}
               </div>
               <div className="pt-1">
-                <Button className="w-fit px-5" type="submit">
-                  Simpan Perubahan
+                <Button
+                  className="w-fit px-5"
+                  type="submit"
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? "Menyimpan..." : "Simpan Perubahan"}
                 </Button>
               </div>
             </form>
