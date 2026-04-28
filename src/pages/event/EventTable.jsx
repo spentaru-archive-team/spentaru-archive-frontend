@@ -24,8 +24,9 @@ export default function EventTable({
         </TableHeader>
 
         <TableBody className="bg-white">
-          {events?.data?.map((event) => (
+          {events?.data?.map((event, index) => (
             <EventRow
+              index={index}
               key={event.id}
               event={event}
               statusStyles={statusStyles}

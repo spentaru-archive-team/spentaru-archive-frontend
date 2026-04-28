@@ -5,6 +5,7 @@ import React from "react";
 import { Link } from "react-router";
 
 export default function EventRow({
+  index,
   event,
   statusStyles,
   onEditClick,
@@ -16,7 +17,7 @@ export default function EventRow({
   
   return (
     <TableRow className="hover:bg-muted/20">
-      <TableCell className="font-medium text-foreground">{event.id}</TableCell>
+      <TableCell className="font-medium text-foreground">{index + 1}</TableCell>
       <TableCell className='text-foreground font-semibold'>{event.title}</TableCell>
       <TableCell className="text-foreground max-w-24 whitespace-pre-wrap">
         {event.user.name}
