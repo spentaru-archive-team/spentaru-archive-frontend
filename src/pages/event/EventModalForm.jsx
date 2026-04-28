@@ -230,7 +230,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
                   id="date"
                   name="date"
                   type="date"
-                  value={formData.date}
+                  value={formData.date.split("T")[0]} // Ambil hanya bagian tanggal
                   onChange={handleChange}
                   required
                   className="h-10 py-0 shadow-none"
@@ -274,7 +274,9 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
                 required
                 className="w-full"
               >
-                <NativeSelectOption value="ongoing">Berlangsung</NativeSelectOption>
+                <NativeSelectOption value="ongoing">
+                  Berlangsung
+                </NativeSelectOption>
                 <NativeSelectOption value="done">Selesai</NativeSelectOption>
               </NativeSelect>
               {error?.fields?.status && (
