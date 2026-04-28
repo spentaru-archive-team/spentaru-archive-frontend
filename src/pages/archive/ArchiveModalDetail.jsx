@@ -8,7 +8,7 @@ import {
 } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { STORAGE_URL } from "@/config/api";
-import { FileText, Calendar, Tag, FolderTree, Info } from "lucide-react";
+import { FileText, Calendar, Tag, FolderTree, Info, User } from "lucide-react";
 
 export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
   if (!archive) return null;
@@ -120,7 +120,7 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
 
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-sm bg-primary/10 text-primary">
-                  <Info size={18} />
+                  <Calendar size={18} />
                 </div>
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">
@@ -139,6 +139,22 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                         ? "Selesai"
                         : "-"}
                   </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-sm bg-primary/10 text-primary">
+                  <User size={18} />
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Diupload Oleh
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {archive?.uploader?.name || "-"}
+                  </p>
                 </div>
               </div>
             </div>
