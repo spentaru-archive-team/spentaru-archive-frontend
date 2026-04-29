@@ -28,7 +28,7 @@ const ModalContent = React.forwardRef(({ className, children, ...props }, ref) =
       ref={ref}
       aria-describedby={props["aria-describedby"] || undefined}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-0 shadow-lg rounded-sm",
+        "fixed left-[50%] top-0 md:top-[50%] z-50 grid w-full h-full md:h-auto max-w-lg translate-x-[-50%] md:translate-y-[-50%] gap-4 border bg-background p-0 shadow-lg rounded-sm overflow-scroll md:overflow-auto",
         className
       )}
       {...props}
@@ -53,7 +53,7 @@ ModalHeader.displayName = "ModalHeader"
 
 const ModalFooter = ({ className, ...props }) => (
   <div
-    className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-6 border-t bg-muted/20", className)}
+    className={cn("flex gap-1 md:gap-0 sm:justify-end sm:space-x-2 p-6 border-t bg-muted/20", className)}
     {...props}
   />
 )
