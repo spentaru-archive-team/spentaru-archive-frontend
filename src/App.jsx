@@ -14,6 +14,7 @@ import User from "./pages/user/UserPage";
 import StorageRule from "./pages/storageRule/StorageRulePage";
 import Cabinet from "./pages/cabinet/CabinetPage";
 import Settings from "./pages/Settings";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/storage-rules" element={<StorageRule />} />
                 <Route path="/cabinets" element={<Cabinet />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Route>
           </Routes>
