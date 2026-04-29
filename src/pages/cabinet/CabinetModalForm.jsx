@@ -192,8 +192,8 @@ function CabinetModalFormContent({ onClose, cabinet = null, fetchCabinets }) {
           state: {
             popup: {
               title: isEdit
-                ? "Lokasi fisik berhasil diperbarui."
-                : "Lokasi fisik berhasil ditambahkan.",
+                ? "Lemari berhasil diperbarui."
+                : "Lemari berhasil ditambahkan.",
               type: "success",
               duration: 3000,
             },

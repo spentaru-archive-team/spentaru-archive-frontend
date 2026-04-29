@@ -49,7 +49,7 @@ export default function CabinetPage() {
         navigate(location.pathname, {
           state: {
             popup: {
-              title: "Lokasi fisik berhasil dihapus.",
+              title: "Lemari berhasil dihapus.",
               type: "success",
               duration: 3000,
             },
