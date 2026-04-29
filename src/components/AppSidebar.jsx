@@ -94,7 +94,7 @@ export default function AppSidebar() {
             title: "Logout berhasil",
             description: "Sesi Anda telah diakhiri dengan aman.",
             type: "logout",
-            duration: 3000,
+            duration: 1500,
           },
         },
       });
