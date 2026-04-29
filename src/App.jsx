@@ -12,7 +12,7 @@ import Location from "./pages/archiveLocation/LocationPage";
 import Event from "./pages/event/EventPage";
 import User from "./pages/user/UserPage";
 import StorageRule from "./pages/storageRule/StorageRulePage";
-import PhysicalLocation from "./pages/physicalLocation/PhysicalLocationPage";
+import Cabinet from "./pages/cabinet/CabinetPage";
 import Settings from "./pages/Settings";
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
                 <Route path="/archive-locations" element={<Location />} />
                 <Route path="/users" element={<User />} />
                 <Route path="/storage-rules" element={<StorageRule />} />
-                <Route path="/physical-locations" element={<PhysicalLocation />} />
+                <Route path="/cabinets" element={<Cabinet />} />
                 <Route path="/settings" element={<Settings />} />
               </Route>
             </Route>

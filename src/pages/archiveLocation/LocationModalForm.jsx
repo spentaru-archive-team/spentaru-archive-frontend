@@ -14,8 +14,11 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { PlusCircle, Save } from "lucide-react";
-import { getArchives, getArchivesWithoutLocation } from "@/services/archive.service";
-import { getCabinets } from "@/services/physicalLocation.service";
+import {
+  getArchives,
+  getArchivesWithoutLocation,
+} from "@/services/archive.service";
+import { getCabinets } from "@/services/cabinet.service";
 import {
   createArchiveLocations,
   updateArchiveLocations,
@@ -29,7 +32,9 @@ const createInitialLocationFormData = (location) => ({
   cabinet_id: location?.cabinet_id
     ? String(location.cabinet_id)
     : String(location?.cabinet?.id || ""),
-  rack_id: location?.rack_id ? String(location.rack_id) : String(location?.rack?.id || ""),
+  rack_id: location?.rack_id
+    ? String(location.rack_id)
+    : String(location?.rack?.id || ""),
   slot_number: location?.slot_number ? String(location.slot_number) : "",
   label_code: location?.label_code || "",
   notes: location?.notes || "",
@@ -56,7 +61,11 @@ export default function LocationModalForm({
   );
 }
 
-function LocationModalFormContent({ onClose, locationData = null, fetchLocations }) {
+function LocationModalFormContent({
+  onClose,
+  locationData = null,
+  fetchLocations,
+}) {
   const isEdit = !!locationData;
   const routerLocation = useLocation();
   const navigate = useNavigate();
@@ -101,7 +110,8 @@ function LocationModalFormContent({ onClose, locationData = null, fetchLocations
   }, []);
 
   const selectedCabinet = useMemo(
-    () => cabinets.find((cabinet) => String(cabinet.id) === formData.cabinet_id),
+    () =>
+      cabinets.find((cabinet) => String(cabinet.id) === formData.cabinet_id),
     [cabinets, formData.cabinet_id],
   );
 
@@ -222,7 +232,10 @@ function LocationModalFormContent({ onClose, locationData = null, fetchLocations
                   {isLoadingMeta ? "Memuat data arsip..." : "Pilih arsip"}
                 </NativeSelectOption>
                 {archives.map((archive) => (
-                  <NativeSelectOption key={archive.id} value={String(archive.id)}>
+                  <NativeSelectOption
+                    key={archive.id}
+                    value={String(archive.id)}
+                  >
                     {archive.title}
                   </NativeSelectOption>
                 ))}
@@ -252,7 +265,10 @@ function LocationModalFormContent({ onClose, locationData = null, fetchLocations
                     {isLoadingMeta ? "Memuat data lemari..." : "Pilih lemari"}
                   </NativeSelectOption>
                   {cabinets.map((cabinet) => (
-                    <NativeSelectOption key={cabinet.id} value={String(cabinet.id)}>
+                    <NativeSelectOption
+                      key={cabinet.id}
+                      value={String(cabinet.id)}
+                    >
                       {cabinet.name}
                     </NativeSelectOption>
                   ))}

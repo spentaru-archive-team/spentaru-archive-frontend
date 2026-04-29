@@ -25,7 +25,7 @@ import {
   LogOut,
   MapPinSearch,
   Settings,
-  Signpost,
+  ShelvingUnit,
   User,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -51,7 +51,7 @@ const initMenus = [
     ],
   },
   { name: "Storage Rules", path: "/storage-rules", icon: Clipboard },
-  { name: "Lokasi Fisik", path: "/physical-locations", icon: Signpost },
+  { name: "Lemari", path: "/cabinets", icon: ShelvingUnit },
   { name: "Pengaturan", path: "/settings", icon: Settings },
 ];
 

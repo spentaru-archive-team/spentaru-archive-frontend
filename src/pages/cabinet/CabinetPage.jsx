@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import PhysicalLocationHeader from "./PhysicalLocationHeader";
-import PhysicalLocationCard from "./PhysicalLocationCard";
-import {
-  deleteCabinets,
-  getCabinets,
-} from "@/services/physicalLocation.service";
+import CabinetHeader from "./CabinetHeader";
+import CabinetCard from "./CabinetCard";
+import { deleteCabinets, getCabinets } from "@/services/cabinet.service";
 import { useQuery } from "@tanstack/react-query";
-import PhysicalLocationSkeleton from "./PhysicalLocationSkeleton";
+import CabinetSkeleton from "./CabinetSkeleton";
 import Confirm from "@/components/Confirm";
-import PhysicalLocationModalForm from "./PhysicalLocationModalForm";
+import CabinetModalForm from "./CabinetModalForm";
 import { useLocation, useNavigate } from "react-router";
 
-export default function PhysicalLocationPage() {
+export default function CabinetPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -69,7 +66,7 @@ export default function PhysicalLocationPage() {
     }
   };
 
-  const fetchPhysicalLocations = async () => {
+  const fetchCabinets = async () => {
     try {
       const res = await getCabinets();
       return res.data.data;
@@ -81,14 +78,14 @@ export default function PhysicalLocationPage() {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["cabinets"],
-    queryFn: fetchPhysicalLocations,
+    queryFn: fetchCabinets,
   });
 
   return (
     <section className="space-y-6">
       <Confirm
         open={confirmDelete}
-        title="Konfirmasi Hapus Lokasi Fisik"
+        title="Konfirmasi Hapus Lemari"
         description={`Apakah Anda yakin ingin menghapus lemari "${selectedDeleteCabinet?.name || "ini"}"? Tindakan ini tidak dapat dibatalkan.`}
         confirmLabel="Ya, Hapus"
         cancelLabel="Batalkan"
@@ -97,15 +94,17 @@ export default function PhysicalLocationPage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <PhysicalLocationHeader onAddClick={handleAddClick} />
+      <CabinetHeader onAddClick={handleAddClick} />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {isLoading ? (
-          Array(8).fill(0).map((_, i) => <PhysicalLocationSkeleton key={i} />)
+          Array(8)
+            .fill(0)
+            .map((_, i) => <CabinetSkeleton key={i} />)
         ) : error ? (
           <div className="text-center text-red-500">Error: {error.message}</div>
         ) : (
           data?.map((cabinet) => (
-            <PhysicalLocationCard
+            <CabinetCard
               key={cabinet.id}
               cabinet={cabinet}
               onEditClick={handleEditClick}
@@ -115,7 +114,7 @@ export default function PhysicalLocationPage() {
         )}
       </div>
 
-      <PhysicalLocationModalForm
+      <CabinetModalForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         cabinet={selectedCabinet}

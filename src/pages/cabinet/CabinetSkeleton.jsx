@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function PhysicalLocationSkeleton({ racks = 3 }) {
+export default function CabinetSkeleton({ racks = 3 }) {
   return (
     <Card className="py-0 rounded-sm border border-border/80 bg-white shadow-none ring-0 overflow-hidden">
       {/* Header */}

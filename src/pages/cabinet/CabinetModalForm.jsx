@@ -10,10 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, Save, Trash2 } from "lucide-react";
-import {
-  createCabinets,
-  updateCabinets,
-} from "@/services/physicalLocation.service";
+import { createCabinets, updateCabinets } from "@/services/cabinet.service";
 import { useLocation, useNavigate } from "react-router";
 
 const createInitialFormData = (cabinet) => ({
@@ -22,18 +19,18 @@ const createInitialFormData = (cabinet) => ({
   racks:
     cabinet?.racks?.length > 0
       ? cabinet.racks.map((rack) => ({
-        id: rack?.id ?? null,
-        rack_number: rack?.rack_number ? String(rack.rack_number) : "",
-        capacity: rack?.capacity ? String(rack.capacity) : "",
-        used_capacity:
-          rack?.used_capacity || rack?.used_capacity === 0
-            ? String(rack.used_capacity)
-            : "0",
-      }))
+          id: rack?.id ?? null,
+          rack_number: rack?.rack_number ? String(rack.rack_number) : "",
+          capacity: rack?.capacity ? String(rack.capacity) : "",
+          used_capacity:
+            rack?.used_capacity || rack?.used_capacity === 0
+              ? String(rack.used_capacity)
+              : "0",
+        }))
       : [{ id: null, rack_number: "", capacity: "", used_capacity: "0" }],
 });
 
-export default function PhysicalLocationModalForm({
+export default function CabinetModalForm({
   isOpen,
   onClose,
   cabinet = null,
@@ -43,7 +40,7 @@ export default function PhysicalLocationModalForm({
 
   const formKey = cabinet?.id ? `cabinet-edit-${cabinet.id}` : "cabinet-create";
   return (
-    <PhysicalLocationModalFormContent
+    <CabinetModalFormContent
       key={formKey}
       onClose={onClose}
       cabinet={cabinet}
@@ -52,17 +49,15 @@ export default function PhysicalLocationModalForm({
   );
 }
 
-function PhysicalLocationModalFormContent({
-  onClose,
-  cabinet = null,
-  fetchCabinets,
-}) {
+function CabinetModalFormContent({ onClose, cabinet = null, fetchCabinets }) {
   const isEdit = !!cabinet;
   const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState(() => createInitialFormData(cabinet));
+  const [formData, setFormData] = useState(() =>
+    createInitialFormData(cabinet),
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,7 +80,10 @@ function PhysicalLocationModalFormContent({
   const handleAddRack = () => {
     setFormData((prev) => ({
       ...prev,
-      racks: [...prev.racks, { id: null, rack_number: "", capacity: "", used_capacity: "0" }],
+      racks: [
+        ...prev.racks,
+        { id: null, rack_number: "", capacity: "", used_capacity: "0" },
+      ],
     }));
   };
 
@@ -94,7 +92,9 @@ function PhysicalLocationModalFormContent({
       if (prev.racks.length === 1) {
         return {
           ...prev,
-          racks: [{ id: null, rack_number: "", capacity: "", used_capacity: "0" }],
+          racks: [
+            { id: null, rack_number: "", capacity: "", used_capacity: "0" },
+          ],
         };
       }
 
@@ -113,20 +113,23 @@ function PhysicalLocationModalFormContent({
         capacity: Number(rack.capacity),
         used_capacity: Number(rack.used_capacity || 0),
       }))
-      .filter((rack) => Number.isFinite(rack.rack_number) && Number.isFinite(rack.capacity))
+      .filter(
+        (rack) =>
+          Number.isFinite(rack.rack_number) && Number.isFinite(rack.capacity),
+      )
       .map((rack) =>
         rack.id
           ? {
-            id: rack.id,
-            rack_number: rack.rack_number,
-            capacity: rack.capacity,
-            used_capacity: rack.used_capacity,
-          }
+              id: rack.id,
+              rack_number: rack.rack_number,
+              capacity: rack.capacity,
+              used_capacity: rack.used_capacity,
+            }
           : {
-            rack_number: rack.rack_number,
-            capacity: rack.capacity,
-            used_capacity: rack.used_capacity,
-          },
+              rack_number: rack.rack_number,
+              capacity: rack.capacity,
+              used_capacity: rack.used_capacity,
+            },
       );
 
     return {
@@ -208,7 +211,7 @@ function PhysicalLocationModalFormContent({
         <ModalHeader>
           <ModalTitle className="flex items-center gap-2">
             {isEdit ? <Save size={20} /> : <PlusCircle size={20} />}
-            {isEdit ? "Edit Lokasi Fisik" : "Tambah Lokasi Fisik"}
+            {isEdit ? "Edit Lemari" : "Tambah Lemari"}
           </ModalTitle>
         </ModalHeader>
 
@@ -222,7 +225,10 @@ function PhysicalLocationModalFormContent({
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="cabinet_number" className="text-sm font-semibold">
+                <Label
+                  htmlFor="cabinet_number"
+                  className="text-sm font-semibold"
+                >
                   Nomor Lemari <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -257,7 +263,9 @@ function PhysicalLocationModalFormContent({
                   className="h-10 py-0 shadow-none"
                 />
                 {error?.fields?.name && (
-                  <p className="mt-1 text-xs text-destructive">{error.fields.name[0]}</p>
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.name[0]}
+                  </p>
                 )}
               </div>
             </div>
@@ -277,15 +285,9 @@ function PhysicalLocationModalFormContent({
 
               <div className="space-y-2">
                 <div className="grid grid-cols-3">
-                  <p className="text-sm text-muted-foreground">
-                    No Rak
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Kapasitas
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Terpakai
-                  </p>
+                  <p className="text-sm text-muted-foreground">No Rak</p>
+                  <p className="text-sm text-muted-foreground">Kapasitas</p>
+                  <p className="text-sm text-muted-foreground">Terpakai</p>
                 </div>
                 {formData.racks.map((rack, index) => (
                   <div
@@ -334,7 +336,9 @@ function PhysicalLocationModalFormContent({
                 ))}
               </div>
               {error?.fields?.racks && (
-                <p className="mt-1 text-xs text-destructive">{error.fields.racks[0]}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.racks[0]}
+                </p>
               )}
             </div>
           </div>

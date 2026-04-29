@@ -8,11 +8,7 @@ import {
 import { Edit, Trash2, Archive, Layers } from "lucide-react";
 import React from "react";
 
-export default function PhysicalLocationCard({
-  cabinet,
-  onEditClick,
-  onDeleteClick,
-}) {
+export default function CabinetCard({ cabinet, onEditClick, onDeleteClick }) {
   const racks = cabinet?.racks || [];
 
   return (
@@ -93,7 +89,6 @@ export default function PhysicalLocationCard({
                 onClick={() => onEditClick?.(cabinet)}
               >
                 <Edit size={16} />
-                
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -112,7 +107,6 @@ export default function PhysicalLocationCard({
                 onClick={() => onDeleteClick?.(cabinet)}
               >
                 <Trash2 size={16} />
-                
               </Button>
             </TooltipTrigger>
             <TooltipContent>
