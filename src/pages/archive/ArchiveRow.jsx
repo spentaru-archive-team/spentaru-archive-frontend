@@ -32,7 +32,7 @@ export default function ArchiveRow({
           </p>
         </TableCell>
         <TableCell className=" text-foreground">{archive.year}</TableCell>
-        <TableCell className=" text-foreground">
+        <TableCell className=" text-foreground max-w-48 whitespace-pre-wrap">
           {archive.category.name}
         </TableCell>
         <TableCell className=" text-foreground">

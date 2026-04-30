@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArchiveHeader from "./ArchiveHeader";
 import Pagination from "@/components/Pagination";
 import ArchiveTable from "./ArchiveTable";
@@ -23,9 +23,30 @@ export default function ArchivePage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [sortFilter, setSortFilter] = useState("created_at:desc");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteArchive, setSelectedDeleteArchive] = useState(null);
   const [isDeletingArchive, setIsDeletingArchive] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const handleKeywordChange = (value) => {
+    setCurrentPage(1);
+    setKeyword(value);
+  };
+
+  const handleSortFilterChange = (value) => {
+    setCurrentPage(1);
+    setSortFilter(value);
+  };
 
   const handleDetailClick = (archive) => {
     setSelectedArchive(archive);
@@ -83,16 +104,23 @@ export default function ArchivePage() {
 
   const fetchArchives = async () => {
     try {
-      const res = await getArchives({ page: currentPage });
-      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+      const res = await getArchives({
+        page: currentPage,
+        query: debouncedKeyword || null,
+        sort: sortFilter || null,
+      });
+      return res.data.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        return { data: [], last_page: 1, total: 0, per_page: 10 };
+      }
       console.error("Error fetching archives:", error);
       throw error;
     }
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["archives", currentPage],
+    queryKey: ["archives", currentPage, debouncedKeyword, sortFilter],
     queryFn: fetchArchives,
   });
 
@@ -109,7 +137,13 @@ export default function ArchivePage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <ArchiveHeader onAddClick={handleAddClick} />
+      <ArchiveHeader
+        onAddClick={handleAddClick}
+        keyword={keyword}
+        setKeyword={handleKeywordChange}
+        sortFilter={sortFilter}
+        setSortFilter={handleSortFilterChange}
+      />
       {isLoading ? (
         <ArchiveTableSkeleton />
       ) : error ? (

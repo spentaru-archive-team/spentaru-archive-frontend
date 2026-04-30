@@ -24,13 +24,21 @@ export function getArchivesWithoutLocation() {
   return res;
 }
 
-export function getArchives({ page = 1, all = false } = {}) {
+export function getArchives({ page = 1, all = false, query, sort } = {}) {
   const params = {};
 
   if (all) {
     params.all = true;
   } else {
     params.page = page;
+  }
+
+  if (query) {
+    params.q = query;
+  }
+
+  if (sort) {
+    params.sort = sort;
   }
 
   const res = api.get("/archives", { params });

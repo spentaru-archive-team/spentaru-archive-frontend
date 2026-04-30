@@ -2,10 +2,16 @@ import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Filter, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function ArchiveHeader({ onAddClick }) {
+export default function ArchiveHeader({
+  onAddClick,
+  keyword,
+  setKeyword,
+  sortFilter,
+  setSortFilter,
+}) {
   return (
     <Header title="Manajemen Arsip">
       <div className="flex flex-col md:flex-row justify-between w-full">
@@ -18,25 +24,35 @@ export default function ArchiveHeader({ onAddClick }) {
             <Input
               placeholder="Cari judul atau kategori arsip"
               className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          
-          <NativeSelect className="w-full sm:w-auto" name="filter" id="filter">
+
+          <NativeSelect
+            className="w-full sm:w-auto"
+            name="category"
+            id="category"
+            disabled
+            defaultValue=""
+          >
             <NativeSelectOption value="">Semua Kategori</NativeSelectOption>
-            <NativeSelectOption value="Akademik">Akademik</NativeSelectOption>
-            <NativeSelectOption value="Kesiswaan">Kesiswaan</NativeSelectOption>
-            <NativeSelectOption value="Administrasi">
-              Administrasi
+            <NativeSelectOption value="" disabled>
+              Filter kategori (coming soon)
             </NativeSelectOption>
-            <NativeSelectOption value="Kehumasan">Kehumasan</NativeSelectOption>
           </NativeSelect>
 
-          <NativeSelect className="w-full sm:w-auto" name="filter" id="filter">
-            <NativeSelectOption value="">Filter Arsip</NativeSelectOption>
-            <NativeSelectOption value="newest">Terbaru ke Terlama</NativeSelectOption>
-            <NativeSelectOption value="oldest">Terlama ke Terbaru</NativeSelectOption>
-            <NativeSelectOption value="title-asc">Judul A-Z</NativeSelectOption>
-            <NativeSelectOption value="title-desc">Judul Z-A</NativeSelectOption>
+          <NativeSelect
+            className="w-full sm:w-auto"
+            name="sort"
+            id="sort"
+            value={sortFilter}
+            onChange={(e) => setSortFilter(e.target.value)}
+          >
+            <NativeSelectOption value="created_at:desc">Terbaru-Terlama</NativeSelectOption>
+            <NativeSelectOption value="created_at:asc">Terlama-Terbaru</NativeSelectOption>
+            <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
+            <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
           </NativeSelect>
         </div>
 
