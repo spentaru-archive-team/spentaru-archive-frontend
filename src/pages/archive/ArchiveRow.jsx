@@ -12,6 +12,7 @@ import React from "react";
 import { Link } from "react-router";
 
 export default function ArchiveRow({
+  index,
   archive,
   statusStyles,
   onDetailClick,
@@ -23,7 +24,7 @@ export default function ArchiveRow({
     <>
       <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
-          {archive.row_num}
+          {index + 1}
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">

@@ -41,8 +41,9 @@ export default function ArchiveTable({
                 </TableCell>
               </TableRow>
             ) : (
-              archives?.data?.map((archive) => (
+              archives?.data?.map((archive, index) => (
                 <ArchiveRow
+                  index={index}
                   key={archive.id}
                   archive={archive}
                   statusStyles={statusStyles}
