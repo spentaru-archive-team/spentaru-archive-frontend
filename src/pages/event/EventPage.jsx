@@ -26,7 +26,7 @@ export default function EventPage() {
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [sortFilter, setSortFilter] = useState("title:asc");
+  const [sortFilter, setSortFilter] = useState("date:desc");
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDetailEvent, setSelectedDetailEvent] = useState(null);

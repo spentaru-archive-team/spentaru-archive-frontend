@@ -53,10 +53,10 @@ export default function EventHeader({
             value={sortFilter}
             onChange={(e) => setSortFilter(e.target.value)}
           >
-            <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
-            <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
             <NativeSelectOption value="date:desc">Terbaru-Terlama</NativeSelectOption>
             <NativeSelectOption value="date:asc">Terlama-Terbaru</NativeSelectOption>
+            <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
+            <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
           </NativeSelect>
         </div>
 
