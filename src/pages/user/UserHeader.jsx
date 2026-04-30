@@ -2,10 +2,10 @@ import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Plus, Search, Shield } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function UserHeader({ onAddClick }) {
+export default function UserHeader({ onAddClick, keyword, setKeyword, setRoleFilter }) {
   return (
     <Header
       title="Manajemen User"
@@ -19,12 +19,14 @@ export default function UserHeader({ onAddClick }) {
               className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
             />
             <Input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
               placeholder="Cari nama user atau email"
               className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
             />
           </div>
 
-          <NativeSelect defaultValue="" className="w-full sm:w-44" name="role" id="role">
+          <NativeSelect defaultValue="" className="w-full sm:w-44" name="role" id="role" onChange={(e) => setRoleFilter(e.target.value)}>
             <NativeSelectOption value="">Semua Role</NativeSelectOption>
             <NativeSelectOption value="admin">Admin</NativeSelectOption>
             <NativeSelectOption value="guru">Guru</NativeSelectOption>
