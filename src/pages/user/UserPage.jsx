@@ -1,5 +1,5 @@
 import Pagination from "@/components/Pagination";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserHeader from "./UserHeader";
 import UserTable from "./UserTable";
 import { deleteUsers, getUsers, updateUsers } from "@/services/user.service";
@@ -18,10 +18,15 @@ const roleStyles = {
 export default function UserPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // search and filter
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
 
   const [confirmResetPassword, setConfirmResetPassword] = useState(false);
   const [selectedResetUser, setSelectedResetUser] = useState(null);
@@ -30,6 +35,24 @@ export default function UserPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteUser, setSelectedDeleteUser] = useState(null);
   const [isDeletingUser, setIsDeletingUser] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const handleKeywordChange = (value) => {
+    setCurrentPage(1);
+    setKeyword(value);
+  };
+
+  const handleRoleFilterChange = (value) => {
+    setCurrentPage(1);
+    setRoleFilter(value);
+  };
 
   const handleAddClick = () => {
     setSelectedUser(null);
@@ -50,7 +73,7 @@ export default function UserPage() {
     if (isDeletingUser) return;
     setConfirmDelete(false);
     setSelectedDeleteUser(null);
-  }
+  };
 
   const handleDeleteConfirm = async () => {
     if (!selectedDeleteUser) return;
@@ -77,20 +100,23 @@ export default function UserPage() {
     } finally {
       setIsDeletingUser(false);
     }
-  }
+  };
 
   const fetchUsers = async () => {
     try {
-      const res = await getUsers({ page: currentPage });
-      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+      const res = await getUsers({ page: currentPage, query: debouncedKeyword || null, role: roleFilter || null });
+      return res.data.data;
     } catch (error) {
+      if (error.response.status === 404) {
+        return { data: [], last_page: 1, total: 0, per_page: 10 };
+      }
       console.error("Error fetching users:", error);
       throw error;
     }
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["users", currentPage],
+    queryKey: ["users", currentPage, debouncedKeyword, roleFilter],
     queryFn: fetchUsers,
   });
 
@@ -150,7 +176,12 @@ export default function UserPage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <UserHeader onAddClick={handleAddClick} />
+      <UserHeader
+        onAddClick={handleAddClick}
+        keyword={keyword}
+        setKeyword={handleKeywordChange}
+        setRoleFilter={handleRoleFilterChange}
+      />
       {isLoading ? (
         <UserTableSkeleton />
       ) : error ? (

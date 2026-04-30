@@ -1,8 +1,21 @@
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 import UserRow from "./UserRow";
 
-export default function UserTable({ users, onDeleteClick, onEditClick, roleStyles, onResetPasswordClick }) {
+export default function UserTable({
+  users,
+  onDeleteClick,
+  onEditClick,
+  roleStyles,
+  onResetPasswordClick,
+}) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
       <Table className="text-sm text-muted-foreground">
@@ -20,16 +33,28 @@ export default function UserTable({ users, onDeleteClick, onEditClick, roleStyle
         </TableHeader>
 
         <TableBody className="bg-white">
-          {users?.data?.map((user) => (
-            <UserRow
-              key={user.id}
-              user={user}
-              roleStyles={roleStyles}
-              onDeleteClick={onDeleteClick}
-              onEditClick={onEditClick}
-              onResetPasswordClick={onResetPasswordClick}
-            />
-          ))}
+          {users?.data?.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={8}
+                className="text-center text-muted-foreground"
+              >
+                User tidak ditemukan.
+              </TableCell>
+            </TableRow>
+          ) : (
+            users?.data?.map((user, index) => (
+              <UserRow
+                key={user.id}
+                index={index}
+                user={user}
+                roleStyles={roleStyles}
+                onDeleteClick={onDeleteClick}
+                onEditClick={onEditClick}
+                onResetPasswordClick={onResetPasswordClick}
+              />
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
