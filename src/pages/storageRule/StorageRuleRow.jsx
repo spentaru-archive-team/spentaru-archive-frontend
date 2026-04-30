@@ -5,17 +5,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit, KeyRound, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
 export default function StorageRuleRow({ rule }) {
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{rule.id}</TableCell>
-      <TableCell>{rule.category}</TableCell>
-      <TableCell>{rule.subcategory}</TableCell>
-      <TableCell>{rule.cabinet}</TableCell>
-      <TableCell>{rule.priority}</TableCell>
+      <TableCell className="text-foreground">{rule.category?.name}</TableCell>
+      <TableCell className="text-foreground">{rule.subcategory?.name ?? "-"}</TableCell>
+      <TableCell className="text-foreground">{rule.cabinet?.name}</TableCell>
+      <TableCell className="text-foreground">{rule.priority}</TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <Tooltip>

@@ -18,7 +18,7 @@ export default function StorageRuleTable({ storageRules }) {
         </TableHeader>
 
         <TableBody className="bg-white">
-          {storageRules.map((rule) => (
+          {storageRules?.data?.map((rule) => (
             <StorageRuleRow
               key={rule.id}
               rule={rule}
