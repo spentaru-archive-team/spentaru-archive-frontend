@@ -8,7 +8,7 @@ import {
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function StorageRuleRow({ rule }) {
+export default function StorageRuleRow({ rule, onEditClick, onDeleteClick }) {
   return (
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{rule.id}</TableCell>
@@ -25,6 +25,7 @@ export default function StorageRuleRow({ rule }) {
                 className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                 variant="secondary"
                 size="sm"
+                onClick={() => onEditClick(rule)}
               >
                 <Edit />
               </Button>
@@ -41,6 +42,7 @@ export default function StorageRuleRow({ rule }) {
                 className="h-9 w-fit px-3 py-2 text-sm shadow-none"
                 variant="destructive"
                 size="sm"
+                onClick={() => onDeleteClick(rule)}
               >
                 <Trash2 />
               </Button>

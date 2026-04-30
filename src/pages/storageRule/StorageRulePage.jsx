@@ -1,41 +1,16 @@
 import Pagination from "@/components/Pagination";
-import React, { useEffect, useState } from "react";
+import Confirm from "@/components/Confirm";
+import React, { useState } from "react";
 import StorageRuleHeader from "./StorageRuleHeader";
 import StorageRuleTable from "./StorageRuleTable";
-import { useLocation, useNavigate } from "react-router";
-import { deleteArchiveStorageRules, getArchiveStorageRules } from "@/services/storageRule.service";
+import {
+  deleteArchiveStorageRules,
+  getArchiveStorageRules,
+} from "@/services/storageRule.service";
 import { useQuery } from "@tanstack/react-query";
-
-const storageRules = [
-  {
-    id: "1",
-    category: "Akademik",
-    subcategory: "Ujian",
-    cabinet: "Lemari 1",
-    priority: 1,
-  },
-  {
-    id: "2",
-    category: "Non-Akademik",
-    subcategory: "Keuangan",
-    cabinet: "Lemari 2",
-    priority: 2,
-  },
-  {
-    id: "3",
-    category: "Kesiswaan",
-    subcategory: "OSIS",
-    cabinet: "Lemari 3",
-    priority: 1,
-  },
-  {
-    id: "4",
-    category: "Sarana dan Prasarana",
-    subcategory: "Inventaris",
-    cabinet: "Lemari 4",
-    priority: 1,
-  },
-];
+import { useLocation, useNavigate } from "react-router";
+import StorageRuleTableSkeleton from "./StorageRuleTableSkeleton";
+import StorageRuleModalForm from "./StorageRuleModalForm";
 
 export default function StorageRulePage() {
   const location = useLocation();
@@ -45,36 +20,11 @@ export default function StorageRulePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // search and filter
-  const [keyword, setKeyword] = useState("");
-  const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-
-  const [confirmResetPassword, setConfirmResetPassword] = useState(false);
-  const [selectedResetStorageRule, setSelectedResetStorageRule] = useState(null);
-  const [isResettingPassword, setIsResettingPassword] = useState(false);
-
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [selectedDeleteStorageRule, setSelectedDeleteStorageRule] = useState(null);
-  const [isDeletingArchiveStorageRule, setIsDeletingArchiveStorageRule] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedKeyword(keyword.trim());
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [keyword]);
-
-  const handleKeywordChange = (value) => {
-    setCurrentPage(1);
-    setKeyword(value);
-  };
-
-  const handleRoleFilterChange = (value) => {
-    setCurrentPage(1);
-    setRoleFilter(value);
-  };
+  const [selectedDeleteStorageRule, setSelectedDeleteStorageRule] =
+    useState(null);
+  const [isDeletingArchiveStorageRule, setIsDeletingArchiveStorageRule] =
+    useState(false);
 
   const handleAddClick = () => {
     setSelectedStorageRule(null);
@@ -107,7 +57,7 @@ export default function StorageRulePage() {
         navigate(location.pathname, {
           state: {
             popup: {
-              title: "Storage Rule berhasil dihapus.",
+              title: "Aturan penyimpanan berhasil dihapus.",
               type: "success",
               duration: 3000,
             },
@@ -128,34 +78,62 @@ export default function StorageRulePage() {
     try {
       const res = await getArchiveStorageRules({
         page: currentPage,
-        query: debouncedKeyword || null,
-        role: roleFilter || null,
       });
       return res.data.data;
     } catch (error) {
-      if (error.response.status === 404) {
+      if (error.response?.status === 404) {
         return { data: [], last_page: 1, total: 0, per_page: 10 };
       }
-      console.error("Error fetching archiveStorageRules:", error);
+      console.error("Error fetching archive storage rules:", error);
       throw error;
     }
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["archiveStorageRules", currentPage, debouncedKeyword, roleFilter],
+    queryKey: ["archiveStorageRules", currentPage],
     queryFn: fetchArchiveStorageRules,
   });
 
   return (
     <section className="space-y-6">
-      <StorageRuleHeader />
-      <StorageRuleTable storageRules={data} />
+      <Confirm
+        open={confirmDelete}
+        title="Konfirmasi Hapus Aturan Penyimpanan"
+        description={`Apakah Anda yakin ingin menghapus aturan untuk lemari "${selectedDeleteStorageRule?.cabinet?.name || "ini"}"? Tindakan ini tidak dapat dibatalkan.`}
+        confirmLabel="Ya, Hapus"
+        cancelLabel="Batalkan"
+        loading={isDeletingArchiveStorageRule}
+        onConfirm={handleDeleteConfirm}
+        onClose={handleCloseDeleteConfirm}
+      />
+
+      <StorageRuleHeader onAddClick={handleAddClick} />
+
+      {isLoading ? (
+        <StorageRuleTableSkeleton />
+      ) : error ? (
+        <div className="text-center text-destructive">Error: {error.message}</div>
+      ) : (
+        <StorageRuleTable
+          storageRules={data}
+          onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
+        />
+      )}
+
       <Pagination
         currentPage={currentPage}
         totalPages={data?.last_page || 1}
         totalData={data?.total || 0}
         dataPerPage={data?.per_page || 10}
         onPageChange={(page) => setCurrentPage(page)}
+      />
+
+      <StorageRuleModalForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        storageRule={selectedStorageRule}
+        fetchStorageRules={refetch}
       />
     </section>
   );
