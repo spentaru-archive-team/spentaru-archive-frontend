@@ -10,6 +10,8 @@ const resolveApiOrigin = () => {
 };
 
 const API_ORIGIN = resolveApiOrigin();
+const UNAUTHORIZED_EVENT = "auth:unauthorized";
+let isRedirectingToLogin = false;
 
 export const refreshCsrfCookie = () =>
   axios.get(`${API_ORIGIN}/sanctum/csrf-cookie`, {
@@ -31,11 +33,22 @@ api.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalRequest = err.config;
+    const status = err?.response?.status;
 
-    if (err?.response?.status === 419 && !originalRequest?._retry) {
+    if (status === 419 && !originalRequest?._retry) {
       originalRequest._retry = true;
       await refreshCsrfCookie();
       return api(originalRequest);
+    }
+
+    if (status === 401 && !isRedirectingToLogin) {
+      const isLoginPage = window.location.pathname === "/login";
+
+      if (!isLoginPage) {
+        isRedirectingToLogin = true;
+        window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT));
+        window.location.replace("/login");
+      }
     }
 
     return Promise.reject(err);

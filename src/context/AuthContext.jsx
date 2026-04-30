@@ -4,6 +4,7 @@ import { csrf, login as loginRequest, logout as logoutRequest, me } from "@/serv
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
+const UNAUTHORIZED_EVENT = "auth:unauthorized";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -33,6 +34,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     fetchUser().catch(() => null);
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setUser(null);
+      setLoading(false);
+    };
+
+    window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+
+    return () => {
+      window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+    };
   }, []);
 
   const login = async (credentials) => {
