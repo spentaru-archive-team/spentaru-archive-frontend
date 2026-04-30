@@ -1,5 +1,5 @@
 import Pagination from "@/components/Pagination";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EventHeader from "./EventHeader";
 import EventTable from "./EventTable";
 import { deleteEvents, getEvents } from "@/services/event.service";
@@ -22,6 +22,12 @@ export default function EventPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // search and filter
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [sortFilter, setSortFilter] = useState("title:asc");
+
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDetailEvent, setSelectedDetailEvent] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -30,6 +36,29 @@ export default function EventPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteEvent, setSelectedDeleteEvent] = useState(null);
   const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const handleKeywordChange = (value) => {
+    setCurrentPage(1);
+    setKeyword(value);
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setCurrentPage(1);
+    setStatusFilter(value);
+  };
+
+  const handleSortFilterChange = (value) => {
+    setCurrentPage(1);
+    setSortFilter(value);
+  };
 
   const handleAddClick = () => {
     setSelectedEvent(null);
@@ -86,16 +115,24 @@ export default function EventPage() {
 
   const fetchEvents = async () => {
     try {
-      const res = await getEvents({ page: currentPage });
-      return res.data.data; // Sesuaikan dengan struktur respons API Anda
+      const res = await getEvents({
+        page: currentPage,
+        query: debouncedKeyword || null,
+        status: statusFilter || null,
+        sort: sortFilter || null,
+      });
+      return res.data.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        return { data: [], last_page: 1, total: 0, per_page: 10 };
+      }
       console.error("Error fetching events:", error);
       throw error;
     }
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["events", currentPage],
+    queryKey: ["events", currentPage, debouncedKeyword, statusFilter, sortFilter],
     queryFn: fetchEvents,
   });
 
@@ -112,7 +149,15 @@ export default function EventPage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <EventHeader onAddClick={handleAddClick} />
+      <EventHeader
+        onAddClick={handleAddClick}
+        keyword={keyword}
+        setKeyword={handleKeywordChange}
+        statusFilter={statusFilter}
+        setStatusFilter={handleStatusFilterChange}
+        sortFilter={sortFilter}
+        setSortFilter={handleSortFilterChange}
+      />
 
       {isLoading ? (
         <EventTableSkeleton />

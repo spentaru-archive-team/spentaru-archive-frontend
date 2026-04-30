@@ -1,7 +1,30 @@
 import api from "./axios";
 
-export function getEvents({page = 1, all = false} = {}) {
-  const res = api.get("/events", { params: { page, all } });
+export function getEvents({
+  page = 1,
+  all = false,
+  perPage,
+  query,
+  status,
+  sort,
+} = {}) {
+  const params = {
+    page,
+    all,
+    per_page: perPage,
+    q: query || undefined,
+    sort: sort || undefined,
+  };
+
+  if (status) {
+    params.filters = {
+      status: {
+        $eq: status,
+      },
+    };
+  }
+
+  const res = api.get("/events", { params });
   return res;
 }
 

@@ -1,4 +1,5 @@
 import {
+  TableCell,
   Table,
   TableBody,
   TableHead,
@@ -31,17 +32,25 @@ export default function EventTable({
         </TableHeader>
 
         <TableBody className="bg-white">
-          {events?.data?.map((event, index) => (
-            <EventRow
-              index={index}
-              key={event.id}
-              event={event}
-              statusStyles={statusStyles}
-              onDetailClick={onDetailClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-            />
-          ))}
+          {events?.data?.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center text-muted-foreground">
+                Event tidak ditemukan.
+              </TableCell>
+            </TableRow>
+          ) : (
+            events?.data?.map((event, index) => (
+              <EventRow
+                index={index}
+                key={event.id}
+                event={event}
+                statusStyles={statusStyles}
+                onDetailClick={onDetailClick}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+              />
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
