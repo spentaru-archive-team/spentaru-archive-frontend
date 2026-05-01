@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocationHeader from "./LocationHeader";
 import Pagination from "@/components/Pagination";
 import LocationTable from "./LocationTable";
@@ -19,10 +19,25 @@ export default function LocationPage() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
 
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteLocation, setSelectedDeleteLocation] = useState(null);
   const [isDeletingLocation, setIsDeletingLocation] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const handleKeywordChange = (value) => {
+    setCurrentPage(1);
+    setKeyword(value);
+  };
 
   const handleAddClick = () => {
     setSelectedLocation(null);
@@ -74,16 +89,22 @@ export default function LocationPage() {
 
   const fetchLocations = async () => {
     try {
-      const res = await getArchiveLocations({ page: currentPage });
+      const res = await getArchiveLocations({
+        page: currentPage,
+        query: debouncedKeyword || null,
+      });
       return res.data.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        return { data: [], last_page: 1, total: 0, per_page: 10 };
+      }
       console.error("Error fetching archive locations:", error);
       throw error;
     }
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["archive-locations", currentPage],
+    queryKey: ["archive-locations", currentPage, debouncedKeyword],
     queryFn: fetchLocations,
   });
 
@@ -100,7 +121,11 @@ export default function LocationPage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <LocationHeader onAddClick={handleAddClick} />
+      <LocationHeader
+        onAddClick={handleAddClick}
+        keyword={keyword}
+        setKeyword={handleKeywordChange}
+      />
 
       {isLoading ? (
         <LocationTableSkeleton rows={8} />

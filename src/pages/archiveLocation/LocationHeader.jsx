@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import React from "react";
 
-export default function LocationHeader({ onAddClick }) {
+export default function LocationHeader({ onAddClick, keyword, setKeyword }) {
   return (
     <Header title="Manajemen Lokasi Arsip" desc='Kelola lokasi arsip untuk penempatan arsip sekolah di ruang data.'>
       <div className="flex justify-between w-full">
@@ -17,6 +17,8 @@ export default function LocationHeader({ onAddClick }) {
             <Input
               placeholder="Cari judul lokasi arsip"
               className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
         </div>

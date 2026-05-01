@@ -1,8 +1,19 @@
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 import LocationRow from "./LocationRow";
 
-export default function LocationTable({ locations, onEditClick, onDeleteClick }) {
+export default function LocationTable({
+  locations,
+  onEditClick,
+  onDeleteClick,
+}) {
   return (
     <>
       <div className="overflow-hidden rounded-sm border border-border/80">
@@ -20,14 +31,23 @@ export default function LocationTable({ locations, onEditClick, onDeleteClick })
           </TableHeader>
 
           <TableBody className="bg-white">
-            {locations?.data?.map((location) => (
-              <LocationRow
-                key={location.id}
-                location={location}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
-            ))}
+            {locations?.data?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  Lokasi arsip tidak ditemukan.
+                </TableCell>
+              </TableRow>
+            ) : (
+              locations?.data?.map((location, index) => (
+                <LocationRow
+                  index={index}
+                  key={location.id}
+                  location={location}
+                  onEditClick={onEditClick}
+                  onDeleteClick={onDeleteClick}
+                />
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
