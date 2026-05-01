@@ -5,10 +5,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 import { Edit, Trash2, Archive, Layers } from "lucide-react";
 import React from "react";
 
 export default function CabinetCard({ cabinet, onEditClick, onDeleteClick }) {
+  const { user } = useAuth();
   const racks = cabinet?.racks || [];
 
   return (
@@ -77,43 +79,45 @@ export default function CabinetCard({ cabinet, onEditClick, onDeleteClick }) {
           </div>
         )}
 
-        <div className="flex items-center gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                aria-label="Edit Physical Location"
-                className="w-1/2 border-none py-0"
-                variant="secondary"
-                size="sm"
-                type="button"
-                onClick={() => onEditClick?.(cabinet)}
-              >
-                <Edit size={16} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit Lokasi</p>
-            </TooltipContent>
-          </Tooltip>
+        {user && user.role === "admin" && (
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  aria-label="Edit Physical Location"
+                  className="w-1/2 border-none py-0"
+                  variant="secondary"
+                  size="sm"
+                  type="button"
+                  onClick={() => onEditClick?.(cabinet)}
+                >
+                  <Edit size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Lokasi</p>
+              </TooltipContent>
+            </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                aria-label="Delete Physical Location"
-                className="w-1/2 border-none py-0"
-                variant="destructive"
-                size="sm"
-                type="button"
-                onClick={() => onDeleteClick?.(cabinet)}
-              >
-                <Trash2 size={16} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Hapus Lokasi</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  aria-label="Delete Physical Location"
+                  className="w-1/2 border-none py-0"
+                  variant="destructive"
+                  size="sm"
+                  type="button"
+                  onClick={() => onDeleteClick?.(cabinet)}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Hapus Lokasi</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

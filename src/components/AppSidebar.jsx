@@ -59,6 +59,7 @@ const guruMenus = [
   { name: "Dashboard", path: "/dashboard", icon: Home },
   { name: "Arsip", path: "/archives", icon: Archive },
   { name: "Lokasi Arsip", path: "/archive-locations", icon: MapPinSearch },
+  { name: "Lemari", path: "/cabinets", icon: ShelvingUnit },
   { name: "Pengaturan", path: "/settings", icon: Settings },
 ];
 
