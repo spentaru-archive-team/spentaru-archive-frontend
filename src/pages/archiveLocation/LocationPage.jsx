@@ -21,6 +21,7 @@ export default function LocationPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  const [initialArchiveId, setInitialArchiveId] = useState("");
 
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteLocation, setSelectedDeleteLocation] = useState(null);
@@ -41,13 +42,31 @@ export default function LocationPage() {
 
   const handleAddClick = () => {
     setSelectedLocation(null);
+    setInitialArchiveId("");
     setIsFormOpen(true);
   };
 
   const handleEditClick = (item) => {
     setSelectedLocation(item);
+    setInitialArchiveId("");
     setIsFormOpen(true);
   };
+
+  useEffect(() => {
+    if (!location.state?.openCreate) return;
+
+    setSelectedLocation(null);
+    setInitialArchiveId(
+      location.state?.archiveId ? String(location.state.archiveId) : "",
+    );
+    setIsFormOpen(true);
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [
+    location.state?.openCreate,
+    location.state?.archiveId,
+    navigate,
+    location.pathname,
+  ]);
 
   const handleDeleteClick = (item) => {
     setSelectedDeleteLocation(item);
@@ -151,9 +170,13 @@ export default function LocationPage() {
 
       <LocationModalForm
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={() => {
+          setIsFormOpen(false);
+          setInitialArchiveId("");
+        }}
         locationData={selectedLocation}
         fetchLocations={fetchLocations}
+        initialArchiveId={initialArchiveId}
       />
     </section>
   );

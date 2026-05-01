@@ -73,7 +73,7 @@ export default function ArchiveRow({
           )}
         </TableCell>
         <TableCell>
-          {user?.role === "admin" || archive?.event?.user_id === user?.id ? (
+          {user?.role === "admin" || archive?.uploader?.id === user?.id ? (
             <div className="flex items-center gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -141,7 +141,7 @@ export default function ArchiveRow({
                 <TooltipTrigger asChild>
                   <Button
                     className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                    variant="secondary"
+                    variant="outline"
                     onClick={() => onEditClick(archive)}
                   >
                     <FileEdit />
@@ -156,7 +156,7 @@ export default function ArchiveRow({
                 <TooltipTrigger asChild>
                   <Button
                     className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                    variant="destructive"
+                    variant="outline"
                     onClick={() => onDeleteClick(archive)}
                   >
                     <ArchiveX />

@@ -25,10 +25,10 @@ import {
 } from "@/services/archiveLocation.service";
 import { useLocation, useNavigate } from "react-router";
 
-const createInitialLocationFormData = (location) => ({
+const createInitialLocationFormData = (location, initialArchiveId) => ({
   archive_id: location?.archive_id
     ? String(location.archive_id)
-    : String(location?.archive?.id || ""),
+    : String(location?.archive?.id || initialArchiveId || ""),
   cabinet_id: location?.cabinet_id
     ? String(location.cabinet_id)
     : String(location?.cabinet?.id || ""),
@@ -45,6 +45,7 @@ export default function LocationModalForm({
   onClose,
   locationData = null,
   fetchLocations,
+  initialArchiveId = "",
 }) {
   if (!isOpen) return null;
 
@@ -57,6 +58,7 @@ export default function LocationModalForm({
       onClose={onClose}
       locationData={locationData}
       fetchLocations={fetchLocations}
+      initialArchiveId={initialArchiveId}
     />
   );
 }
@@ -65,6 +67,7 @@ function LocationModalFormContent({
   onClose,
   locationData = null,
   fetchLocations,
+  initialArchiveId = "",
 }) {
   const isEdit = !!locationData;
   const routerLocation = useLocation();
@@ -75,8 +78,16 @@ function LocationModalFormContent({
   const [cabinets, setCabinets] = useState([]);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState(() =>
-    createInitialLocationFormData(locationData),
+    createInitialLocationFormData(locationData, initialArchiveId),
   );
+
+  useEffect(() => {
+    if (isEdit || !initialArchiveId) return;
+    setFormData((prev) => ({
+      ...prev,
+      archive_id: String(initialArchiveId),
+    }));
+  }, [initialArchiveId, isEdit]);
 
   useEffect(() => {
     const fetchMeta = async () => {

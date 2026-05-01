@@ -6,7 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDashboardData } from "@/services/dashboard.service";
+import {
+  getArchivesWithoutLocation,
+  getDashboardData,
+} from "@/services/dashboard.service";
 import {
   Archive,
   BookOpenText,
@@ -16,6 +19,8 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import DashboardSkeleton from "./DashboardSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router";
 
 const recentActivities = [
   {
@@ -87,6 +92,25 @@ export default function Dashboard() {
     },
   ];
 
+  const getArchiveWithoutLocation = async () => {
+    try {
+      const res = await getArchivesWithoutLocation();
+      return res.data.data;
+    } catch (error) {
+      console.error("Error fetching archives without location:", error);
+      throw error;
+    }
+  };
+
+  const {
+    data: archivesWithoutLocation,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["archives-without-location"],
+    queryFn: getArchiveWithoutLocation,
+  });
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -154,7 +178,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-lg font-semibold text-foreground">
-                  Aktivitas Terbaru
+                  Arsip yang belum ada lokasi penyimpanan
                 </CardTitle>
                 <CardDescription className="mt-1 text-sm leading-6">
                   Riwayat singkat pembaruan arsip dan pengecekan dokumen.
@@ -166,23 +190,33 @@ export default function Dashboard() {
               </span>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3 px-5 py-5">
-            {recentActivities.map((activity) => (
+          <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
+            {archivesWithoutLocation?.map((archive) => (
               <div
-                key={activity.title}
+                key={archive.id}
                 className="flex items-start justify-between gap-4 rounded-sm border border-border/80 bg-muted/20 px-4 py-3"
               >
                 <div className="min-w-0 space-y-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    {activity.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {activity.meta}
+                  <p className="text-sm text-foreground">
+                    Arsip{" "}
+                    <strong>
+                      <Link
+                        className="hover:underline"
+                        to="/archive-locations"
+                        state={{
+                          openCreate: true,
+                          archiveId: archive.id,
+                        }}
+                      >
+                        {archive.title}
+                      </Link>
+                    </strong>{" "}
+                    belum mengatur lokasi penyimpanan.
                   </p>
                 </div>
-                <span className="shrink-0 text-xs font-medium text-primary/70">
-                  {activity.time}
-                </span>
+                {/* <span className="shrink-0 text-xs font-medium text-primary/70">
+                  {archive.created_at}
+                </span> */}
               </div>
             ))}
           </CardContent>
@@ -193,7 +227,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-lg font-semibold text-foreground">
-                  Notifikasi
+                  Guru yang belum upload arsip
                 </CardTitle>
                 <CardDescription className="mt-1 text-sm leading-6">
                   Pemberitahuan penting terkait pengelolaan arsip sekolah.
