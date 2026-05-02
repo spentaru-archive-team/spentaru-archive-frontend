@@ -36,7 +36,6 @@ const createInitialLocationFormData = (location, initialArchiveId) => ({
     ? String(location.rack_id)
     : String(location?.rack?.id || ""),
   slot_number: location?.slot_number ? String(location.slot_number) : "",
-  label_code: location?.label_code || "",
   notes: location?.notes || "",
 });
 
@@ -94,7 +93,7 @@ function LocationModalFormContent({
       setIsLoadingMeta(true);
       try {
         const [archiveRes, cabinetRes] = await Promise.all([
-          getArchivesWithoutLocation(),
+          isEdit ? getArchives() : getArchivesWithoutLocation(),
           getCabinets(),
         ]);
 
@@ -142,7 +141,7 @@ function LocationModalFormContent({
 
   const handleCreate = async () => {
     try {
-      const res = await createArchiveLocations(formData);
+      const res = await createArchiveLocations(formData.archive_id, formData);
       if (res.data.status === "success") {
         await fetchLocations();
         return true;
@@ -163,7 +162,7 @@ function LocationModalFormContent({
 
   const handleEdit = async () => {
     try {
-      const res = await updateArchiveLocations(locationData.id, formData);
+      const res = await updateArchiveLocations(formData.archive_id, formData);
       if (res.data.status === "success") {
         await fetchLocations();
         return true;
@@ -321,47 +320,26 @@ function LocationModalFormContent({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="slot_number" className="text-sm font-semibold">
-                  Nomor Slot <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="slot_number"
-                  name="slot_number"
-                  type="number"
-                  min={1}
-                  placeholder="Contoh: 1"
-                  value={formData.slot_number}
-                  onChange={handleChange}
-                  required
-                  className="h-10 py-0 shadow-none"
-                />
-                {error?.fields?.slot_number && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {error.fields.slot_number[0]}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="label_code" className="text-sm font-semibold">
-                  Kode Label
-                </Label>
-                <Input
-                  id="label_code"
-                  name="label_code"
-                  placeholder="Contoh: L1-R1-S01"
-                  value={formData.label_code}
-                  onChange={handleChange}
-                  className="h-10 py-0 shadow-none"
-                />
-                {error?.fields?.label_code && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {error.fields.label_code[0]}
-                  </p>
-                )}
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="slot_number" className="text-sm font-semibold">
+                Nomor Slot <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="slot_number"
+                name="slot_number"
+                type="number"
+                min={1}
+                placeholder="Contoh: 1"
+                value={formData.slot_number}
+                onChange={handleChange}
+                required
+                className="h-10 py-0 shadow-none"
+              />
+              {error?.fields?.slot_number && (
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.slot_number[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">

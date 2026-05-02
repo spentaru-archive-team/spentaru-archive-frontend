@@ -175,7 +175,7 @@ export default function LocationPage() {
           setInitialArchiveId("");
         }}
         locationData={selectedLocation}
-        fetchLocations={fetchLocations}
+        fetchLocations={refetch}
         initialArchiveId={initialArchiveId}
       />
     </section>

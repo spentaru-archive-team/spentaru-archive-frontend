@@ -16,17 +16,17 @@ export function getArchiveLocationById(id) {
   return res;
 }
 
-export function createArchiveLocations(data) {
-  const res = api.post("/archives/physical-locations", data);
+export function createArchiveLocations(id, data) {
+  const res = api.post(`/archives/${id}/physical-locations`, data);
   return res;
 }
 
 export function updateArchiveLocations(id, data) {
-  const res = api.put(`/archives/physical-locations/${id}`, data);
+  const res = api.put(`/archives/${id}/physical-locations/`, data);
   return res;
 }
 
 export function deleteArchiveLocations(id) {
-  const res = api.delete(`/archives/physical-locations/${id}`);
+  const res = api.delete(`/archives/${id}/physical-locations/${id}`);
   return res;
 }
