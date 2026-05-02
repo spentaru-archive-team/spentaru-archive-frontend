@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -38,7 +38,12 @@ const createInitialArchiveFormData = (archive) => ({
   file: null,
 });
 
-export default function ArchiveModalForm({ isOpen, onClose, archive = null, fetchArchives }) {
+export default function ArchiveModalForm({
+  isOpen,
+  onClose,
+  archive = null,
+  fetchArchives,
+}) {
   const formKey = archive?.id ? `archive-edit-${archive.id}` : "archive-create";
   return (
     <ArchiveModalFormContent
@@ -51,16 +56,112 @@ export default function ArchiveModalForm({ isOpen, onClose, archive = null, fetc
   );
 }
 
-function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchives }) {
+function ArchiveModalFormContent({
+  isOpen,
+  onClose,
+  archive = null,
+  fetchArchives,
+}) {
   const isEdit = !!archive;
   const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [fileError, setFileError] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [fileInfo, setFileInfo] = useState(null);
   const [formData, setFormData] = useState(() =>
     createInitialArchiveFormData(archive),
   );
   const selectedCategory = formData.category_id;
+  const allowedExtensions = new Set([
+    "pdf",
+    "doc",
+    "docx",
+    "xls",
+    "xlsx",
+    "png",
+    "jpg",
+    "jpeg",
+  ]);
+  const imageExtensions = new Set(["png", "jpg", "jpeg"]);
+
+  const formatFileSize = (bytes) => {
+    if (typeof bytes !== "number") return "";
+    const kb = bytes / 1024;
+    if (kb < 1024) return `${Math.max(1, Math.round(kb))} KB`;
+    return `${(kb / 1024).toFixed(1)} MB`;
+  };
+
+  const getExtension = (fileName) => {
+    if (!fileName || !fileName.includes(".")) return "";
+    return fileName.split(".").pop().toLowerCase();
+  };
+
+  const handleFileSelect = (file) => {
+    if (!file) return;
+    const extension = getExtension(file.name);
+
+    if (!allowedExtensions.has(extension)) {
+      setFileError(
+        "Format file tidak didukung. Gunakan pdf, doc, docx, xls, xlsx, png, jpg, atau jpeg.",
+      );
+      return;
+    }
+
+    setFileError(null);
+    setFormData((prev) => ({
+      ...prev,
+      file,
+    }));
+    setFileInfo({
+      name: file.name,
+      extension,
+      size: formatFileSize(file.size),
+    });
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer?.files?.[0];
+    handleFileSelect(file);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (!formData.file) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const extension = getExtension(formData.file.name);
+    if (!imageExtensions.has(extension)) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(formData.file);
+    setPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [formData.file]);
 
   const fetchEvents = async () => {
     try {
@@ -211,7 +312,10 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+        >
           <div className="px-6 pb-6 space-y-5">
             {error?.general && (
               <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
@@ -233,7 +337,9 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
                 className="h-10 shadow-none py-0"
               />
               {error?.fields?.title && (
-                <p className="mt-1 text-xs text-destructive">{error.fields.title[0]}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.title[0]}
+                </p>
               )}
             </div>
 
@@ -253,7 +359,9 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
                   className="h-10 shadow-none py-0"
                 />
                 {error?.fields?.year && (
-                  <p className="mt-1 text-xs text-destructive">{error.fields.year[0]}</p>
+                  <p className="mt-1 text-xs text-destructive">
+                    {error.fields.year[0]}
+                  </p>
                 )}
               </div>
 
@@ -437,24 +545,32 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
                 id="file"
                 name="file"
                 type="file"
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    file: e.target.files[0],
-                  }))
-                }
-                accept=".pdf,.doc,.docx,.xls,.xlsx"
+                onChange={(e) => handleFileSelect(e.target.files?.[0])}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                 maxLength={10485760} // 10MB
                 required={!isEdit}
                 className="hidden h-10 leading-10 shadow-none py-0"
               />
               {error?.fields?.file && (
-                <p className="mt-1 text-xs text-destructive">{error.fields.file[0]}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.file[0]}
+                </p>
+              )}
+              {fileError && (
+                <p className="mt-1 text-xs text-destructive">{fileError}</p>
               )}
               {/* drag and drop */}
               <Label
                 htmlFor="file"
-                className="flex flex-col gap-0 border-2 border-dashed border-border rounded-md p-4 justify-center items-center cursor-pointer hover:bg-muted/50 transition-colors"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                className={`flex flex-col gap-0 border-2 border-dashed rounded-md p-4 justify-center items-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-primary/60 bg-primary/5"
+                    : "border-border hover:bg-muted/50"
+                }`}
               >
                 <CloudUpload
                   size={24}
@@ -466,9 +582,30 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
                     : "Klik atau seret file ke sini untuk mengunggah"}
                 </p>
               </Label>
+              {fileInfo && (
+                <div className="rounded-sm border border-border/70 bg-muted/40 p-3 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">{fileInfo.name}</p>
+                  <p className="text-xs">{fileInfo.size}</p>
+                  {previewUrl ? (
+                    <div className="mt-2 overflow-hidden rounded-sm border border-border/70 bg-white">
+                      <img
+                        src={previewUrl}
+                        alt={fileInfo.name}
+                        className="h-40 w-full object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-xs">
+                      Preview tidak tersedia untuk file pdf, doc, docx, dan
+                      xlsx.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
+        </form>
           <ModalFooter>
             <Button
               type="button"
@@ -491,7 +628,6 @@ function ArchiveModalFormContent({ isOpen, onClose, archive = null, fetchArchive
                   : "Simpan Arsip"}
             </Button>
           </ModalFooter>
-        </form>
       </ModalContent>
     </Modal>
   );
