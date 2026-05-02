@@ -22,39 +22,16 @@ import DashboardSkeleton from "./DashboardSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
-const recentActivities = [
-  {
-    title: "Arsip surat masuk April diperbarui",
-    meta: "Ruang Tata Usaha",
-    time: "10 menit lalu",
-  },
-  {
-    title: "Validasi kode lemari untuk dokumen kelulusan",
-    meta: "Unit Kesiswaan",
-    time: "32 menit lalu",
-  },
-  {
-    title: "Penambahan arsip rapat komite semester genap",
-    meta: "Bagian Humas",
-    time: "1 jam lalu",
-  },
-  {
-    title: "Pemeriksaan ulang metadata arsip siswa",
-    meta: "Operator Arsip",
-    time: "Hari ini",
-  },
-];
-
 const recentNotifications = [
   {
-    title: "Guru Naufal belum upload arsip ke event rapat komite",
+    title: "Guru Naufal belum upload arsip untuk event rapat komite",
     meta: "Ruang Tata Usaha",
     time: "10 menit lalu",
   },
   {
-    title: "Lemari 1 hampir penuh, perlu penataan ulang untuk arsip baru",
-    meta: "Lemari 1 - Standar Isi",
-    time: "32 menit lalu",
+    title: "Guru Agung belum upload arsip untuk event MPLS 2026",
+    meta: "Ruang Tata Usaha",
+    time: "10 menit lalu",
   },
 ];
 
@@ -102,11 +79,7 @@ export default function Dashboard() {
     }
   };
 
-  const {
-    data: archivesWithoutLocation,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: archivesWithoutLocation } = useQuery({
     queryKey: ["archives-without-location"],
     queryFn: getArchiveWithoutLocation,
   });
@@ -181,7 +154,9 @@ export default function Dashboard() {
                   Arsip yang belum ada lokasi penyimpanan
                 </CardTitle>
                 <CardDescription className="mt-1 text-sm leading-6">
-                  Daftar arsip yang belum dihubungkan dengan lokasi fisik penyimpanan. Segera atur lokasi untuk memastikan keamanan dan kemudahan akses dokumen.
+                  Daftar arsip yang belum dihubungkan dengan lokasi fisik
+                  penyimpanan. Segera atur lokasi untuk memastikan keamanan dan
+                  kemudahan akses dokumen.
                 </CardDescription>
               </div>
               {/* <span className="hidden items-center gap-2 text-sm text-primary sm:inline-flex">
@@ -245,9 +220,9 @@ export default function Dashboard() {
                   <p className="text-sm font-semibold text-foreground">
                     {notification.title}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  {/* <p className="text-sm text-muted-foreground">
                     {notification.meta}
-                  </p>
+                  </p> */}
                 </div>
                 <span className="shrink-0 text-xs font-medium text-primary/70">
                   {notification.time}
