@@ -42,16 +42,16 @@ export default function EventRow({
       <TableCell>
         <span
           className={`flex gap-1 flex-col w-fit rounded-sm border px-2.5 py-1 text-xs font-semibold ${
-            statusStyles[event.status_upload]
+            statusStyles[event.softfile_status]
           }`}
         >
-          {event.status_upload === "pending_upload"
+          {event.softfile_status === "pending_upload"
             ? "Belum Diunggah"
             : "Sudah Diunggah"}
         </span>
-        {event.status_upload === "pending_upload" && (
+        {event.softfile_status === "pending_upload" && (
           <Link
-            to={`/event/${event.id}/upload`}
+            to={`/archives`}
             className="text-xs! ml-2 hover:underline text-muted-foreground"
           >
             Upload Arsip
