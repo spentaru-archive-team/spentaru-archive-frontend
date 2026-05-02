@@ -41,12 +41,18 @@ export default function ArchiveRow({
         <TableCell>
           <span
             className={`inline-flex rounded-sm border px-2.5 py-1 text-xs font-semibold ${
-              statusStyles[archive.status]
+              statusStyles[archive.retention_status]
             }`}
           >
-            {archive.status === "pending_upload"
-              ? "Menunggu Upload"
-              : "Telah Upload"}
+            {archive.retention_status === "active"
+              ? "Aktif"
+              : archive.retention_status === "ready_for_destruction"
+                ? "Siap Dihapus"
+                : archive.retention_status === "destroyed"
+                  ? "Dihapus"
+                  : archive.retention_status === "retained"
+                    ? "Ditahan"
+                    : "-"}
           </span>
         </TableCell>
         <TableCell>

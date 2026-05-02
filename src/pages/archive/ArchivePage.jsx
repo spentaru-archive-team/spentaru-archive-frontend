@@ -11,9 +11,10 @@ import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
 
 const statusStyles = {
-  pending_upload: "border-primary/15 bg-primary/6 text-primary",
-  uploaded: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  "Perlu Tinjau": "border-amber-200 bg-amber-50 text-amber-700",
+  active: "border-green-300 bg-green-100 text-green-800",
+  ready_for_destruction: "border-yellow-300 bg-yellow-100 text-yellow-800",
+  destroyed: "border-red-300 bg-red-100 text-red-800",
+  retained: "border-blue-300 bg-blue-100 text-blue-800",
 };
 
 export default function ArchivePage() {

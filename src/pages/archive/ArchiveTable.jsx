@@ -27,7 +27,7 @@ export default function ArchiveTable({
               <TableHead>Tahun</TableHead>
               <TableHead>Kategori</TableHead>
               <TableHead>Subkategori</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Status Retensi</TableHead>
               <TableHead>File Arsip</TableHead>
               <TableHead>Aksi</TableHead>
             </TableRow>

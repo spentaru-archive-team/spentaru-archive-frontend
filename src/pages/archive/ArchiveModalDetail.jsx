@@ -8,10 +8,55 @@ import {
 } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { STORAGE_URL } from "@/config/api";
-import { FileText, Calendar, Tag, FolderTree, Info, User } from "lucide-react";
+import {
+  FileText,
+  Calendar,
+  Tag,
+  FolderTree,
+  Info,
+  User,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
   if (!archive) return null;
+
+  const formatDate = (value) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const retentionStatusMap = {
+    active: {
+      label: "Aktif",
+      className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    },
+    ready_for_destruction: {
+      label: "Siap Dihapus",
+      className: "border-amber-200 bg-amber-50 text-amber-700",
+    },
+    destroyed: {
+      label: "Dimusnahkan",
+      className: "border-rose-200 bg-rose-50 text-rose-700",
+    },
+    retained: {
+      label: "Ditahan",
+      className: "border-blue-200 bg-blue-50 text-blue-700",
+    },
+  };
+
+  const retentionInfo =
+    retentionStatusMap[archive.retention_status] || {
+      label: "-",
+      className: "border-slate-200 bg-slate-100 text-slate-700",
+    };
 
   const statusLabel =
     archive.status === "pending_upload" ? "Menunggu Upload" : "Telah Upload";
@@ -120,32 +165,6 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
 
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-sm bg-primary/10 text-primary">
-                  <Calendar size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Status Event
-                  </p>
-                  <span
-                    className={`mt-1 inline-flex items-center px-2.5 py-0.5 rounded-sm border text-xs font-medium ${
-                      archive.event?.status === "ongoing"
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-slate-200 bg-slate-100 text-slate-700"
-                    }`}
-                  >
-                    {archive.event?.status === "ongoing"
-                      ? "Berlangsung"
-                      : archive.event?.status === "done"
-                        ? "Selesai"
-                        : "-"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-sm bg-primary/10 text-primary">
                   <User size={18} />
                 </div>
                 <div>
@@ -157,6 +176,66 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="rounded-sm border border-border/80 bg-muted/10 p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={16} className="text-primary" />
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Informasi Retensi
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Status Retensi
+                </p>
+                <span
+                  className={`mt-1 inline-flex items-center px-2.5 py-0.5 rounded-sm border text-xs font-medium ${retentionInfo.className}`}
+                >
+                  {retentionInfo.label}
+                </span>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Jatuh Tempo Retensi
+                </p>
+                <p className="text-sm font-semibold text-foreground">
+                  {formatDate(archive.retention_due_date)}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Diputuskan Pada
+                </p>
+                <p className="text-sm font-semibold text-foreground">
+                  {formatDate(archive.retention_decided_at)}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Diputuskan Oleh
+                </p>
+                <p className="text-sm font-semibold text-foreground">
+                  {archive.retention_decided_by?.name ||
+                    archive.retention_decided_by ||
+                    "-"}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">
+                Catatan Retensi
+              </p>
+              <p className="text-sm text-foreground leading-relaxed">
+                {archive.retention_note || "-"}
+              </p>
             </div>
           </div>
 
