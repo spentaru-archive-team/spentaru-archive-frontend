@@ -57,15 +57,20 @@ export default function ArchiveRow({
         </TableCell>
         <TableCell>
           {archive.files?.file_url ? (
-            <a
-              href={`${STORAGE_URL}${archive?.files?.file_url}`}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to={`/archives/${archive.id}/preview?file_url=${encodeURIComponent(archive?.files?.file_url || "")}&file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
+              state={{
+                archiveId: archive.id,
+                archiveTitle: archive?.title || "",
+                fileUrl: archive?.files?.file_url || "",
+                fileName: archive?.files?.file_name || "",
+                fileSourceUrl: `${STORAGE_URL}${archive?.files?.file_url || ""}`,
+              }}
               className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
             >
               <FileText size={16} />
               Lihat File
-            </a>
+            </Link>
           ) : (
             <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Link

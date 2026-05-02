@@ -15,6 +15,7 @@ import StorageRule from "./pages/storageRule/StorageRulePage";
 import Cabinet from "./pages/cabinet/CabinetPage";
 import Settings from "./pages/Settings";
 import NotFoundPage from "./pages/NotFoundPage";
+import ArchivePreviewPage from "./pages/archive/ArchivePreviewPage";
 
 function App() {
   return (
@@ -31,6 +32,10 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/events" element={<Event />} />
                 <Route path="/archives" element={<Archive />} />
+                <Route
+                  path="/archives/:archiveId/preview"
+                  element={<ArchivePreviewPage />}
+                />
                 <Route path="/categories" element={<Category />} />
                 <Route path="/archive-locations" element={<Location />} />
                 <Route path="/users" element={<User />} />
