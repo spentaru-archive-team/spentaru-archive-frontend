@@ -93,7 +93,7 @@ function LocationModalFormContent({
       setIsLoadingMeta(true);
       try {
         const [archiveRes, cabinetRes] = await Promise.all([
-          isEdit ? getArchives() : getArchivesWithoutLocation(),
+          isEdit ? getArchives({ all: true }) : getArchivesWithoutLocation(),
           getCabinets(),
         ]);
 
@@ -229,27 +229,40 @@ function LocationModalFormContent({
               <Label htmlFor="archive_id" className="text-sm font-semibold">
                 Arsip <span className="text-red-500">*</span>
               </Label>
-              <NativeSelect
-                id="archive_id"
-                name="archive_id"
-                value={formData.archive_id}
-                onChange={handleChange}
-                required
-                className="w-full"
-                disabled={isLoadingMeta}
-              >
-                <NativeSelectOption value="">
-                  {isLoadingMeta ? "Memuat data arsip..." : "Pilih arsip"}
-                </NativeSelectOption>
-                {archives.map((archive) => (
-                  <NativeSelectOption
-                    key={archive.id}
-                    value={String(archive.id)}
-                  >
-                    {archive.title}
+              {isEdit ? (
+                <Input
+                  id="archive_id"
+                  name="archive_id"
+                  value={
+                    archives.find((a) => String(a.id) === formData.archive_id)
+                      ?.title || "Tidak ditemukan"
+                  }
+                  disabled
+                  className="h-10 py-0 shadow-none"
+                />
+              ) : (
+                <NativeSelect
+                  id="archive_id"
+                  name="archive_id"
+                  value={formData.archive_id}
+                  onChange={handleChange}
+                  required
+                  className="w-full"
+                  disabled={isLoadingMeta}
+                >
+                  <NativeSelectOption value="">
+                    {isLoadingMeta ? "Memuat data arsip..." : "Pilih arsip"}
                   </NativeSelectOption>
-                ))}
-              </NativeSelect>
+                  {archives.map((archive) => (
+                    <NativeSelectOption
+                      key={archive.id}
+                      value={String(archive.id)}
+                    >
+                      {archive.title}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              )}
               {error?.fields?.archive_id && (
                 <p className="mt-1 text-xs text-destructive">
                   {error.fields.archive_id[0]}

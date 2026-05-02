@@ -3,6 +3,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { STORAGE_URL } from "@/config/api";
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
+import { Link } from "react-router";
 
 export default function LocationRow({
   index,
@@ -22,14 +23,19 @@ export default function LocationRow({
           {index + 1}
         </TableCell>
         <TableCell>
-          <a
-            href={`${STORAGE_URL}${location?.archive?.files?.file_url}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={`/archives/${location?.archive.id}/preview?file_url=${encodeURIComponent(location?.archive?.files?.file_url || "")}&file_name=${encodeURIComponent(location?.archive?.files?.file_name || "")}&title=${encodeURIComponent(location?.archive?.title || "")}`}
+            state={{
+              archiveId: location?.archive?.id,
+              archiveTitle: location?.archive?.title || "",
+              fileUrl: location?.archive?.files?.file_url || "",
+              fileName: location?.archive?.files?.file_name || "",
+              fileSourceUrl: `${STORAGE_URL}${location?.archive?.files?.file_url || ""}`,
+            }}
             className="font-semibold text-foreground whitespace-normal hover:underline"
           >
             {archiveTitle}
-          </a>
+          </Link>
         </TableCell>
         <TableCell className=" text-foreground">{cabinetName}</TableCell>
         <TableCell className=" text-foreground">{rackName}</TableCell>
