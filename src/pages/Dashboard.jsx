@@ -118,7 +118,7 @@ export default function Dashboard() {
         const res = await getDashboardData();
         setArchiveTotal(res.data.data.archive_total);
         setCategoryTotal(res.data.data.archive_category_total);
-        setCabinetTotal(res.data.data.archive_subcategory_total);
+        setCabinetTotal(res.data.data.cabinet_total);
         setUserTotal(res.data.data.user_total);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
