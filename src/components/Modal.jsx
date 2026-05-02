@@ -29,7 +29,7 @@ const ModalContent = React.forwardRef(({ className, children, ...props }, ref) =
         ref={ref}
         aria-describedby={props["aria-describedby"] || undefined}
         className={cn(
-          "relative mx-auto flex h-full w-full max-h-[90vh] max-w-lg flex-col rounded-sm border bg-background p-0 shadow-lg md:mt-[5vh]",
+          "relative mx-auto flex h-auto w-full max-h-[90vh] max-w-lg flex-col rounded-sm border bg-background p-0 shadow-lg md:mt-[5vh]",
           className
         )}
         {...props}
