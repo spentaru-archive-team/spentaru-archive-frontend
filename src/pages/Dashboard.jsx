@@ -181,13 +181,13 @@ export default function Dashboard() {
                   Arsip yang belum ada lokasi penyimpanan
                 </CardTitle>
                 <CardDescription className="mt-1 text-sm leading-6">
-                  Riwayat singkat pembaruan arsip dan pengecekan dokumen.
+                  Daftar arsip yang belum dihubungkan dengan lokasi fisik penyimpanan. Segera atur lokasi untuk memastikan keamanan dan kemudahan akses dokumen.
                 </CardDescription>
               </div>
-              <span className="hidden items-center gap-2 text-sm text-primary sm:inline-flex">
+              {/* <span className="hidden items-center gap-2 text-sm text-primary sm:inline-flex">
                 <Clock3 size={16} />
                 Hari ini
-              </span>
+              </span> */}
             </div>
           </CardHeader>
           <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
