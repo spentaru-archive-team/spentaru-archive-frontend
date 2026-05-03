@@ -7,7 +7,7 @@ import React from "react";
 export default function LocationHeader({ onAddClick, keyword, setKeyword }) {
   return (
     <Header title="Manajemen Lokasi Arsip" desc='Kelola lokasi arsip untuk penempatan arsip sekolah di ruang data.'>
-      <div className="flex justify-between w-full">
+      <div className="flex flex-col gap-2 md:flex-row justify-between w-full">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative w-full sm:w-auto">
             <Search

@@ -217,7 +217,11 @@ function LocationModalFormContent({
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          id="archive-location-form"
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+          onSubmit={handleSubmit}
+        >
           <div className="space-y-5 px-6 pb-6">
             {error?.general && (
               <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
@@ -374,30 +378,31 @@ function LocationModalFormContent({
               )}
             </div>
           </div>
-
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan Lokasi"}
-            </Button>
-          </ModalFooter>
         </form>
+
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="archive-location-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan Lokasi"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
