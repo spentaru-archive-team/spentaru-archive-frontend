@@ -9,11 +9,11 @@ import {
 import {
   getArchivesWithoutLocation,
   getDashboardData,
+  getEventPendingUploads,
 } from "@/services/dashboard.service";
 import {
   Archive,
   BookOpenText,
-  Clock3,
   FolderKanban,
   UserRound,
 } from "lucide-react";
@@ -56,7 +56,7 @@ export default function Dashboard() {
       icon: FolderKanban,
     },
     {
-      title: "Lemari Penyimpanan",
+      title: "Total Lemari",
       value: cabinetTotal,
       detail: "Lemari fisik yang terhubung dengan kode arsip",
       icon: BookOpenText,
@@ -68,6 +68,21 @@ export default function Dashboard() {
       icon: UserRound,
     },
   ];
+
+  const fetchPendingUploads = async () => {
+    try {
+      const res = await getEventPendingUploads();
+      return res.data.data;
+    } catch (error) {
+      console.error("Error fetching pending uploads:", error);
+      throw error;
+    }
+  };
+
+  const { data: eventPendingUploads } = useQuery({
+    queryKey: ["event-pending-uploads"],
+    queryFn: fetchPendingUploads,
+  });
 
   const getArchiveWithoutLocation = async () => {
     try {
@@ -114,7 +129,7 @@ export default function Dashboard() {
         desc="Monitoring arsip dan aktivitas pengelolaan dalam satu tempat."
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => {
           const Icon = item.icon;
 
@@ -145,7 +160,7 @@ export default function Dashboard() {
         })}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_0.9fr]">
+      <div className="flex flex-col-reverse gap-4 xl:flex-row">
         <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
@@ -211,22 +226,23 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent className="space-y-3 px-5 py-5">
-            {recentNotifications.map((notification) => (
+            {eventPendingUploads?.map((event) => (
               <div
-                key={notification.title}
+                key={event.id}
                 className="flex items-start justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
               >
                 <div className="min-w-0 space-y-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    {notification.title}
+                  <p className="text-sm text-foreground">
+                    Guru <strong>{event.user.name}</strong> belum mengupload
+                    arsip untuk event <strong>{event.title}</strong>
                   </p>
                   {/* <p className="text-sm text-muted-foreground">
-                    {notification.meta}
+                    {event.meta}
                   </p> */}
                 </div>
-                <span className="shrink-0 text-xs font-medium text-primary/70">
-                  {notification.time}
-                </span>
+                {/* <span className="shrink-0 text-xs font-medium text-primary/70">
+                  {event.time}
+                </span> */}
               </div>
             ))}
           </CardContent>
