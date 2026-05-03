@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import CategoryHeader from "./CategoryHeader";
 import Pagination from "@/components/Pagination";
 import CategoryTable from "./CategoryTable";
-import {
-  deleteCategories,
-  getCategories,
-} from "@/services/category.service";
+import { deleteCategories, getCategories } from "@/services/category.service";
 import { useQuery } from "@tanstack/react-query";
 import CategoryTableSkeleton from "./CategoryTableSkeleton";
 import CategoryModalForm from "./CategoryModalForm";
 import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
+import PopUp from "@/components/PopUp";
 
 export default function CategoryPage() {
   const location = useLocation();
@@ -22,6 +20,8 @@ export default function CategoryPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteCategory, setSelectedDeleteCategory] = useState(null);
   const [isDeletingCategory, setIsDeletingCategory] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   const handleAddClick = () => {
     setSelectedCategory(null);
@@ -66,6 +66,10 @@ export default function CategoryPage() {
       setSelectedDeleteCategory(null);
     } catch (error) {
       console.error("Error deleting category:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus kategori "${selectedDeleteCategory?.name || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingCategory(false);
     }
@@ -88,6 +92,14 @@ export default function CategoryPage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Kategori"

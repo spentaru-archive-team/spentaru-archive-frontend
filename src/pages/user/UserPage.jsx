@@ -8,6 +8,7 @@ import UserTableSkeleton from "./UserTableSkeleton";
 import UserModalForm from "./UserModalForm";
 import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
+import PopUp from "@/components/PopUp";
 
 const roleStyles = {
   admin: "border-primary/15 bg-primary/6 text-primary",
@@ -35,6 +36,8 @@ export default function UserPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteUser, setSelectedDeleteUser] = useState(null);
   const [isDeletingUser, setIsDeletingUser] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -97,6 +100,10 @@ export default function UserPage() {
       setSelectedDeleteUser(null);
     } catch (error) {
       console.error("Error deleting user:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus user "${selectedDeleteUser?.name || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingUser(false);
     }
@@ -104,7 +111,11 @@ export default function UserPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await getUsers({ page: currentPage, query: debouncedKeyword || null, role: roleFilter || null });
+      const res = await getUsers({
+        page: currentPage,
+        query: debouncedKeyword || null,
+        role: roleFilter || null,
+      });
       return res.data.data;
     } catch (error) {
       if (error.response.status === 404) {
@@ -154,6 +165,14 @@ export default function UserPage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmResetPassword}
         title="Konfirmasi Reset Password"

@@ -9,6 +9,7 @@ import ArchiveModalDetail from "./ArchiveModalDetail";
 import ArchiveModalForm from "./ArchiveModalForm";
 import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
+import PopUp from "@/components/PopUp";
 
 const statusStyles = {
   active: "border-green-300 bg-green-100 text-green-800",
@@ -30,6 +31,8 @@ export default function ArchivePage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteArchive, setSelectedDeleteArchive] = useState(null);
   const [isDeletingArchive, setIsDeletingArchive] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -98,6 +101,10 @@ export default function ArchivePage() {
       setSelectedDeleteArchive(null);
     } catch (deleteError) {
       console.error("Error deleting archive:", deleteError.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus arsip "${selectedDeleteArchive?.title || "ini"}". ${deleteError.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingArchive(false);
     }
@@ -127,6 +134,14 @@ export default function ArchivePage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Arsip"

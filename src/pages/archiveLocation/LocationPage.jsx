@@ -7,6 +7,7 @@ import Confirm from "@/components/Confirm";
 import LocationModalForm from "./LocationModalForm";
 import { useLocation, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
+import PopUp from "@/components/PopUp";
 import {
   deleteArchiveLocations,
   getArchiveLocations,
@@ -26,6 +27,8 @@ export default function LocationPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteLocation, setSelectedDeleteLocation] = useState(null);
   const [isDeletingLocation, setIsDeletingLocation] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -101,6 +104,10 @@ export default function LocationPage() {
       setSelectedDeleteLocation(null);
     } catch (error) {
       console.error("Error deleting archive location:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus lokasi arsip "${selectedDeleteLocation?.label_code || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingLocation(false);
     }
@@ -129,6 +136,14 @@ export default function LocationPage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Lokasi Arsip"

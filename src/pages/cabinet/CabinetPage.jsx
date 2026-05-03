@@ -7,6 +7,7 @@ import CabinetSkeleton from "./CabinetSkeleton";
 import Confirm from "@/components/Confirm";
 import CabinetModalForm from "./CabinetModalForm";
 import { useLocation, useNavigate } from "react-router";
+import PopUp from "@/components/PopUp";
 
 export default function CabinetPage() {
   const location = useLocation();
@@ -17,6 +18,8 @@ export default function CabinetPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteCabinet, setSelectedDeleteCabinet] = useState(null);
   const [isDeletingCabinet, setIsDeletingCabinet] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   const handleAddClick = () => {
     setSelectedCabinet(null);
@@ -61,6 +64,10 @@ export default function CabinetPage() {
       setSelectedDeleteCabinet(null);
     } catch (error) {
       console.error("Error deleting cabinet:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus lemari "${selectedDeleteCabinet?.name || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingCabinet(false);
     }
@@ -83,6 +90,14 @@ export default function CabinetPage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+      
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Lemari"

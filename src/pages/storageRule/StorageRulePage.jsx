@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import StorageRuleTableSkeleton from "./StorageRuleTableSkeleton";
 import StorageRuleModalForm from "./StorageRuleModalForm";
+import PopUp from "@/components/PopUp";
 
 export default function StorageRulePage() {
   const location = useLocation();
@@ -25,6 +26,8 @@ export default function StorageRulePage() {
     useState(null);
   const [isDeletingArchiveStorageRule, setIsDeletingArchiveStorageRule] =
     useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   const handleAddClick = () => {
     setSelectedStorageRule(null);
@@ -69,6 +72,10 @@ export default function StorageRulePage() {
       setSelectedDeleteStorageRule(null);
     } catch (error) {
       console.error("Error deleting storage rule:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus aturan penyimpanan untuk lemari "${selectedDeleteStorageRule?.cabinet?.name || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingArchiveStorageRule(false);
     }
@@ -96,6 +103,14 @@ export default function StorageRulePage() {
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Aturan Penyimpanan"
@@ -112,7 +127,9 @@ export default function StorageRulePage() {
       {isLoading ? (
         <StorageRuleTableSkeleton />
       ) : error ? (
-        <div className="text-center text-destructive">Error: {error.message}</div>
+        <div className="text-center text-destructive">
+          Error: {error.message}
+        </div>
       ) : (
         <StorageRuleTable
           storageRules={data}

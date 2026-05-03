@@ -9,6 +9,7 @@ import EventModalForm from "./EventModalForm";
 import Confirm from "@/components/Confirm";
 import { useLocation, useNavigate } from "react-router";
 import EventModalDetail from "./EventModalDetail";
+import PopUp from "@/components/PopUp";
 
 const statusStyles = {
   ongoing: "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -36,6 +37,8 @@ export default function EventPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteEvent, setSelectedDeleteEvent] = useState(null);
   const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+  const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
+  const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -108,6 +111,10 @@ export default function EventPage() {
       setSelectedDeleteEvent(null);
     } catch (error) {
       console.error("Error deleting event:", error.response);
+      setDeleteErrorTitle(
+        `Gagal menghapus event "${selectedDeleteEvent?.title || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+      );
+      setDeleteErrorOpen(true);
     } finally {
       setIsDeletingEvent(false);
     }
@@ -132,12 +139,26 @@ export default function EventPage() {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["events", currentPage, debouncedKeyword, statusFilter, sortFilter],
+    queryKey: [
+      "events",
+      currentPage,
+      debouncedKeyword,
+      statusFilter,
+      sortFilter,
+    ],
     queryFn: fetchEvents,
   });
 
   return (
     <section className="space-y-6">
+      <PopUp
+        open={deleteErrorOpen}
+        title={deleteErrorTitle}
+        type="error"
+        duration={4000}
+        onClose={() => setDeleteErrorOpen(false)}
+      />
+
       <Confirm
         open={confirmDelete}
         title="Konfirmasi Hapus Event"
