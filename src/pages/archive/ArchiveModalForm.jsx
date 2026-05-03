@@ -313,6 +313,7 @@ function ArchiveModalFormContent({
         </ModalHeader>
 
         <form
+          id="archive-form"
           onSubmit={handleSubmit}
           className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
         >
@@ -604,30 +605,31 @@ function ArchiveModalFormContent({
               )}
             </div>
           </div>
-
         </form>
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan Arsip"}
-            </Button>
-          </ModalFooter>
+        
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="archive-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan Arsip"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
