@@ -7,7 +7,7 @@ import React from "react";
 export default function CategoryHeader({ onAddClick }) {
   return (
     <Header title="Manajemen Kategori">
-      <div className="flex justify-between w-full">
+      <div className="flex flex-col gap-2 md:flex-row justify-between w-full">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative w-full sm:w-auto">
             <Search

@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PlusCircle, Save, Trash2 } from "lucide-react";
-import { createCategories, updateCategories } from "@/services/category.service";
+import {
+  createCategories,
+  updateCategories,
+} from "@/services/category.service";
 import { useLocation, useNavigate } from "react-router";
 
 const createInitialCategoryFormData = (category) => ({
@@ -19,9 +22,9 @@ const createInitialCategoryFormData = (category) => ({
   subcategories:
     category?.subcategories?.length > 0
       ? category.subcategories.map((subcat) => ({
-        id: subcat?.id ?? null,
-        name: subcat?.name || "",
-      }))
+          id: subcat?.id ?? null,
+          name: subcat?.name || "",
+        }))
       : [{ id: null, name: "" }],
 });
 
@@ -33,7 +36,9 @@ export default function CategoryModalForm({
 }) {
   if (!isOpen) return null;
 
-  const formKey = category?.id ? `category-edit-${category.id}` : "category-create";
+  const formKey = category?.id
+    ? `category-edit-${category.id}`
+    : "category-create";
   return (
     <CategoryModalFormContent
       key={formKey}
@@ -44,7 +49,11 @@ export default function CategoryModalForm({
   );
 }
 
-function CategoryModalFormContent({ onClose, category = null, fetchCategories }) {
+function CategoryModalFormContent({
+  onClose,
+  category = null,
+  fetchCategories,
+}) {
   const isEdit = !!category;
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,7 +107,9 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
         name: item.name.trim(),
       }))
       .filter((item) => Boolean(item.name))
-      .map((item) => (item.id ? { id: item.id, name: item.name } : { name: item.name }));
+      .map((item) =>
+        item.id ? { id: item.id, name: item.name } : { name: item.name },
+      );
 
     return {
       name: formData.name,
@@ -187,7 +198,11 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          id="category-form"
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+        >
           <div className="space-y-5 px-6 pb-6">
             {error?.general && (
               <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
@@ -209,7 +224,9 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
                 className="h-10 py-0 shadow-none"
               />
               {error?.fields?.name && (
-                <p className="mt-1 text-xs text-destructive">{error.fields.name[0]}</p>
+                <p className="mt-1 text-xs text-destructive">
+                  {error.fields.name[0]}
+                </p>
               )}
             </div>
 
@@ -248,7 +265,11 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
               <div className="space-y-2">
                 {formData.subcategories.map((subcategory, index) => (
                   <div
-                    key={subcategory.id ? `subcat-${subcategory.id}` : `subcat-new-${index}`}
+                    key={
+                      subcategory.id
+                        ? `subcat-${subcategory.id}`
+                        : `subcat-new-${index}`
+                    }
                     className="flex items-center gap-2"
                   >
                     <Input
@@ -278,30 +299,31 @@ function CategoryModalFormContent({ onClose, category = null, fetchCategories })
               )}
             </div>
           </div>
-
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan Kategori"}
-            </Button>
-          </ModalFooter>
         </form>
+
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="category-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan Kategori"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
