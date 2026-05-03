@@ -161,7 +161,7 @@ export default function Dashboard() {
       </div>
 
       <div className="flex flex-col-reverse gap-4 xl:flex-row">
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -212,7 +212,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>

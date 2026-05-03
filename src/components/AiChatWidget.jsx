@@ -12,10 +12,7 @@ import {
   FileCode,
   Wand2,
 } from "lucide-react";
-import axios from "axios";
-
-// Import file system prompt lokalmu
-import systemPromptText from "@/services/system.txt?raw";
+import { askAi, extractOcrBase64 } from "@/services/ai.service";
 
 // Import Komponen Shadcn UI
 import { Button } from "@/components/ui/button";
@@ -27,55 +24,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-
-// =====================================================================
-// KONFIGURASI API & PROMPT AI
-// =====================================================================
-// URL sudah dibersihkan dan dipastikan benar 100%
-const AI_URL = "https://api.siputzx.my.id/api/ai/glm47flash";
-
-// Gunakan prompt dari file txt, ATAU gunakan fallback prompt ketat ini
-const SYSTEM_PROMPT =
-  systemPromptText?.trim() ||
-  `Kamu adalah "Spentaru AI", asisten virtual resmi untuk sistem pengarsipan di SMP Negeri 1 Waru.
-    
-    KONTEKS PENTING:
-    Spentaru adalah Sistem Penyimpanan Terpadu Arsip (Integrated Archive System) untuk SMP Negeri 1 Waru. Sistem ini berfungsi untuk mengelola, mengarsipkan, dan menyimpan dokumen-dokumen sekolah secara digital. Spentaru ini berada di dalam website resmi SMP Negeri 1 Waru, khususnya di menu Web Arsip.
-    
-    ATURAN SANGAT KETAT:
-    1. Kamu HANYA BOLEH menjawab pertanyaan yang berhubungan dengan: SMPN 1 Waru, pengarsipan dokumen, tata letak hardfile (lemari/rak), event sekolah, OCR, dan fitur website ini.
-    2. Jika pengguna bertanya hal di LUAR TOPIK (seperti coding umum, resep makanan, cuaca, dll), TOLAK DENGAN SOPAN.
-    3. Jawabanmu harus profesional, ramah, dan ringkas. Gunakan format tebal (dengan tanda **teks**) untuk menekankan kata-kata penting.`;
-
-// Fungsi pemanggil API Teks (Siputzx)
-async function askAi(prompt) {
-  const response = await axios.get(AI_URL, {
-    params: {
-      prompt,
-      system: SYSTEM_PROMPT,
-      temperature: 0.3, // Suhu diturunkan agar AI lebih fokus dan formal
-    },
-  });
-
-  const payload = response?.data;
-
-  if (payload?.status === false) {
-    throw new Error("Layanan AI sedang tidak tersedia.");
-  }
-
-  const text =
-    payload?.data?.response ||
-    payload?.data?.parts?.[0]?.text ||
-    payload?.data?.text ||
-    payload?.result ||
-    payload?.message;
-
-  if (!text || typeof text !== "string") {
-    throw new Error("Respons AI tidak valid.");
-  }
-
-  return text.trim();
-}
 
 // =====================================================================
 // KOMPONEN UTAMA WIDGET
@@ -146,18 +94,30 @@ export default function AiChatWidget() {
     setLoading(true);
 
     try {
-      // Memanggil fungsi askAi yang sekarang menyatu di file ini
-      const answer = await askAi(prompt);
+      const aiResult = await askAi(prompt);
+      const answer = aiResult?.answer?.trim();
+
+      if (!answer) {
+        throw new Error("Respons AI tidak valid.");
+      }
+
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: answer, type: "text" },
       ]);
-    } catch {
+    } catch (error) {
+      const message =
+        error?.response?.data?.error?.message ||
+        error?.response?.data?.message ||
+        (error?.code === "ERR_NETWORK"
+          ? "Tidak bisa terhubung ke AI service. Pastikan ai-service berjalan di http://localhost:5000."
+          : "Maaf, terjadi kesalahan saat mengambil jawaban AI.");
+
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "Maaf, terjadi kesalahan saat mengambil jawaban AI.",
+          content: message,
           type: "text",
         },
       ]);
@@ -167,23 +127,14 @@ export default function AiChatWidget() {
   };
 
   // --- API LOCAL EASYOCR (UNTUK FALLBACK OCR) ---
-  const callLocalEasyOCR = async (base64Data, mimeType) => {
-    const response = await fetch("http://localhost:5000/api/ocr/extract", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        image: base64Data,
-        mimeType: mimeType,
-      }),
-    });
+  const callLocalEasyOCR = async (base64Data) => {
+    const result = await extractOcrBase64(base64Data);
 
-    if (!response.ok) throw new Error("Gagal menghubungi EasyOCR Local Server");
+    if (!result || typeof result.text !== "string") {
+      throw new Error("EasyOCR processing failed");
+    }
 
-    const result = await response.json();
-    if (!result.status)
-      throw new Error(result.error || "EasyOCR processing failed");
-
-    return result.data;
+    return result;
   };
 
   // --- HANDLER UPLOAD FILE (HYBRID OCR ROUTER) ---
@@ -296,13 +247,8 @@ export default function AiChatWidget() {
       // 3. EASYOCR UNTUK GAMBAR & PDF IMAGE
       setProcessStatus("Memproses gambar dengan EasyOCR...");
       const base64String = dataUrlToProcess.split(",")[1];
-      const imgMimeType = dataUrlToProcess
-        .split(",")[0]
-        .split(":")[1]
-        .split(";")[0];
-
       try {
-        const easyOCRResult = await callLocalEasyOCR(base64String, imgMimeType);
+        const easyOCRResult = await callLocalEasyOCR(base64String);
 
         setMessages((prev) => [
           ...prev,
