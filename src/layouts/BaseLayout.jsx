@@ -29,7 +29,7 @@ export default function BaseLayout() {
         onClose={() => navigate(location.pathname, { replace: true, state: null })}
       />
       <AppSidebar />
-      <main className="p-5 md:pt-15 md:pb-20 md:px-10 w-full overflow-x-hidden relative">
+      <main className="p-5 pb-20 md:pt-15 md:pb-20 md:px-10 w-full overflow-x-hidden relative">
         <SidebarTrigger className="flex lg:hidden fixed top-4 left-4 z-10 p-4 bg-background border border-input" />
         <Outlet />
         <AiChatWidget />
