@@ -146,7 +146,11 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          id="user-form"
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+        >
           <div className="px-6 pb-6 space-y-5">
             {error?.general && (
               <p className="mt-1 text-sm text-destructive bg-red-100/40 p-3 rounded-sm">
@@ -291,30 +295,31 @@ function UserModalFormContent({ onClose, user = null, fetchUsers }) {
               </NativeSelect>
             </div>
           </div>
-
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan User"}
-            </Button>
-          </ModalFooter>
         </form>
+        
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="user-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan User"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
