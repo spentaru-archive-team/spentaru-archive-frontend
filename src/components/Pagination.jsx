@@ -38,7 +38,8 @@ export default function Pagination({
           onClick={() => onPageChange(currentPage - 1)}
         >
           <ChevronLeft size={16} />
-          Sebelumnya
+          <span className="hidden md:block">Sebelumnya</span>
+          {/* <span className="block md:hidden">Prev</span> */}
         </Button>
 
         {/* Number */}
@@ -66,7 +67,8 @@ export default function Pagination({
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
         >
-          Berikutnya
+          <span className="hidden md:block">Selanjutnya</span>
+          {/* <span className="block md:hidden">Next</span> */}
           <ChevronRight size={16} />
         </Button>
       </div>
