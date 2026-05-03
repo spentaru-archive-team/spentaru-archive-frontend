@@ -24,7 +24,13 @@ export function getArchivesWithoutLocation() {
   return res;
 }
 
-export function getArchives({ page = 1, all = false, query, sort } = {}) {
+export function getArchives({
+  page = 1,
+  all = false,
+  query,
+  sort,
+  filters,
+} = {}) {
   const params = {};
 
   if (all) {
@@ -39,6 +45,10 @@ export function getArchives({ page = 1, all = false, query, sort } = {}) {
 
   if (sort) {
     params.sort = sort;
+  }
+
+  if (filters?.category_id) {
+    params["filters[category_id][$eq]"] = filters.category_id;
   }
 
   const res = api.get("/archives", { params });

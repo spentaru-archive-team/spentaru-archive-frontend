@@ -27,7 +27,7 @@ export default function EventPage() {
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [sortFilter, setSortFilter] = useState("date:desc");
+  const [sort, setSort] = useState("date:desc");
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDetailEvent, setSelectedDetailEvent] = useState(null);
@@ -60,7 +60,7 @@ export default function EventPage() {
 
   const handleSortFilterChange = (value) => {
     setCurrentPage(1);
-    setSortFilter(value);
+    setSort(value);
   };
 
   const handleAddClick = () => {
@@ -126,7 +126,7 @@ export default function EventPage() {
         page: currentPage,
         query: debouncedKeyword || null,
         status: statusFilter || null,
-        sort: sortFilter || null,
+        sort: sort || null,
       });
       return res.data.data;
     } catch (error) {
@@ -139,13 +139,7 @@ export default function EventPage() {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: [
-      "events",
-      currentPage,
-      debouncedKeyword,
-      statusFilter,
-      sortFilter,
-    ],
+    queryKey: ["events", currentPage, debouncedKeyword, statusFilter, sort],
     queryFn: fetchEvents,
   });
 
@@ -176,8 +170,8 @@ export default function EventPage() {
         setKeyword={handleKeywordChange}
         statusFilter={statusFilter}
         setStatusFilter={handleStatusFilterChange}
-        sortFilter={sortFilter}
-        setSortFilter={handleSortFilterChange}
+        sort={sort}
+        setSort={handleSortFilterChange}
       />
 
       {isLoading ? (

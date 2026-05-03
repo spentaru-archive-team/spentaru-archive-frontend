@@ -1,7 +1,12 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { getCategories } from "@/services/category.service";
+import { useQuery } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
 import React from "react";
 
@@ -9,9 +14,26 @@ export default function ArchiveHeader({
   onAddClick,
   keyword,
   setKeyword,
-  sortFilter,
-  setSortFilter,
+  sort,
+  setSort,
+  categoryFilter,
+  setCategoryFilter,
 }) {
+  const fetchCategories = async () => {
+    try {
+      const res = await getCategories({ all: true });
+      return res.data.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw error;
+    }
+  };
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+
   return (
     <Header title="Manajemen Arsip">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
@@ -33,21 +55,24 @@ export default function ArchiveHeader({
             className="w-full sm:w-auto"
             name="category"
             id="category"
-            disabled
-            defaultValue=""
+            disabled={!categories?.length}
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <NativeSelectOption value="">Semua Kategori</NativeSelectOption>
-            <NativeSelectOption value="" disabled>
-              Filter kategori (coming soon)
-            </NativeSelectOption>
+            {categories?.map((cat) => (
+              <NativeSelectOption key={cat.id} value={cat.id}>
+                {cat.name}
+              </NativeSelectOption>
+            ))}
           </NativeSelect>
 
           <NativeSelect
             className="w-full sm:w-auto"
             name="sort"
             id="sort"
-            value={sortFilter}
-            onChange={(e) => setSortFilter(e.target.value)}
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
           >
             <NativeSelectOption value="created_at:desc">
               Terbaru-Terlama

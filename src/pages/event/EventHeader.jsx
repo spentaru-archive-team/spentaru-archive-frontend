@@ -1,7 +1,10 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { Plus, Search } from "lucide-react";
 import React from "react";
 
@@ -11,8 +14,8 @@ export default function EventHeader({
   setKeyword,
   statusFilter,
   setStatusFilter,
-  sortFilter,
-  setSortFilter,
+  sort,
+  setSort,
 }) {
   return (
     <Header
@@ -42,7 +45,9 @@ export default function EventHeader({
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <NativeSelectOption value="">Semua Status</NativeSelectOption>
-            <NativeSelectOption value="ongoing">Sedang Berlangsung</NativeSelectOption>
+            <NativeSelectOption value="ongoing">
+              Sedang Berlangsung
+            </NativeSelectOption>
             <NativeSelectOption value="done">Selesai</NativeSelectOption>
           </NativeSelect>
 
@@ -50,11 +55,15 @@ export default function EventHeader({
             className="w-full sm:w-52"
             name="sort"
             id="sort"
-            value={sortFilter}
-            onChange={(e) => setSortFilter(e.target.value)}
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
           >
-            <NativeSelectOption value="date:desc">Terbaru-Terlama</NativeSelectOption>
-            <NativeSelectOption value="date:asc">Terlama-Terbaru</NativeSelectOption>
+            <NativeSelectOption value="date:desc">
+              Terbaru-Terlama
+            </NativeSelectOption>
+            <NativeSelectOption value="date:asc">
+              Terlama-Terbaru
+            </NativeSelectOption>
             <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
             <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
           </NativeSelect>

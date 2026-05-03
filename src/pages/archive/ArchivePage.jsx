@@ -27,7 +27,8 @@ export default function ArchivePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  const [sortFilter, setSortFilter] = useState("created_at:desc");
+  const [sort, setSort] = useState("created_at:desc");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteArchive, setSelectedDeleteArchive] = useState(null);
   const [isDeletingArchive, setIsDeletingArchive] = useState(false);
@@ -49,7 +50,12 @@ export default function ArchivePage() {
 
   const handleSortFilterChange = (value) => {
     setCurrentPage(1);
-    setSortFilter(value);
+    setSort(value);
+  };
+
+  const handleCategoryFilterChange = (value) => {
+    setCurrentPage(1);
+    setCategoryFilter(value);
   };
 
   const handleDetailClick = (archive) => {
@@ -115,7 +121,8 @@ export default function ArchivePage() {
       const res = await getArchives({
         page: currentPage,
         query: debouncedKeyword || null,
-        sort: sortFilter || null,
+        sort: sort || null,
+        filters: categoryFilter ? { category_id: categoryFilter } : null,
       });
       return res.data.data;
     } catch (error) {
@@ -128,7 +135,7 @@ export default function ArchivePage() {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["archives", currentPage, debouncedKeyword, sortFilter],
+    queryKey: ["archives", currentPage, debouncedKeyword, sort, categoryFilter],
     queryFn: fetchArchives,
   });
 
@@ -157,8 +164,10 @@ export default function ArchivePage() {
         onAddClick={handleAddClick}
         keyword={keyword}
         setKeyword={handleKeywordChange}
-        sortFilter={sortFilter}
-        setSortFilter={handleSortFilterChange}
+        sort={sort}
+        setSort={handleSortFilterChange}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={handleCategoryFilterChange}
       />
       {isLoading ? (
         <ArchiveTableSkeleton />
