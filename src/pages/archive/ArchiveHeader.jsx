@@ -14,7 +14,7 @@ export default function ArchiveHeader({
 }) {
   return (
     <Header title="Manajemen Arsip">
-      <div className="flex flex-col md:flex-row justify-between w-full">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex flex-col gap-3 md:flex-row">
           <div className="relative w-full sm:w-auto">
             <Search
@@ -49,14 +49,21 @@ export default function ArchiveHeader({
             value={sortFilter}
             onChange={(e) => setSortFilter(e.target.value)}
           >
-            <NativeSelectOption value="created_at:desc">Terbaru-Terlama</NativeSelectOption>
-            <NativeSelectOption value="created_at:asc">Terlama-Terbaru</NativeSelectOption>
+            <NativeSelectOption value="created_at:desc">
+              Terbaru-Terlama
+            </NativeSelectOption>
+            <NativeSelectOption value="created_at:asc">
+              Terlama-Terbaru
+            </NativeSelectOption>
             <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
             <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
           </NativeSelect>
         </div>
 
-        <Button onClick={onAddClick} className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit">
+        <Button
+          onClick={onAddClick}
+          className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
+        >
           <Plus />
           Tambah Arsip
         </Button>

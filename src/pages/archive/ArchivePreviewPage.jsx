@@ -60,7 +60,7 @@ export default function ArchivePreviewPage() {
   const previewAvailable = Boolean(sourceUrl);
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 mt-5">
       <div className="rounded-sm border border-border/80 bg-card p-4 md:p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="space-y-1">
