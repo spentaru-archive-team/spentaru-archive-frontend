@@ -52,9 +52,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     await csrf();
     const response = await loginRequest(credentials);
-    await fetchUser({ silent: true }).catch(() => null);
+    const nextUser = await fetchUser({ silent: true }).catch(() => null);
 
-    return response;
+    return {
+      response,
+      user: nextUser,
+      userLoaded: Boolean(nextUser),
+    };
   };
 
   const logout = async () => {

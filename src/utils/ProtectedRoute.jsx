@@ -27,6 +27,7 @@ const isPathAllowed = (role, pathname) => {
 export default function ProtectedRoute() {
   const location = useLocation();
   const { loading, isAuthenticated, user } = useAuth();
+  const normalizedRole = String(user?.role || "").toLowerCase();
 
   if (loading) return <FullScreenLoader />;
 
@@ -34,7 +35,7 @@ export default function ProtectedRoute() {
     return <Navigate to="/login" />;
   }
 
-  if (!isPathAllowed(user?.role, location.pathname)) {
+  if (!isPathAllowed(normalizedRole, location.pathname)) {
     return <Navigate to="/dashboard" replace />;
   }
 
