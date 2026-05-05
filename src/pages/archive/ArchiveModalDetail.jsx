@@ -17,6 +17,7 @@ import {
   User,
   ShieldCheck,
 } from "lucide-react";
+import { Link } from "react-router";
 
 export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
   if (!archive) return null;
@@ -244,10 +245,8 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Lampiran File
               </p>
-              <a
-                href={`${STORAGE_URL}${archive?.files?.file_url}`}
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
                 className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 hover:bg-muted/20 transition-colors group"
               >
                 <div className="flex items-center gap-3">
@@ -270,7 +269,7 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                 >
                   Buka
                 </Button>
-              </a>
+              </Link>
             </div>
           )}
         </div>
