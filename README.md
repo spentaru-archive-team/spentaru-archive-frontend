@@ -4,60 +4,83 @@ Aplikasi frontend untuk **Spentaru Archive**, sistem arsip digital sekolah di **
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![Build](https://img.shields.io/badge/Build-Not%20Configured-lightgrey)
-![License](https://img.shields.io/badge/License-Not%20Specified-lightgrey)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white)
 
 ## Daftar Isi
 
 - [Tentang Proyek](#tentang-proyek)
 - [Fitur](#fitur)
-- [Teknologi yang Digunakan](#teknologi-yang-digunakan)
-- [Panduan Instalasi & Pengaturan](#panduan-instalasi--pengaturan)
-- [Contoh Penggunaan](#contoh-penggunaan)
-- [Struktur Folder/Repositori](#struktur-folderrepositori)
-- [Kontribusi](#kontribusi)
+- [Teknologi](#teknologi)
+- [Prasyarat](#prasyarat)
+- [Instalasi](#instalasi)
+- [Konfigurasi](#konfigurasi)
+- [Cara Development](#cara-development)
+- [Struktur Folder](#struktur-folder)
 - [Lisensi](#lisensi)
-- [Kontak/Author](#kontakauthor)
+- [Kontak](#kontak)
 
 ## Tentang Proyek
 
-Spentaru Archive Frontend adalah antarmuka web untuk operasional arsip sekolah, meliputi pencatatan, klasifikasi, pelacakan lokasi simpan, aturan retensi, hingga monitoring status arsip. Proyek ini dirancang untuk kebutuhan administrasi sekolah dengan pendekatan UI yang rapi, formal, dan mudah digunakan oleh staf.
+Spentaru Archive adalah sistem informasi manajemen arsip sekolah yang dirancang khusus untuk kebutuhan administratif SMP Negeri 1 Waru. Aplikasi ini memungkinkan pencatatan, klasifikasi, pelacakan lokasi simpan, pemantauan aturan retensi, hingga monitoring status arsip secara terpusat.
 
 Masalah yang dipecahkan:
-- Arsip tersebar dan sulit ditemukan saat dibutuhkan.
-- Pencatatan arsip manual berisiko inkonsisten.
-- Monitoring retensi/pemusnahan arsip sulit ditelusuri tanpa sistem terpusat.
+- Arsip tersebar dan sulit ditemukan saat dibutuhkan
+- Pencatatan manual berisiko inkonsisten dan tidak terstandar
+- Monitoring retensi dan pemusnahan arsip sulit ditelusuri tanpa sistem terpusat
 
 ## Fitur
 
-- Autentikasi pengguna dan proteksi halaman berbasis sesi/login.
-- Dashboard ringkasan data arsip.
-- Manajemen arsip (tambah, ubah, detail, hapus, filter, pencarian, sorting, pagination).
-- Manajemen master data (kategori, lokasi arsip, lemari, aturan penyimpanan, pengguna, event).
-- Preview arsip dan integrasi endpoint AI service (sesuai konfigurasi environment).
+### Autentikasi & Otorisasi
+- Login berbasis sesi dengan proteksi halaman
+- Dua peran pengguna: Admin dan Guru
+- Menu navigasi disesuaikan berdasarkan peran
 
-## Teknologi yang Digunakan
+### Dashboard
+- Ringkasan data arsip secara real-time
+- Statistik dan indikator penting
 
-Teknologi utama:
-- React 19
-- Vite 8
-- React Router 7
-- Tailwind CSS 4
-- shadcn/ui + Radix UI
-- TanStack Query
-- Axios
+### Manajemen Arsip
+- Tambah, ubah, hapus arsip
+- Detail arsip dengan preview dokumen
+- Filter, pencarian, sorting, pagination
+- Klasifikasi berdasarkan kategori
+- Pelacakan lokasi simpan
 
-Tooling pendukung:
-- ESLint
-- npm
+### Manajemen Master Data
+- **Kategori** – Klasifikasi arsip
+- **Lokasi Arsip** – Lokasi penyimpanan
+- **Lemari** – Rak/lemari penyimpan
+- **Aturan Penyimpanan (Storage Rules)** – Aturan retensi dan pemusnahan
+- **Event** – kegiatan sekolah yang terdokumentasi
+- **User** – Pengguna sistem
 
-## Panduan Instalasi & Pengaturan
+### AI Assistant
+- Widget chat AI untuk bantuan pencarian dan informasi
+- Integrasi dengan AI service (opsional, sesuai konfigurasi environment)
 
-Prasyarat:
-- Node.js 18+ (disarankan versi LTS terbaru)
+### Pengaturan
+- Konfigurasi aplikasi tingkat pengguna
+
+## Teknologi
+
+- **React 19** – Library UI
+- **Vite 8** – Build tool
+- **React Router 7** – Routing
+- **Tailwind CSS 4** – Styling
+- **shadcn/ui + Radix UI** – Komponen UI
+- **TanStack Query** – Data fetching
+- **Axios** – HTTP client
+
+### Tooling
+- ESLint – Linting
+- npm – Package manager
+
+## Prasyarat
+
+- Node.js 18+ (disarankan LTS)
 - npm 9+
 
-Langkah instalasi:
+## Instalasi
 
 ```bash
 git clone <url-repository>
@@ -65,7 +88,7 @@ cd spentaru-archive/frontend
 npm install
 ```
 
-Pengaturan environment:
+## Konfigurasi
 
 1. Salin file contoh environment:
 
@@ -73,7 +96,7 @@ Pengaturan environment:
 cp .env.example .env
 ```
 
-2. Sesuaikan nilai variabel pada `.env`:
+2. Edit variabel pada `.env`:
 
 ```env
 VITE_BASE_API_URL=http://localhost:8000/api/v1
@@ -84,93 +107,105 @@ VITE_AI_TIMEOUT_MS=30000
 VITE_APP_NAME=spentaru-archive-frontend
 ```
 
-## Contoh Penggunaan
+| Variabel | Deskripsi |
+|----------|-----------|
+| `VITE_BASE_API_URL` | URL backend API |
+| `VITE_STORAGE_URL` | URL server storage untuk akses file |
+| `VITE_AI_SERVICE_URL` | URL service AI (jika diaktifkan) |
+| `VITE_USE_LARAVEL_AI_GATEWAY` | Aktifkan gateway AI Laravel |
+| `VITE_AI_TIMEOUT_MS` | Timeout request AI (ms) |
 
-Menjalankan mode development:
+## Cara Development
+
+### Mode Development
 
 ```bash
 npm run dev
 ```
 
-Aplikasi akan berjalan di:
+Aplikasi berjalan di `http://localhost:3000`
 
-```text
-http://localhost:3000
-```
-
-Build produksi:
+### Build Produksi
 
 ```bash
 npm run build
 ```
 
-Menjalankan preview hasil build:
+### Preview Build
 
 ```bash
 npm run preview
 ```
 
-Menjalankan lint:
+### Lint Code
 
 ```bash
 npm run lint
 ```
 
-## Struktur Folder/Repositori
+### Export AI Context
 
-```text
+```bash
+npm run context:ai
+```
+
+Script ini mengeksport konteks AI untuk dokumentasi atau debugging.
+
+## Struktur Folder
+
+```
 frontend/
-+- public/                  # Aset publik
-+- scripts/                 # Script utilitas (mis. export context AI)
-+- src/
-�  +- assets/               # Gambar/logo
-�  +- components/           # Komponen reusable + UI primitives
-�  +- config/               # Konfigurasi (API, dll)
-�  +- context/              # Global context (auth)
-�  +- hooks/                # Custom hooks
-�  +- layouts/              # Layout aplikasi
-�  +- lib/                  # Utility helper
-�  +- pages/                # Halaman fitur (dashboard, archive, user, dst)
-�  +- services/             # Layer request API per domain
-�  +- utils/                # Helper utilitas (mis. ProtectedRoute)
-�  +- App.jsx               # Definisi routing utama
-�  +- main.jsx              # Entry point React
-+- .env.example
-+- package.json
-+- README.md
-```
-
-## Kontribusi
-
-Kontribusi sangat terbuka untuk perbaikan fitur, bug, maupun dokumentasi.
-
-Alur kontribusi yang disarankan:
-
-1. Fork repository.
-2. Buat branch fitur/perbaikan baru.
-3. Lakukan perubahan dan pastikan lint/build lolos.
-4. Commit dengan pesan yang jelas.
-5. Ajukan Pull Request dengan deskripsi perubahan.
-
-Contoh alur singkat:
-
-```bash
-git checkout -b feat/nama-fitur
-npm run lint
-npm run build
-git add .
-git commit -m "feat: tambah fitur ..."
-git push origin feat/nama-fitur
+├── public/                 # Aset publik (favicon, logo)
+├── scripts/                # Script utilitas
+│   └── export-ai-context.mjs
+├── src/
+│   ├── assets/             # Gambar/logo aplikasi
+│   ├── components/         # Komponen reusable
+│   │   ├── ui/             # UI primitives (shadcn)
+│   │   ├── AppSidebar.jsx
+│   │   ├── Header.jsx
+│   │   ├── AiChatWidget.jsx
+│   │   └── ...
+│   ├── config/             # Konfigurasi API
+│   ├── context/            # Global context (AuthContext)
+│   ├── hooks/              # Custom hooks (use-auth, use-mobile)
+│   ├── layouts/            # Layout aplikasi (BaseLayout)
+│   ├── lib/                # Utility helper (utils.js)
+│   ├── pages/              # Halaman fitur
+│   │   ├── Login.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Settings.jsx
+│   │   ├── archive/        # Manajemen arsip
+│   │   ├── category/       # Manajemen kategori
+│   │   ├── cabinet/        # Manajemen lemari
+│   │   ├── archiveLocation/# Manajemen lokasi
+│   │   ├── event/          # Manajemen event
+│   │   ├── user/           # Manajemen user
+│   │   ├── storageRule/    # Manajemen storage rules
+│   │   └── NotFoundPage.jsx
+│   ├── services/           # Layer API services
+│   │   ├── axios.js
+│   │   ├── auth.service.js
+│   │   ├── archive.service.js
+│   │   ├── ai.service.js
+│   │   └── ...
+│   ├── utils/              # Helper (ProtectedRoute)
+│   ├── App.jsx             # Routing utama
+│   ├── App.css
+│   ├── index.css           # Global styles
+│   └── main.jsx            # Entry point
+├── .env.example
+├── package.json
+├── vite.config.js
+└── README.md
 ```
 
 ## Lisensi
 
-Lisensi proyek **belum ditentukan** pada repository ini.
+Proyek ini menggunakan lisensi **MIT**.
 
-Jika proyek akan dipublikasikan secara luas, disarankan menambahkan file `LICENSE` (misalnya MIT/Apache-2.0) agar aturan penggunaan lebih jelas.
+## Kontak
 
-## Kontak/Author
-
-Dikembangkan oleh **Naufal Rafa**.
+Dikembangkan oleh **Naufal Rafa**
 
 - GitHub: [@Falrafa4](https://github.com/Falrafa4)
