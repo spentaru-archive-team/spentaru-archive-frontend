@@ -86,7 +86,9 @@ export function deleteArchives(id) {
 }
 
 export function getArchivePreview(id) {
-  const res = api.get(`/archives/${id}/preview`);
+  const res = api.get(`/archives/${id}/preview`, {
+    responseType: "blob",
+  });
   return res;
 }
 

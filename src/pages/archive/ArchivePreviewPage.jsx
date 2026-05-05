@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { STORAGE_URL } from "@/config/api";
 import ArchivePreviewSkeleton from "@/pages/archive/ArchivePreviewSkeleton";
-import { validateArchivePreview } from "@/services/archive.service";
+import OfficePreview from "@/pages/archive/OfficePreview";
+import {
+  getArchiveById,
+  validateArchivePreview,
+} from "@/services/archive.service";
 import {
   ArrowLeft,
   Download,
@@ -23,6 +27,12 @@ const getExtension = (fileName = "", filePath = "") => {
   return (ext || "").toLowerCase();
 };
 
+const resolveFileUrl = (url = "") => {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url) || url.startsWith("blob:")) return url;
+  return `${STORAGE_URL}${url}`;
+};
+
 export default function ArchivePreviewPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,14 +44,41 @@ export default function ArchivePreviewPage() {
   const fileUrlFromQuery = params.get("file_url") || "";
   const fileNameFromQuery = params.get("file_name") || "";
 
+  const [archiveData, setArchiveData] = useState(null);
+  const [archiveLoading, setArchiveLoading] = useState(true);
+
   const archiveTitle =
     location.state?.archiveTitle || archiveTitleFromQuery || "Dokumen Arsip";
-  const filePath = location.state?.fileUrl || fileUrlFromQuery || "";
-  const fileName = location.state?.fileName || fileNameFromQuery || "";
+  const archiveFileName =
+    archiveData?.files?.file_name || archiveData?.file_name || "";
+  const archiveFilePath =
+    archiveData?.files?.file_url || archiveData?.file_path || "";
+  const filePath =
+    location.state?.fileUrl || fileUrlFromQuery || archiveFilePath || "";
+  const fileName =
+    location.state?.fileName || fileNameFromQuery || archiveFileName || "";
   const previewUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/preview`;
   const downloadUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/download`;
   const [previewError, setPreviewError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArchiveData = async () => {
+      if (!archiveId) return;
+      try {
+        const response = await getArchiveById(archiveId);
+        setArchiveData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch archive:", error);
+      } finally {
+        setArchiveLoading(false);
+      }
+    };
+
+    fetchArchiveData();
+  }, [archiveId]);
+
+  const fileUrl = useMemo(() => resolveFileUrl(filePath), [filePath]);
 
   const fileExtension = getExtension(fileName, filePath);
 
@@ -61,7 +98,7 @@ export default function ArchivePreviewPage() {
 
   useEffect(() => {
     let isLoadinged = true;
-    
+
     const validatePreview = async () => {
       setIsLoading(true);
       if (!previewAvailable) {
@@ -94,7 +131,7 @@ export default function ArchivePreviewPage() {
     };
   }, [archiveId, previewAvailable]);
 
-  if (isLoading) {
+  if (isLoading || archiveLoading) {
     return <ArchivePreviewSkeleton />;
   }
 
@@ -184,24 +221,11 @@ export default function ArchivePreviewPage() {
         )}
 
         {previewAvailable && !previewError && previewType === "office" && (
-          <div className="space-y-3">
-            <div className="rounded-sm border border-border/80 bg-muted/10 px-3 py-2">
-              <p className="text-xs text-muted-foreground">
-                Preview Office bergantung pada layanan pihak ketiga dan dapat
-                gagal pada beberapa file. Jika dokumen tidak tampil, gunakan
-                tombol{" "}
-                <span className="font-semibold text-foreground">
-                  Download File
-                </span>
-                .
-              </p>
-            </div>
-            <iframe
-              title="Preview Office Arsip"
-              src={previewUrl}
-              className="min-h-[70vh] w-full rounded-sm border border-border/80"
-            />
-          </div>
+          <OfficePreview
+            archiveId={archiveId}
+            fileUrl={fileUrl}
+            fileName={fileName}
+          />
         )}
 
         {previewAvailable && !previewError && previewType === "unsupported" && (
