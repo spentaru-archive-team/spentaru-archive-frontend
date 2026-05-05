@@ -22,19 +22,6 @@ import DashboardSkeleton from "./DashboardSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
-const recentNotifications = [
-  {
-    title: "Guru Naufal belum upload arsip untuk event rapat komite",
-    meta: "Ruang Tata Usaha",
-    time: "10 menit lalu",
-  },
-  {
-    title: "Guru Agung belum upload arsip untuk event MPLS 2026",
-    meta: "Ruang Tata Usaha",
-    time: "10 menit lalu",
-  },
-];
-
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [archiveTotal, setArchiveTotal] = useState(0);

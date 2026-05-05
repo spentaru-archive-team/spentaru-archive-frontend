@@ -161,6 +161,7 @@ function ArchiveModalFormContent({
     return () => {
       URL.revokeObjectURL(objectUrl);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.file]);
 
   const fetchEvents = async () => {

@@ -117,7 +117,7 @@ function LocationModalFormContent({
     };
 
     fetchMeta();
-  }, []);
+  }, [isEdit]);
 
   const selectedCabinet = useMemo(
     () =>
