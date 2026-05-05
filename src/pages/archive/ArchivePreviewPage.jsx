@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { STORAGE_URL } from "@/config/api";
+import ArchivePreviewSkeleton from "@/pages/archive/ArchivePreviewSkeleton";
+import { validateArchivePreview } from "@/services/archive.service";
 import {
   ArrowLeft,
   Download,
-  ExternalLink,
   FileSpreadsheet,
   FileText,
   FileType2,
   Image as ImageIcon,
 } from "lucide-react";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp"];
@@ -39,6 +40,8 @@ export default function ArchivePreviewPage() {
   const fileName = location.state?.fileName || fileNameFromQuery || "";
   const previewUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/preview`;
   const downloadUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/download`;
+  const [previewError, setPreviewError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const fileExtension = getExtension(fileName, filePath);
 
@@ -55,6 +58,45 @@ export default function ArchivePreviewPage() {
   }, [fileExtension]);
 
   const previewAvailable = Boolean(filePath || fileName);
+
+  useEffect(() => {
+    let isLoadinged = true;
+    
+    const validatePreview = async () => {
+      setIsLoading(true);
+      if (!previewAvailable) {
+        if (isLoadinged) {
+          setPreviewError("");
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const result = await validateArchivePreview(archiveId);
+        if (isLoadinged) {
+          setPreviewError(result.ok ? "" : result.message);
+        }
+      } catch (error) {
+        if (isLoadinged) {
+          setPreviewError(`${error.message || "Gagal memuat preview arsip."}`);
+        }
+      } finally {
+        if (isLoadinged) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    validatePreview();
+    return () => {
+      isLoadinged = false;
+    };
+  }, [archiveId, previewAvailable]);
+
+  if (isLoading) {
+    return <ArchivePreviewSkeleton />;
+  }
 
   return (
     <section className="space-y-4 mt-5">
@@ -83,7 +125,7 @@ export default function ArchivePreviewPage() {
               Kembali
             </Button>
 
-            {previewAvailable && (
+            {previewAvailable && !previewError && (
               <>
                 <Button
                   asChild
@@ -113,7 +155,17 @@ export default function ArchivePreviewPage() {
           </div>
         )}
 
-        {previewAvailable && previewType === "pdf" && (
+        {previewAvailable && previewError && (
+          <div className="flex min-h-[55vh] flex-col items-center justify-center gap-2 rounded-sm border border-dashed border-border/80 bg-muted/10 px-4 text-center">
+            <FileType2 className="h-8 w-8 text-muted-foreground" />
+            <p className="text-sm font-semibold text-foreground">
+              Preview gagal dimuat.
+            </p>
+            <p className="text-sm text-muted-foreground">{previewError}</p>
+          </div>
+        )}
+
+        {previewAvailable && !previewError && previewType === "pdf" && (
           <iframe
             title="Preview PDF Arsip"
             src={previewUrl}
@@ -121,7 +173,7 @@ export default function ArchivePreviewPage() {
           />
         )}
 
-        {previewAvailable && previewType === "image" && (
+        {previewAvailable && !previewError && previewType === "image" && (
           <div className="flex min-h-[70vh] items-center justify-center rounded-sm border border-border/80 bg-muted/10 p-2">
             <img
               src={previewUrl}
@@ -131,7 +183,7 @@ export default function ArchivePreviewPage() {
           </div>
         )}
 
-        {previewAvailable && previewType === "office" && (
+        {previewAvailable && !previewError && previewType === "office" && (
           <div className="space-y-3">
             <div className="rounded-sm border border-border/80 bg-muted/10 px-3 py-2">
               <p className="text-xs text-muted-foreground">
@@ -152,7 +204,7 @@ export default function ArchivePreviewPage() {
           </div>
         )}
 
-        {previewAvailable && previewType === "unsupported" && (
+        {previewAvailable && !previewError && previewType === "unsupported" && (
           <div className="flex min-h-[55vh] flex-col items-center justify-center gap-2 rounded-sm border border-dashed border-border/80 bg-muted/10 px-4 text-center">
             {fileTypeLabel.includes("XLS") ? (
               <FileSpreadsheet className="h-8 w-8 text-muted-foreground" />
