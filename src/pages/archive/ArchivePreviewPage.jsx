@@ -37,9 +37,8 @@ export default function ArchivePreviewPage() {
     location.state?.archiveTitle || archiveTitleFromQuery || "Dokumen Arsip";
   const filePath = location.state?.fileUrl || fileUrlFromQuery || "";
   const fileName = location.state?.fileName || fileNameFromQuery || "";
-  const sourceUrl =
-    location.state?.fileSourceUrl ||
-    (filePath ? `${STORAGE_URL}${filePath}` : "");
+  const previewUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/preview`;
+  const downloadUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/download`;
 
   const fileExtension = getExtension(fileName, filePath);
 
@@ -50,14 +49,12 @@ export default function ArchivePreviewPage() {
     return "unsupported";
   }, [fileExtension]);
 
-  const officePreviewUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(sourceUrl)}`;
-
   const fileTypeLabel = useMemo(() => {
     if (!fileExtension) return "Tidak diketahui";
     return fileExtension.toUpperCase();
   }, [fileExtension]);
 
-  const previewAvailable = Boolean(sourceUrl);
+  const previewAvailable = Boolean(filePath || fileName);
 
   return (
     <section className="space-y-4 mt-5">
@@ -90,22 +87,9 @@ export default function ArchivePreviewPage() {
               <>
                 <Button
                   asChild
-                  variant="outline"
-                  className="rounded-sm border-border/80"
+                  className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  <a
-                    href={sourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Buka Tab Baru
-                  </a>
-                </Button>
-
-                <Button asChild className="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90">
-                  <a href={sourceUrl} download={fileName || undefined}>
+                  <a href={downloadUrl} download={fileName || undefined}>
                     <Download className="h-4 w-4" />
                     Download File
                   </a>
@@ -132,7 +116,7 @@ export default function ArchivePreviewPage() {
         {previewAvailable && previewType === "pdf" && (
           <iframe
             title="Preview PDF Arsip"
-            src={sourceUrl}
+            src={previewUrl}
             className="min-h-[70vh] w-full rounded-sm border border-border/80"
           />
         )}
@@ -140,7 +124,7 @@ export default function ArchivePreviewPage() {
         {previewAvailable && previewType === "image" && (
           <div className="flex min-h-[70vh] items-center justify-center rounded-sm border border-border/80 bg-muted/10 p-2">
             <img
-              src={sourceUrl}
+              src={previewUrl}
               alt={fileName || "Preview Gambar Arsip"}
               className="max-h-[68vh] w-auto max-w-full rounded-sm object-contain"
             />
@@ -153,12 +137,16 @@ export default function ArchivePreviewPage() {
               <p className="text-xs text-muted-foreground">
                 Preview Office bergantung pada layanan pihak ketiga dan dapat
                 gagal pada beberapa file. Jika dokumen tidak tampil, gunakan
-                tombol <span className="font-semibold text-foreground">Download File</span>.
+                tombol{" "}
+                <span className="font-semibold text-foreground">
+                  Download File
+                </span>
+                .
               </p>
             </div>
             <iframe
               title="Preview Office Arsip"
-              src={officePreviewUrl}
+              src={previewUrl}
               className="min-h-[70vh] w-full rounded-sm border border-border/80"
             />
           </div>
