@@ -161,7 +161,7 @@ function ArchiveModalFormContent({
     return () => {
       URL.revokeObjectURL(objectUrl);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.file]);
 
   const fetchEvents = async () => {
@@ -277,6 +277,11 @@ function ArchiveModalFormContent({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    if (!isEdit && !formData.file) {
+      setFileError("File arsip wajib diunggah.");
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
@@ -550,7 +555,7 @@ function ArchiveModalFormContent({
                 onChange={(e) => handleFileSelect(e.target.files?.[0])}
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                 maxLength={10485760} // 10MB
-                required={!isEdit}
+                required={false}
                 className="hidden h-10 leading-10 shadow-none py-0"
               />
               {error?.fields?.file && (
@@ -607,7 +612,7 @@ function ArchiveModalFormContent({
             </div>
           </div>
         </form>
-        
+
         <ModalFooter>
           <Button
             type="button"
