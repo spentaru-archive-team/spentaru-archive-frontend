@@ -143,6 +143,11 @@ export default function EventPage() {
     queryFn: fetchEvents,
   });
 
+  const getNumRows = (index) => {
+    const numRow = (currentPage - 1) * (data?.per_page || 10) + index + 1;
+    return numRow;
+  };
+
   return (
     <section className="space-y-6">
       <PopUp
@@ -187,6 +192,7 @@ export default function EventPage() {
           onDetailClick={handleDetailClick}
           onEditClick={handleEditClick}
           onDeleteClick={handleDeleteClick}
+          getNumRows={getNumRows}
         />
       )}
 

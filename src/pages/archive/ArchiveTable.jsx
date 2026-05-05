@@ -15,6 +15,7 @@ export default function ArchiveTable({
   onDetailClick,
   onEditClick,
   onDeleteClick,
+  getNumRows,
 }) {
   return (
     <>
@@ -43,7 +44,7 @@ export default function ArchiveTable({
             ) : (
               archives?.data?.map((archive, index) => (
                 <ArchiveRow
-                  index={index}
+                  index={getNumRows(index)}
                   key={archive.id}
                   archive={archive}
                   statusStyles={statusStyles}

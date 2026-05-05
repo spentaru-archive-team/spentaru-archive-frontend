@@ -1,4 +1,10 @@
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 import StorageRuleRow from "./StorageRuleRow";
 
@@ -6,6 +12,7 @@ export default function StorageRuleTable({
   storageRules,
   onEditClick,
   onDeleteClick,
+  getNumRows,
 }) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
@@ -22,8 +29,9 @@ export default function StorageRuleTable({
         </TableHeader>
 
         <TableBody className="bg-white">
-          {storageRules?.data?.map((rule) => (
+          {storageRules?.data?.map((rule, index) => (
             <StorageRuleRow
+              index={getNumRows(index)}
               key={rule.id}
               rule={rule}
               onEditClick={onEditClick}

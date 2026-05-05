@@ -20,7 +20,7 @@ export default function LocationRow({
     <>
       <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
-          {index + 1}
+          {index}
         </TableCell>
         <TableCell>
           <Link

@@ -6,6 +6,7 @@ export default function CategoryTable({
   categories,
   onEditClick,
   onDeleteClick,
+  getNumRows,
 }) {
   return (
     <>
@@ -22,8 +23,9 @@ export default function CategoryTable({
           </TableHeader>
 
           <TableBody className="bg-white">
-            {categories?.data?.map((category) => (
+            {categories?.data?.map((category, index) => (
               <CategoryRow
+                index={getNumRows(index)}
                 key={category.id}
                 category={category}
                 onEditClick={onEditClick}

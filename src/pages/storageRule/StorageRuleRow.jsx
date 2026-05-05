@@ -8,10 +8,10 @@ import {
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function StorageRuleRow({ rule, onEditClick, onDeleteClick }) {
+export default function StorageRuleRow({ index, rule, onEditClick, onDeleteClick }) {
   return (
     <TableRow className="hover:bg-muted/20">
-      <TableCell className="font-medium text-foreground">{rule.id}</TableCell>
+      <TableCell className="font-medium text-foreground">{index}</TableCell>
       <TableCell className="text-foreground">{rule.category?.name}</TableCell>
       <TableCell className="text-foreground">{rule.subcategory?.name ?? "-"}</TableCell>
       <TableCell className="text-foreground">{rule.cabinet?.name}</TableCell>

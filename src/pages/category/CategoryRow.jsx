@@ -3,12 +3,12 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Edit, FileText, Trash2 } from "lucide-react";
 import React from "react";
 
-export default function CategoryRow({ category, onEditClick, onDeleteClick }) {
+export default function CategoryRow({ category, onEditClick, onDeleteClick, index }) {
   return (
     <>
       <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
-          {category.id}
+          {index}
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">

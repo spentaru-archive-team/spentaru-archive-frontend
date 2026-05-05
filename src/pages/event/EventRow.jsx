@@ -18,7 +18,7 @@ export default function EventRow({
 
   return (
     <TableRow className="hover:bg-muted/20">
-      <TableCell className="font-medium text-foreground">{index + 1}</TableCell>
+      <TableCell className="font-medium text-foreground">{index}</TableCell>
       <TableCell className="text-foreground font-semibold">
         {event.title}
       </TableCell>

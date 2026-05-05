@@ -15,6 +15,7 @@ export default function EventTable({
   onDetailClick,
   onEditClick,
   onDeleteClick,
+  getNumRows,
 }) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
@@ -41,7 +42,7 @@ export default function EventTable({
           ) : (
             events?.data?.map((event, index) => (
               <EventRow
-                index={index}
+                index={getNumRows(index)}
                 key={event.id}
                 event={event}
                 statusStyles={statusStyles}

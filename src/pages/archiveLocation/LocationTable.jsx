@@ -13,6 +13,7 @@ export default function LocationTable({
   locations,
   onEditClick,
   onDeleteClick,
+  getNumRows,
 }) {
   return (
     <>
@@ -40,7 +41,7 @@ export default function LocationTable({
             ) : (
               locations?.data?.map((location, index) => (
                 <LocationRow
-                  index={index}
+                  index={getNumRows(index)}
                   key={location.id}
                   location={location}
                   onEditClick={onEditClick}

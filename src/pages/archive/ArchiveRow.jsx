@@ -24,7 +24,7 @@ export default function ArchiveRow({
     <>
       <TableRow className="hover:bg-muted/20">
         <TableCell className=" font-medium text-foreground">
-          {index + 1}
+          {index}
         </TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">

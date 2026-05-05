@@ -15,6 +15,7 @@ export default function UserTable({
   onEditClick,
   roleStyles,
   onResetPasswordClick,
+  getNumRows,
 }) {
   return (
     <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
@@ -46,7 +47,7 @@ export default function UserTable({
             users?.data?.map((user, index) => (
               <UserRow
                 key={user.id}
-                index={index}
+                index={getNumRows(index)}
                 user={user}
                 roleStyles={roleStyles}
                 onDeleteClick={onDeleteClick}

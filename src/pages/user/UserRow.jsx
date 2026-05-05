@@ -18,7 +18,7 @@ export default function UserRow({
 }) {
   return (
     <TableRow className="hover:bg-muted/20">
-      <TableCell className="font-medium text-foreground">{index + 1}</TableCell>
+      <TableCell className="font-medium text-foreground">{index}</TableCell>
       <TableCell>
         <div className="min-w-44">
           <p className="font-semibold text-foreground whitespace-normal">
