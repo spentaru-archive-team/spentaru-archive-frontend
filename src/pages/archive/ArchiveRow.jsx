@@ -56,7 +56,7 @@ export default function ArchiveRow({
           </span>
         </TableCell>
         <TableCell>
-          {archive.files?.file_url ? (
+          {archive.files?.file_name ? (
             <Link
               to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
               state={{
