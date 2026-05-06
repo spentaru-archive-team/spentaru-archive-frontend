@@ -23,9 +23,7 @@ export default function ArchiveRow({
   return (
     <>
       <TableRow className="hover:bg-muted/20">
-        <TableCell className=" font-medium text-foreground">
-          {index}
-        </TableCell>
+        <TableCell className=" font-medium text-foreground">{index}</TableCell>
         <TableCell>
           <p className="font-semibold text-foreground whitespace-normal">
             {archive.title}
@@ -84,7 +82,7 @@ export default function ArchiveRow({
           )}
         </TableCell>
         <TableCell>
-          {user?.role === "admin" || archive?.uploader?.id === user?.id ? (
+          {user?.role === "admin" ? (
             <div className="flex items-center gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -132,7 +130,7 @@ export default function ArchiveRow({
               </Tooltip>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -152,29 +150,14 @@ export default function ArchiveRow({
                 <TooltipTrigger asChild>
                   <Button
                     className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                    variant="outline"
+                    variant="secondary"
                     onClick={() => onEditClick(archive)}
                   >
-                    <FileEdit />
+                    <Edit />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Ajukan Perubahan</p>
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-                    variant="outline"
-                    onClick={() => onDeleteClick(archive)}
-                  >
-                    <ArchiveX />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Ajukan Penghapusan</p>
+                  <p>Edit Arsip</p>
                 </TooltipContent>
               </Tooltip>
             </div>

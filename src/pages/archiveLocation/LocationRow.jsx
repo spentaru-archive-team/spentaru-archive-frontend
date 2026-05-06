@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { STORAGE_URL } from "@/config/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
@@ -15,13 +16,12 @@ export default function LocationRow({
   const cabinetName = location?.cabinet?.name || location?.cabinet || "-";
   const rackName =
     location?.rack?.name || `Rak ${location?.rack?.rack_number || "-"}`;
+  const { user } = useAuth();
 
   return (
     <>
       <TableRow className="hover:bg-muted/20">
-        <TableCell className=" font-medium text-foreground">
-          {index}
-        </TableCell>
+        <TableCell className=" font-medium text-foreground">{index}</TableCell>
         <TableCell>
           <Link
             to={`/archives/${location?.archive.id}/preview?file_url=${encodeURIComponent(location?.archive?.files?.file_url || "")}&file_name=${encodeURIComponent(location?.archive?.files?.file_name || "")}&title=${encodeURIComponent(location?.archive?.title || "")}`}
@@ -46,26 +46,40 @@ export default function LocationRow({
           {location.label_code}
         </TableCell>
         <TableCell>
-          <div className="flex items-center gap-2">
-            <Button
-              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-              variant="secondary"
-              size="sm"
-              type="button"
-              onClick={() => onEditClick?.(location)}
-            >
-              <Edit />
-            </Button>
-            <Button
-              className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-              variant="destructive"
-              size="sm"
-              type="button"
-              onClick={() => onDeleteClick?.(location)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
+          {user?.role === "admin" ? (
+            <div className="flex items-center gap-2">
+              <Button
+                className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                variant="secondary"
+                size="sm"
+                type="button"
+                onClick={() => onEditClick?.(location)}
+              >
+                <Edit />
+              </Button>
+              <Button
+                className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                variant="destructive"
+                size="sm"
+                type="button"
+                onClick={() => onDeleteClick?.(location)}
+              >
+                <Trash2 />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                variant="secondary"
+                size="sm"
+                type="button"
+                onClick={() => onEditClick?.(location)}
+              >
+                <Edit />
+              </Button>
+            </div>
+          )}
         </TableCell>
       </TableRow>
     </>
