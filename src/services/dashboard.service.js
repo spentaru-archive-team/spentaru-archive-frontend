@@ -5,12 +5,19 @@ export function getDashboardData() {
   return res;
 }
 
-export function getArchivesWithoutLocation() {
-  const res = api.get("/archives/without-location");
+export function getArchivesRetentionReady() {
+  const res = api.get("/archives/retention/ready");
   return res;
 }
 
 export function getEventPendingUploads() {
   const res = api.get("/events/pending-uploads");
+  return res;
+}
+
+export function getTeacherPendingUploads() {
+  const res = api.get("/dashboard/teachers-without-archives", {
+    params: { all: true },
+  });
   return res;
 }

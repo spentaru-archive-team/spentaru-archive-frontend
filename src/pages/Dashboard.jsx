@@ -7,20 +7,46 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  getArchivesWithoutLocation,
+  getArchivesRetentionReady,
   getDashboardData,
   getEventPendingUploads,
+  getTeacherPendingUploads,
 } from "@/services/dashboard.service";
-import {
-  Archive,
-  BookOpenText,
-  FolderKanban,
-  UserRound,
-} from "lucide-react";
+import { Archive, BookOpenText, FolderKanban, UserRound } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import DashboardSkeleton from "./DashboardSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
+import { useAuth } from "@/hooks/use-auth";
+
+const formatRelativeTime = (dateInput) => {
+  const date = new Date(dateInput);
+  if (Number.isNaN(date.getTime())) {
+    return "Tanggal tidak valid";
+  }
+
+  const rtf = new Intl.RelativeTimeFormat("id-ID", { numeric: "auto" });
+  const diffMs = date.getTime() - Date.now();
+  const diffSeconds = Math.round(diffMs / 1000);
+
+  const ranges = [
+    { unit: "year", seconds: 60 * 60 * 24 * 365 },
+    { unit: "month", seconds: 60 * 60 * 24 * 30 },
+    { unit: "day", seconds: 60 * 60 * 24 },
+    { unit: "hour", seconds: 60 * 60 },
+    { unit: "minute", seconds: 60 },
+    { unit: "second", seconds: 1 },
+  ];
+
+  for (const range of ranges) {
+    if (Math.abs(diffSeconds) >= range.seconds || range.unit === "second") {
+      const value = Math.round(diffSeconds / range.seconds);
+      return rtf.format(value, range.unit);
+    }
+  }
+
+  return rtf.format(0, "second");
+};
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -28,6 +54,7 @@ export default function Dashboard() {
   const [categoryTotal, setCategoryTotal] = useState(0);
   const [cabinetTotal, setCabinetTotal] = useState(0);
   const [userTotal, setUserTotal] = useState(0);
+  const { user } = useAuth();
 
   const stats = [
     {
@@ -56,6 +83,21 @@ export default function Dashboard() {
     },
   ];
 
+  const fetchTeacherPendingUploads = async () => {
+    try {
+      const res = await getTeacherPendingUploads();
+      return res.data.data;
+    } catch (error) {
+      console.error("Error fetching teachers without archives:", error);
+      throw error;
+    }
+  };
+
+  const { data: teacherPendingUploads } = useQuery({
+    queryKey: ["teachers-without-archives"],
+    queryFn: fetchTeacherPendingUploads,
+  });
+
   const fetchPendingUploads = async () => {
     try {
       const res = await getEventPendingUploads();
@@ -71,9 +113,9 @@ export default function Dashboard() {
     queryFn: fetchPendingUploads,
   });
 
-  const getArchiveWithoutLocation = async () => {
+  const fetchArchivesRetentionReady = async () => {
     try {
-      const res = await getArchivesWithoutLocation();
+      const res = await getArchivesRetentionReady();
       return res.data.data;
     } catch (error) {
       console.error("Error fetching archives without location:", error);
@@ -81,9 +123,9 @@ export default function Dashboard() {
     }
   };
 
-  const { data: archivesWithoutLocation } = useQuery({
+  const { data: archivesRetentionReady } = useQuery({
     queryKey: ["archives-without-location"],
-    queryFn: getArchiveWithoutLocation,
+    queryFn: fetchArchivesRetentionReady,
   });
 
   useEffect(() => {
@@ -153,12 +195,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-lg font-semibold text-foreground">
-                  Arsip yang belum ada lokasi penyimpanan
+                  Notifikasi Retensi
                 </CardTitle>
                 <CardDescription className="mt-1 text-sm leading-6">
-                  Daftar arsip yang belum dihubungkan dengan lokasi fisik
-                  penyimpanan. Segera atur lokasi untuk memastikan keamanan dan
-                  kemudahan akses dokumen.
+                  Arsip yang sudah siap untuk proses retensi atau pemusnahan.
                 </CardDescription>
               </div>
               {/* <span className="hidden items-center gap-2 text-sm text-primary sm:inline-flex">
@@ -168,18 +208,17 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
-            {archivesWithoutLocation?.map((archive) => (
+            {archivesRetentionReady?.map((archive) => (
               <div
                 key={archive.id}
                 className="flex items-start justify-between gap-4 rounded-sm border border-border/80 bg-muted/20 px-4 py-3"
               >
                 <div className="min-w-0 space-y-1">
                   <p className="text-sm text-foreground">
-                    Arsip{" "}
                     <strong>
                       <Link
                         className="hover:underline"
-                        to="/archive-locations"
+                        to="/archives"
                         state={{
                           openCreate: true,
                           archiveId: archive.id,
@@ -188,52 +227,106 @@ export default function Dashboard() {
                         {archive.title}
                       </Link>
                     </strong>{" "}
-                    belum mengatur lokasi penyimpanan.
+                    - {archive.category.name}
                   </p>
                 </div>
-                {/* <span className="shrink-0 text-xs font-medium text-primary/70">
-                  {archive.created_at}
-                </span> */}
               </div>
             ))}
           </CardContent>
         </Card>
 
-        <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
-          <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <CardTitle className="text-lg font-semibold text-foreground">
-                  Guru yang belum upload arsip
-                </CardTitle>
-                <CardDescription className="mt-1 text-sm leading-6">
-                  Pemberitahuan penting terkait pengelolaan arsip sekolah.
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3 px-5 py-5">
-            {eventPendingUploads?.map((event) => (
-              <div
-                key={event.id}
-                className="flex items-start justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
-              >
-                <div className="min-w-0 space-y-1">
-                  <p className="text-sm text-foreground">
-                    Guru <strong>{event.user.name}</strong> belum mengupload
-                    arsip untuk event <strong>{event.title}</strong>
-                  </p>
-                  {/* <p className="text-sm text-muted-foreground">
-                    {event.meta}
-                  </p> */}
+        {user.role === "admin" && (
+          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
+            <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-lg font-semibold text-foreground">
+                    Guru yang belum upload arsip
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-sm leading-6">
+                    Pemberitahuan penting terkait pengelolaan arsip sekolah.
+                  </CardDescription>
                 </div>
-                {/* <span className="shrink-0 text-xs font-medium text-primary/70">
-                  {event.time}
-                </span> */}
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="space-y-3 px-5 py-5">
+              {eventPendingUploads?.length === 0 && (
+                <div className="flex items-start justify-between gap-4 rounded-sm border border-green-100/80 bg-green-50 px-4 py-3">
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-sm text-foreground">
+                      Semua guru sudah mengupload arsip untuk event yang sudah
+                      dilaksanakan. Terima kasih atas kerjasamanya!
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {eventPendingUploads?.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex items-center justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                >
+                  <div className="flex-4 min-w-0 space-y-1">
+                    <p className="text-sm text-foreground">
+                      Guru <strong>{event.user.name}</strong> belum mengupload
+                      arsip untuk event <strong>{event.title}</strong>
+                    </p>
+                  </div>
+                  <span className="flex-1 shrink-0 text-xs font-medium text-primary/70">
+                    {formatRelativeTime(event.date)}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {user.role === "guru" && (
+          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
+            <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-lg font-semibold text-foreground">
+                    Daftar Event Yang Belum Upload Arsip
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-sm leading-6">
+                    Pastikan untuk segera mengupload arsip terkait event yang
+                    sudah dilaksanakan.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3 px-5 py-5">
+              {teacherPendingUploads?.length === 0 && (
+                <div className="flex items-start justify-between gap-4 rounded-sm border border-green-100/80 bg-green-50 px-4 py-3">
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-sm text-foreground">
+                      Semua event sudah diupload arsipnya. Terima kasih atas
+                      kerjasamanya!
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {teacherPendingUploads?.map((event) => (
+                <div
+                  key={event.id}
+                  className="flex items-center justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                >
+                  <div className="flex-4 min-w-0 space-y-1">
+                    <p className="text-sm text-foreground">
+                      Event <strong>{event.title}</strong> belum diupload
+                      arsipnya
+                    </p>
+                  </div>
+                  <span className="flex-1 shrink-0 text-xs font-medium text-primary/70">
+                    {formatRelativeTime(event.date)}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </section>
   );
