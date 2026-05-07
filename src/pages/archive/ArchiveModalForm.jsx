@@ -21,6 +21,7 @@ import { updateArchives } from "@/services/archive.service";
 import { createArchives } from "@/services/archive.service";
 import { useLocation, useNavigate } from "react-router";
 import { getEvents } from "@/services/event.service";
+import { useAuth } from "@/hooks/use-auth";
 
 const toFormId = (value) => {
   if (value === null || value === undefined || value === "") return "";
@@ -34,7 +35,7 @@ const createInitialArchiveFormData = (archive) => ({
   subcategory_id: toFormId(archive?.subcategory_id ?? archive?.subcategory?.id),
   notes: archive?.notes || "",
   event_id: toFormId(archive?.event_id ?? archive?.event?.id),
-  status: archive?.status || "pending_upload",
+  uploader: toFormId(archive?.uploader ?? archive?.uploader?.id),
   file: null,
 });
 
@@ -63,6 +64,7 @@ function ArchiveModalFormContent({
   fetchArchives,
 }) {
   const isEdit = !!archive;
+  const { user, loading: isUserLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -164,6 +166,14 @@ function ArchiveModalFormContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.file]);
 
+  useEffect(() => {
+    if (!user?.id) return;
+    setFormData((prev) => ({
+      ...prev,
+      uploader: toFormId(user.id),
+    }));
+  }, [user?.id]);
+
   const fetchEvents = async () => {
     try {
       const res = await getEvents({ all: true });
@@ -237,6 +247,7 @@ function ArchiveModalFormContent({
       const res = await createArchives(formData);
       if (res.data.status === "success") {
         await fetchArchives();
+        setFormData(createInitialArchiveFormData(archive));
         return true;
       }
 
@@ -250,7 +261,7 @@ function ArchiveModalFormContent({
           : null,
       });
       return false;
-    }
+    } 
   };
 
   const handleEdit = async () => {
@@ -277,6 +288,14 @@ function ArchiveModalFormContent({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    if (isUserLoading || !user?.id) {
+      setError({
+        fields: null,
+        general: "User belum terautentikasi. Silakan login ulang.",
+      });
+      return;
+    }
 
     if (!isEdit && !formData.file) {
       setFileError("File arsip wajib diunggah.");
