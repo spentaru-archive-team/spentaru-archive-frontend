@@ -85,6 +85,11 @@ export function deleteArchives(id) {
   return res;
 }
 
+export function decideArchiveRetention(id, data) {
+  const res = api.patch(`/archives/${id}/retention/decide`, data);
+  return res;
+}
+
 export function getArchivePreview(id) {
   const res = api.get(`/archives/${id}/preview`, {
     responseType: "blob",

@@ -34,6 +34,11 @@ export default function ArchivePage() {
   const [isDeletingArchive, setIsDeletingArchive] = useState(false);
   const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
   const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
+  const [retentionPopup, setRetentionPopup] = useState({
+    open: false,
+    title: "",
+    type: "success",
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -144,8 +149,32 @@ export default function ArchivePage() {
     return numRow;
   };
 
+  const handleRetentionSaved = async ({ title, type }) => {
+    await refetch();
+    setIsDetailOpen(false);
+    setSelectedArchive(null);
+    setRetentionPopup({
+      open: true,
+      title,
+      type: type || "success",
+    });
+  };
+
   return (
     <section className="space-y-6">
+      <PopUp
+        open={retentionPopup.open}
+        title={retentionPopup.title}
+        type={retentionPopup.type}
+        duration={3000}
+        onClose={() =>
+          setRetentionPopup((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
+
       <PopUp
         open={deleteErrorOpen}
         title={deleteErrorTitle}
@@ -202,6 +231,7 @@ export default function ArchivePage() {
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
         archive={selectedArchive}
+        onRetentionSaved={handleRetentionSaved}
       />
 
       <ArchiveModalForm

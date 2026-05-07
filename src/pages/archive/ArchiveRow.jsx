@@ -55,20 +55,27 @@ export default function ArchiveRow({
         </TableCell>
         <TableCell>
           {archive.files?.file_name ? (
-            <Link
-              to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
-              state={{
-                archiveId: archive.id,
-                archiveTitle: archive?.title || "",
-                fileUrl: archive?.files?.file_url || "",
-                fileName: archive?.files?.file_name || "",
-                fileSourceUrl: `${STORAGE_URL}${archive?.files?.file_url || ""}`,
-              }}
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
-            >
-              <FileText size={16} />
-              Lihat File
-            </Link>
+            archive.retention_status !== "destroyed" ? (
+              <Link
+                to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
+                state={{
+                  archiveId: archive.id,
+                  archiveTitle: archive?.title || "",
+                  fileUrl: archive?.files?.file_url || "",
+                  fileName: archive?.files?.file_name || "",
+                  fileSourceUrl: `${STORAGE_URL}${archive?.files?.file_url || ""}`,
+                }}
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
+              >
+                <FileText size={16} />
+                Lihat File
+              </Link>
+            ) : (
+              <p className="flex items-center gap-1 text-sm font-medium text-muted-foreground/50 transition cursor-not-allowed italic">
+                <ArchiveX size={16} />
+                Arsip Dimusnahkan
+              </p>
+            )
           ) : (
             <span className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Link

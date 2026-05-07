@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -7,7 +7,7 @@ import {
   ModalFooter,
 } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
-import { STORAGE_URL } from "@/config/api";
+import { Input } from "@/components/ui/input";
 import {
   FileText,
   Calendar,
@@ -16,10 +16,21 @@ import {
   Info,
   User,
   ShieldCheck,
+  ArchiveX,
+  ArchiveRestore,
 } from "lucide-react";
 import { Link } from "react-router";
+import { decideArchiveRetention } from "@/services/archive.service";
 
-export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
+export default function ArchiveModalDetail({
+  isOpen,
+  onClose,
+  archive,
+  onRetentionSaved,
+}) {
+  const [isSubmittingAction, setIsSubmittingAction] = useState(false);
+  const [retentionNote, setRetentionNote] = useState("");
+  const [retentionError, setRetentionError] = useState("");
   if (!archive) return null;
 
   const formatDate = (value) => {
@@ -53,11 +64,47 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
     },
   };
 
-  const retentionInfo =
-    retentionStatusMap[archive.retention_status] || {
-      label: "-",
-      className: "border-slate-200 bg-slate-100 text-slate-700",
-    };
+  const retentionInfo = retentionStatusMap[archive.retention_status] || {
+    label: "-",
+    className: "border-slate-200 bg-slate-100 text-slate-700",
+  };
+
+  const canDecideRetention =
+    archive.retention_status !== "destroyed" &&
+    archive.retention_status !== "retained" &&
+    archive.retention_status !== "active";
+
+  const handleRetentionAction = async (retentionStatus) => {
+    if (isSubmittingAction) return;
+
+    setRetentionError("");
+    setIsSubmittingAction(true);
+
+    try {
+      const response = await decideArchiveRetention(archive.id, {
+        retention_status: retentionStatus,
+        retention_note: retentionNote.trim() || null,
+      });
+
+      if (response?.data?.status === "success") {
+        onRetentionSaved?.({
+          title:
+            retentionStatus === "destroyed"
+              ? "Arsip berhasil dimusnahkan."
+              : "Arsip berhasil ditahan.",
+          type: "success",
+        });
+      }
+    } catch (error) {
+      console.log(error.response)
+      setRetentionError(
+        error.response?.data?.message ||
+          "Gagal menyimpan keputusan retensi. Silakan coba lagi.",
+      );
+    } finally {
+      setIsSubmittingAction(false);
+    }
+  };
 
   const statusLabel =
     archive.status === "pending_upload" ? "Menunggu Upload" : "Telah Upload";
@@ -238,6 +285,45 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
                 {archive.retention_note || "-"}
               </p>
             </div>
+
+            {canDecideRetention && (
+              <div className="space-y-3 border-t border-border/80 pt-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Keputusan Retensi
+                </p>
+                <Input
+                  value={retentionNote}
+                  onChange={(event) => setRetentionNote(event.target.value)}
+                  placeholder="Catatan keputusan (opsional)"
+                  className="h-9 rounded-sm border-border/80"
+                />
+                {retentionError && (
+                  <p className="text-xs text-destructive">{retentionError}</p>
+                )}
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => handleRetentionAction("destroyed")}
+                    disabled={isSubmittingAction}
+                    className="rounded-sm border border-destructive/40"
+                  >
+                    <ArchiveX size={14} />
+                    {isSubmittingAction ? "Menyimpan..." : "Destroy"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleRetentionAction("retained")}
+                    disabled={isSubmittingAction}
+                    className="rounded-sm border-primary/30 text-primary hover:bg-primary/5"
+                  >
+                    <ArchiveRestore size={14} />
+                    {isSubmittingAction ? "Menyimpan..." : "Retain"}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {archive.files && (
@@ -245,31 +331,59 @@ export default function ArchiveModalDetail({ isOpen, onClose, archive }) {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Lampiran File
               </p>
-              <Link
-                to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
-                className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 hover:bg-muted/20 transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-50 text-red-600 rounded-sm">
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                      {archive.files.file_name || "Lihat Dokumen"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Format: PDF / Image
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-primary w-fit"
+
+              {archive.retention_status !== "destroyed" ? (
+                <Link
+                  to={`/archives/${archive.id}/preview?file_name=${encodeURIComponent(archive?.files?.file_name || "")}&title=${encodeURIComponent(archive?.title || "")}`}
+                  className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 hover:bg-muted/20 transition-colors group whitespace-pre-wrap"
                 >
-                  Buka
-                </Button>
-              </Link>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-50 text-red-600 rounded-sm">
+                      <FileText size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                        {archive.files.file_name || "Lihat Dokumen"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Format: {archive.files.file_type || "PDF / Image"}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary w-fit"
+                  >
+                    Buka
+                  </Button>
+                </Link>
+              ) : (
+                <div className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 cursor-not-allowed opacity-70">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-red-50 text-red-600 rounded-sm">
+                        <FileText size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                          {archive.files.file_name || "Lihat Dokumen"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Format: {archive.files.file_type || "PDF / Image"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary w-fit"
+                  >
+                    Buka
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>
