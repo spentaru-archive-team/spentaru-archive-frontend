@@ -230,11 +230,10 @@ export default function AppSidebar() {
 
         <SidebarFooter className="px-3 pb-4">
           <SidebarMenuButton asChild className="min-h-14">
-            <button className="flex items-center justify-between gap-3 cursor-pointer">
+            <button className="flex items-center justify-between cursor-pointer">
               <span className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-primary/10 bg-primary/10 text-primary">
-                  <User size={18} />
-                </span>
+                <User size={64} />
+                {/* <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-primary/10 bg-primary/10 text-primary"></span> */}
                 <span className="text-left">
                   <span className="block text-sm font-semibold text-foreground">
                     {user?.name || <Skeleton className="h-3 w-40" />}
@@ -253,22 +252,15 @@ export default function AppSidebar() {
               </span>
             </button>
           </SidebarMenuButton>
-          <SidebarMenuButton asChild className="min-h-14">
+          <SidebarMenuButton asChild>
             <button
               className="flex items-center justify-between gap-3 cursor-pointer"
               onClick={() => setConfirmOpen(true)}
             >
               <span className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-primary/10 bg-primary/10 text-primary">
-                  <LogOut size={18} />
-                </span>
-                <span className="text-left">
-                  <span className="block text-sm font-semibold text-foreground">
-                    Logout
-                  </span>
-                  <span className="block text-xs text-muted-foreground">
-                    Keluar dari dashboard
-                  </span>
+                <LogOut size={18} />
+                <span className="block text-sm font-semibold text-foreground">
+                  Logout
                 </span>
               </span>
               <ChevronRight size={16} className="text-primary/45" />
