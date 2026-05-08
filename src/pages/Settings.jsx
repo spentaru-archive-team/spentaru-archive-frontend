@@ -11,9 +11,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { updateProfile } from "@/services/auth.service";
-import { BadgeCheck, ShieldCheck, UserRound } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronRight,
+  Info,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -209,6 +215,36 @@ export default function Settings() {
           </CardContent>
         </Card>
       </div>
+
+      <Link
+        to="/about"
+        aria-label="Buka halaman Tentang Website"
+        className="group block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0 transition-colors group-hover:border-primary/35 group-hover:bg-primary/[0.03]">
+          <CardContent className="px-5 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 items-start gap-3">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-primary/15 bg-primary/5 text-primary">
+                  <Info size={18} />
+                </span>
+                <div className="min-w-0 space-y-1">
+                  <p className="text-base font-semibold text-foreground">
+                    Tentang Website
+                  </p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Pelajari informasi tentang sistem pengarsipan sekolah ini
+                  </p>
+                </div>
+              </div>
+              <ChevronRight
+                size={18}
+                className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     </section>
   );
 }
