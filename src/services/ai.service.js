@@ -42,9 +42,9 @@ if (useLaravelGateway) {
 
 const endpoints = useLaravelGateway
   ? {
-      chat: "v1/ai/chat/ask",
-      ocr: "v1/ai/ocr/extract",
-      pdf: "v1/ai/pdf/extract-native",
+      chat: "/ai/chat/ask",
+      ocr: "/ai/ocr/extract",
+      pdf: "/ai/pdf/extract-native",
     }
   : {
       chat: "/api/chat/ask",
