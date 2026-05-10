@@ -20,11 +20,9 @@ export default function UserRow({
     <TableRow className="hover:bg-muted/20">
       <TableCell className="font-medium text-foreground">{index}</TableCell>
       <TableCell>
-        <div className="min-w-44">
-          <p className="font-semibold text-foreground whitespace-normal">
-            {user.name}
-          </p>
-        </div>
+        <p className="font-semibold text-foreground whitespace-normal">
+          {user.name}
+        </p>
       </TableCell>
       <TableCell className="text-foreground">{user.subject}</TableCell>
       <TableCell className="text-foreground">{user.position}</TableCell>
