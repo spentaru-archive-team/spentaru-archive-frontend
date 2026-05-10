@@ -18,6 +18,7 @@ Frontend untuk **Spentaru Archive**, sistem arsip digital dan fisik sekolah untu
 - [Instalasi](#instalasi)
 - [Konfigurasi Environment](#konfigurasi-environment)
 - [Menjalankan Proyek](#menjalankan-proyek)
+- [Dockerfile Frontend](#dockerfile-frontend)
 - [Struktur Folder](#struktur-folder)
 - [Arsitektur Singkat](#arsitektur-singkat)
 - [Routing Halaman](#routing-halaman)
@@ -252,6 +253,77 @@ npm run context:ai
 ```
 
 Script ini menjalankan `scripts/export-ai-context.mjs` untuk mengekspor konteks proyek yang dapat membantu debugging, dokumentasi, atau kebutuhan asistensi AI.
+
+## Dockerfile Frontend
+
+File: `Dockerfile`
+
+Dockerfile frontend memakai pola **multi-stage build**:
+
+1. Stage `builder` (`node:20-alpine`) untuk install dependency dan build Vite ke `dist/`.
+2. Stage runtime (`nginx:alpine`) untuk serve static file hasil build.
+
+Kenapa pola ini dipakai:
+
+- Image runtime lebih kecil karena Node tidak ikut dibawa ke production.
+- Lebih aman dan stabil untuk serve SPA dibanding `vite preview`.
+
+### Struktur Inti Dockerfile
+
+- `FROM node:20-alpine AS builder`
+- `WORKDIR /app`
+- `COPY package.json package-lock.json ./`
+- `RUN npm ci` (disarankan, konsisten dengan lockfile)
+- `COPY . .`
+- `RUN npm run build`
+- `FROM nginx:alpine`
+- `COPY --from=builder /app/dist /usr/share/nginx/html`
+- `COPY nginx.conf /etc/nginx/conf.d/default.conf`
+
+### Build-time Environment (Vite)
+
+Variabel `VITE_*` dibaca saat proses build image, bukan saat container runtime.
+Gunakan `--build-arg` agar nilai API/AI sesuai environment server.
+
+Variabel yang umum dipakai:
+
+- `VITE_BASE_API_URL`
+- `VITE_STORAGE_URL`
+- `VITE_AI_SERVICE_URL`
+- `VITE_USE_LARAVEL_AI_GATEWAY` (production disarankan `true`)
+- `VITE_AI_TIMEOUT_MS`
+- `VITE_APP_NAME`
+
+Contoh build image:
+
+```bash
+docker build -t spentaru/frontend:prod \
+  --build-arg VITE_BASE_API_URL=https://domain-kamu/api/v1 \
+  --build-arg VITE_STORAGE_URL=https://domain-kamu \
+  --build-arg VITE_AI_SERVICE_URL=https://domain-kamu/api/v1/ai \
+  --build-arg VITE_USE_LARAVEL_AI_GATEWAY=true \
+  --build-arg VITE_AI_TIMEOUT_MS=30000 \
+  --build-arg VITE_APP_NAME=spentaru-archive-frontend \
+  .
+```
+
+Contoh jalankan container:
+
+```bash
+docker run -d --name spentaru-frontend -p 8080:80 spentaru/frontend:prod
+```
+
+Lalu akses:
+
+```text
+http://localhost:8080
+```
+
+### Catatan Tim (Legacy & Kolaborasi)
+
+- Hindari `COPY .env.example .env` di Dockerfile production agar config tidak terkunci ke nilai contoh.
+- Jika ada perubahan endpoint API/AI, rebuild image frontend karena nilai `VITE_*` tertanam saat build.
+- Pastikan `nginx.conf` sudah punya fallback SPA `try_files ... /index.html` agar routing React tidak 404 saat refresh halaman.
 
 ## Struktur Folder
 
