@@ -41,8 +41,8 @@ export default function Confirm({
         aria-labelledby="confirm-title"
       >
         <div className="flex items-start gap-3 border-b border-border/70 px-5 py-7">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-primary/12 bg-primary/6 text-primary">
-            <AlertTriangle size={18} />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm text-primary">
+            <AlertTriangle size={24} />
           </div>
 
           <div className="min-w-0 flex-1 space-y-1">
