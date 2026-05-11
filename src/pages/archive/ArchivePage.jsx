@@ -24,6 +24,7 @@ export default function ArchivePage() {
   const [selectedArchive, setSelectedArchive] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [initialEventId, setInitialEventId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
@@ -68,10 +69,19 @@ export default function ArchivePage() {
     setIsDetailOpen(true);
   };
 
-  const handleAddClick = () => {
+  const handleAddClick = (prefillEventId = null) => {
     setSelectedArchive(null);
+    setInitialEventId(prefillEventId || "");
     setIsFormOpen(true);
   };
+
+  useEffect(() => {
+    const state = location.state;
+    if (state?.openCreate) {
+      handleAddClick(state.eventId || null);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
 
   const handleEditClick = (archive) => {
     setSelectedArchive(archive);
@@ -236,9 +246,13 @@ export default function ArchivePage() {
 
       <ArchiveModalForm
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={() => {
+          setIsFormOpen(false);
+          setInitialEventId("");
+        }}
         archive={selectedArchive}
         fetchArchives={refetch}
+        initialEventId={initialEventId}
       />
     </section>
   );

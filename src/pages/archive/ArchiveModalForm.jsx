@@ -44,6 +44,7 @@ export default function ArchiveModalForm({
   onClose,
   archive = null,
   fetchArchives,
+  initialEventId = null,
 }) {
   const formKey = archive?.id ? `archive-edit-${archive.id}` : "archive-create";
   return (
@@ -53,6 +54,7 @@ export default function ArchiveModalForm({
       onClose={onClose}
       archive={archive}
       fetchArchives={fetchArchives}
+      initialEventId={initialEventId}
     />
   );
 }
@@ -62,6 +64,7 @@ function ArchiveModalFormContent({
   onClose,
   archive = null,
   fetchArchives,
+  initialEventId = null,
 }) {
   const isEdit = !!archive;
   const { user, loading: isUserLoading } = useAuth();
@@ -76,6 +79,16 @@ function ArchiveModalFormContent({
   const [formData, setFormData] = useState(() =>
     createInitialArchiveFormData(archive),
   );
+
+  useEffect(() => {
+    if (isOpen && initialEventId && !archive) {
+      setFormData((prev) => ({
+        ...prev,
+        event_id: toFormId(initialEventId),
+      }));
+    }
+  }, [isOpen, initialEventId, archive]);
+
   const selectedCategory = formData.category_id;
   const allowedExtensions = new Set([
     "pdf",
