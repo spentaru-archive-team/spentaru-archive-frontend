@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import {
   BotMessageSquare,
   SendHorizontal,
@@ -11,39 +11,80 @@ import {
   Zap,
   FileCode,
   Wand2,
+  Settings,
+  GripVertical,
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  FileQuestion,
+  Search,
+  BookOpen,
+  // GripLinesVertical,
 } from "lucide-react";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
 
-// Import Komponen Shadcn UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-// =====================================================================
-// KOMPONEN UTAMA WIDGET
-// =====================================================================
+const EXAMPLE_PROMPTS = [
+  {
+    icon: FileQuestion,
+    label: "Cari arsip raport",
+    text: "Bagaimana cara mencari arsip raport siswa?",
+  },
+  {
+    icon: Search,
+    label: "Cari arsip kegiatan",
+    text: "Apa saja arsip kegiatan tahun 2024?",
+  },
+  {
+    icon: BookOpen,
+    label: "Panduan penggunaan",
+    text: "Bagaimana cara upload arsip baru?",
+  },
+];
+
+const WIDTH_PRESETS = [
+  { label: "Sempit", value: 320, icon: ChevronLeft },
+  { label: "Sedang", value: 400, icon: MessageCircle },
+  { label: "Lebar", value: 500, icon: ChevronRight },
+];
+
 export default function AiChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [processStatus, setProcessStatus] = useState("");
-
+  const [showSettings, setShowSettings] = useState(false);
+  const [widgetWidth, setWidgetWidth] = useState(400);
+  const [isDragging, setIsDragging] = useState(false);
   const [messages, setMessages] = useState([]);
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const sheetContentRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  // Load Library OCR & Extractor secara dinamis
+  useEffect(() => {
+    const savedWidth = localStorage.getItem("ai-widget-width");
+    if (savedWidth) setWidgetWidth(parseInt(savedWidth));
+  }, []);
+
   useEffect(() => {
     const loadScript = (src) => {
       if (!document.querySelector(`script[src="${src}"]`)) {
@@ -53,24 +94,27 @@ export default function AiChatWidget() {
         document.body.appendChild(script);
       }
     };
-    // URL Library dipastikan bersih tanpa tag markdown
     loadScript(
       "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
     );
     loadScript("https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js");
   }, []);
 
+  const handleWidthChange = (newWidth) => {
+    setWidgetWidth(newWidth);
+    localStorage.setItem("ai-widget-width", newWidth.toString());
+  };
+
   const isSendDisabled = useMemo(() => {
     return loading || (!input.trim() && !processStatus);
   }, [input, loading, processStatus]);
 
-  // Fungsi untuk merender Markdown Bold (**teks**) menjadi <strong>
   const formatText = (text) => {
     const parts = text.split(/(\*\*.*?\*\*)/g);
     return parts.map((part, index) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <strong key={index} className="font-bold">
+          <strong key={index} className="font-bold text-primary">
             {part.slice(2, -2)}
           </strong>
         );
@@ -79,7 +123,6 @@ export default function AiChatWidget() {
     });
   };
 
-  // --- HANDLER CHAT TEKS BIASA ---
   const handleSend = async (event) => {
     if (event) event.preventDefault();
 
@@ -127,18 +170,19 @@ export default function AiChatWidget() {
     }
   };
 
-  // --- API LOCAL EASYOCR (UNTUK FALLBACK OCR) ---
+  const handleExampleClick = (text) => {
+    setInput(text);
+    handleSend({ preventDefault: () => {} });
+  };
+
   const callLocalEasyOCR = async (base64Data) => {
     const result = await extractOcrBase64(base64Data);
-
     if (!result || typeof result.text !== "string") {
       throw new Error("EasyOCR processing failed");
     }
-
     return result;
   };
 
-  // --- HANDLER UPLOAD FILE (HYBRID OCR ROUTER) ---
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -167,7 +211,6 @@ export default function AiChatWidget() {
     setLoading(true);
 
     try {
-      // 1. DOCX (Mammoth)
       if (fileExt === "docx" || fileExt === "doc") {
         setProcessStatus("Mengekstrak teks dokumen Word...");
         const arrayBuffer = await file.arrayBuffer();
@@ -188,11 +231,9 @@ export default function AiChatWidget() {
         return;
       }
 
-      // 2. PDF
       let dataUrlToProcess = "";
       if (isPdf) {
         setProcessStatus("Menganalisa isi PDF...");
-        // URL ini juga sudah dibersihkan
         if (window.pdfjsLib)
           window.pdfjsLib.GlobalWorkerOptions.workerSrc =
             "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -245,7 +286,6 @@ export default function AiChatWidget() {
         throw new Error("Format tidak didukung.");
       }
 
-      // 3. EASYOCR UNTUK GAMBAR & PDF IMAGE
       setProcessStatus("Memproses gambar dengan EasyOCR...");
       const base64String = dataUrlToProcess.split(",")[1];
       try {
@@ -282,55 +322,195 @@ export default function AiChatWidget() {
     }
   };
 
+  const handleMouseDown = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      const newWidth = Math.max(280, Math.min(600, window.innerWidth - e.clientX));
+      setWidgetWidth(newWidth);
+      localStorage.setItem("ai-widget-width", newWidth.toString());
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "ew-resize";
+      document.body.style.userSelect = "none";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isDragging]);
+
   return (
-    <>
+    <TooltipProvider delayDuration={300}>
       <Button
         onClick={() => setOpen(true)}
-        className="fixed right-6 bottom-6 z-40 h-11 w-auto rounded-full px-5 shadow-lg flex items-center gap-2 transition-all hover:scale-105"
+        className="fixed right-6 bottom-6 z-40 h-12 w-auto rounded-full px-5 shadow-lg flex items-center gap-2.5 transition-all hover:scale-105 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground"
       >
-        <BotMessageSquare className="size-5" />
-        <span className="hidden md:block">Asisten AI</span>
+        <div className="relative">
+          <BotMessageSquare className="size-5" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+        </div>
+        <span className="font-medium">Asisten AI</span>
       </Button>
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
+          ref={sheetContentRef}
           side="right"
+          showCloseButton={false}
           showOverlay={false}
-          className="z-[80] h-dvh p-0 flex flex-col bg-background data-[side=right]:left-0 data-[side=right]:w-screen data-[side=right]:max-w-none sm:data-[side=right]:max-w-none md:data-[side=right]:max-w-none lg:data-[side=right]:max-w-none xl:data-[side=right]:left-auto xl:data-[side=right]:w-full xl:data-[side=right]:max-w-md"
+          className="z-[80] h-dvh p-0 flex flex-col bg-background border-l shadow-2xl right-0 left-auto fixed"
+          style={{ width: `${widgetWidth}px`, maxWidth: "100vw" }}
         >
-          <SheetHeader className="border-b bg-background px-5 py-4 flex flex-row items-center justify-between z-10">
-            <div className="flex flex-col space-y-1">
-              <SheetTitle className="flex items-center gap-2 text-lg">
-                <BotMessageSquare className="size-5 text-primary" />
-                Spentaru AI
-              </SheetTitle>
-              <SheetDescription className="text-xs">
-                Asisten Pengarsipan & OCR Terpadu
-              </SheetDescription>
+          <div
+            className={`absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary/50 bg-transparent transition-colors z-20 ${
+              isDragging ? "bg-primary/70" : ""
+            }`}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity bg-red-600">
+              <GripVertical className="size-4 text-primary/70" />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setOpen(false)}
-              className="rounded-full w-10 hover:bg-destructive/10 hover:text-destructive"
-            >
-              <X className="size-4" />
-            </Button>
+          </div>
+
+          <SheetHeader className="border-b bg-gradient-to-r from-primary/5 to-transparent px-4 py-3 flex flex-row items-center justify-between z-10 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                <BotMessageSquare className="size-5 text-primary" />
+              </div>
+              <div>
+                <SheetTitle className="text-base font-bold flex items-center gap-2">
+                  Spentaru AI
+                  <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full font-normal">
+                    Online
+                  </span>
+                </SheetTitle>
+                <p className="text-xs text-muted-foreground">
+                  Asisten arsip sekolah
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowSettings(!showSettings)}
+                    className={`h-8 w-8 rounded-lg transition-colors ${
+                      showSettings
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-muted"
+                    }`}
+                  >
+                    <Settings className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Pengaturan lebar</p>
+                </TooltipContent>
+              </Tooltip>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setOpen(false)}
+                className="h-8 w-8 rounded-lg hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
           </SheetHeader>
 
+          {showSettings && (
+            <div className="bg-muted/30 border-b px-4 py-3 shrink-0">
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                Ukuran Tampilan
+              </p>
+              <div className="flex gap-2">
+                {WIDTH_PRESETS.map((preset) => (
+                  <Button
+                    key={preset.value}
+                    variant={
+                      widgetWidth === preset.value ? "default" : "outline"
+                    }
+                    size="sm"
+                    onClick={() => handleWidthChange(preset.value)}
+                    className="flex-1 h-8 text-xs gap-1"
+                  >
+                    <preset.icon className="size-3.5" />
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex min-h-0 flex-1 flex-col">
-            <div className="flex-1 space-y-5 overflow-y-auto px-5 py-6">
+            <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
               {messages.length === 0 && (
-                <div className="bg-background text-muted-foreground rounded-xl border p-5 text-sm text-center shadow-sm flex flex-col items-center">
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-3">
-                    <Sparkles className="size-6" />
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 border border-primary/10">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-primary/15 rounded-xl flex items-center justify-center">
+                        <Sparkles className="size-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-foreground">
+                          Halo! Saya Spentaru AI 👋
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Siap membantu Anda
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Tanyakan tentang arsip sekolah, cari dokumen, atau minta
+                      bantuan teknis. Saya siap membantu!
+                    </p>
                   </div>
-                  <p className="font-bold text-foreground mb-2">
-                    Halo! Saya Spentaru AI.
-                  </p>
-                  <p className="leading-relaxed">
-                    Tanyakan info seputar arsip sekolah.
-                  </p>
+
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground px-1">
+                      Contoh pertanyaan:
+                    </p>
+                    <div className="grid gap-2">
+                      {EXAMPLE_PROMPTS.map((prompt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleExampleClick(prompt.text)}
+                          className="flex items-center gap-3 p-3 rounded-xl border bg-background hover:bg-muted/50 hover:border-primary/30 transition-all text-left group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                            <prompt.icon className="size-4 text-primary" />
+                          </div>
+                          <span className="text-sm text-foreground">
+                            {prompt.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-muted/30 rounded-xl p-4 border">
+                    <p className="text-xs text-muted-foreground text-center">
+                      💡 Anda juga bisa upload file (PDF, Gambar, Word) untuk
+                      saya baca & ekstrak teksnya
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -343,26 +523,25 @@ export default function AiChatWidget() {
                     className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                      className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                         isUser
-                          ? "bg-primary text-primary-foreground rounded-br-sm"
-                          : "bg-background text-foreground border rounded-bl-sm"
+                          ? "bg-primary text-primary-foreground rounded-br-md"
+                          : "bg-muted/50 text-foreground border rounded-bl-md"
                       }`}
                     >
-                      {/* UI FILE */}
                       {message.type === "file" && (
-                        <div className="mb-3 p-3 bg-white/20 rounded-xl flex items-center gap-3 border border-white/30 backdrop-blur-sm">
-                          <div className="p-2 bg-white/20 rounded-lg">
+                        <div className="mb-3 p-3 bg-primary/10 rounded-xl flex items-center gap-3 border border-primary/20">
+                          <div className="p-2 bg-primary/20 rounded-lg">
                             {message.isPdf ? (
-                              <FileText className="size-6 text-red-200" />
+                              <FileText className="size-5 text-primary" />
                             ) : message.isImage ? (
-                              <ImageIcon className="size-6 text-blue-200" />
+                              <ImageIcon className="size-5 text-primary" />
                             ) : (
-                              <FileIcon className="size-6 text-blue-200" />
+                              <FileIcon className="size-5 text-primary" />
                             )}
                           </div>
                           <span
-                            className="text-sm font-semibold truncate max-w-[150px] text-white"
+                            className="text-sm font-medium truncate max-w-[180px]"
                             title={message.fileName}
                           >
                             {message.fileName}
@@ -370,9 +549,8 @@ export default function AiChatWidget() {
                         </div>
                       )}
 
-                      {/* UI GAMBAR */}
                       {message.imageUrl && (
-                        <div className="mb-2 rounded-xl overflow-hidden border border-white/20">
+                        <div className="mb-2 rounded-xl overflow-hidden border border-primary/20">
                           <img
                             src={message.imageUrl}
                             alt="Uploaded"
@@ -381,12 +559,10 @@ export default function AiChatWidget() {
                         </div>
                       )}
 
-                      {/* TEXT BOLD RENDERER */}
                       <div className="whitespace-pre-wrap break-words">
                         {formatText(message.content)}
                       </div>
 
-                      {/* UI OCR METADATA */}
                       {message.type === "ocr_result" && message.engine && (
                         <div
                           className={`mt-4 p-3 rounded-xl border text-xs font-mono flex flex-col gap-1.5 ${
@@ -423,19 +599,19 @@ export default function AiChatWidget() {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-background text-muted-foreground rounded-2xl rounded-bl-sm border px-4 py-3 text-sm flex items-center gap-3 shadow-sm">
+                  <div className="bg-muted/50 text-muted-foreground rounded-2xl rounded-bl-md border px-4 py-3 text-sm flex items-center gap-3 shadow-sm">
                     <span className="flex gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></span>
+                      <span className="w-2 h-2 bg-primary rounded-full animate-bounce"></span>
                       <span
-                        className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
+                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
                         style={{ animationDelay: "0.15s" }}
                       ></span>
                       <span
-                        className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
+                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
                         style={{ animationDelay: "0.3s" }}
                       ></span>
                     </span>
-                    <span className="italic">
+                    <span className="text-xs">
                       {processStatus || "Sedang mengetik..."}
                     </span>
                   </div>
@@ -444,9 +620,11 @@ export default function AiChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* AREA INPUT CHAT */}
-            <div className="bg-background border-t p-4 z-10">
-              <form onSubmit={handleSend} className="flex items-center gap-2">
+            <div className="bg-background border-t p-3 z-10">
+              <form
+                onSubmit={handleSend}
+                className="flex items-center gap-2 bg-muted/30 rounded-2xl p-1.5"
+              >
                 <input
                   type="file"
                   accept="image/*,.pdf,.doc,.docx"
@@ -454,39 +632,55 @@ export default function AiChatWidget() {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  onClick={() => fileInputRef.current.click()}
-                  disabled={loading}
-                  className="h-10 w-10 shrink-0 rounded-full"
-                >
-                  <Paperclip className="size-5" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => fileInputRef.current.click()}
+                      disabled={loading}
+                      className="h-9 w-9 shrink-0 rounded-xl hover:bg-primary/10"
+                    >
+                      <Paperclip className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Upload file</p>
+                  </TooltipContent>
+                </Tooltip>
 
                 <Input
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  placeholder="Ketik pesan atau upload file..."
-                  className="h-10 py-2 text-sm rounded-full px-4 bg-muted/50 focus:bg-background transition-colors"
+                  placeholder="Ketik pesan Anda..."
+                  className="h-9 text-sm border-0 bg-transparent focus:bg-background focus:ring-1 focus:ring-primary/50 px-3"
                   disabled={loading}
                 />
 
-                <Button
-                  type="submit"
-                  size="icon"
-                  className="h-10 w-10 shrink-0 rounded-full"
-                  disabled={isSendDisabled}
-                >
-                  <SendHorizontal className="size-5" />
-                  <span className="sr-only">Kirim</span>
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="submit"
+                      size="icon"
+                      className="h-9 w-9 shrink-0 rounded-xl bg-primary hover:bg-primary/90"
+                      disabled={isSendDisabled}
+                    >
+                      <SendHorizontal className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Kirim</p>
+                  </TooltipContent>
+                </Tooltip>
               </form>
+              <p className="text-[10px] text-center text-muted-foreground mt-2">
+                Spentaru AI · Tekan Enter untuk mengirim
+              </p>
             </div>
           </div>
         </SheetContent>
       </Sheet>
-    </>
+    </TooltipProvider>
   );
 }
