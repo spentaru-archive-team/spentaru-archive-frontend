@@ -264,15 +264,15 @@ export default function Dashboard() {
               {eventPendingUploads?.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                  className="flex items-center justify-between gap-5 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
                 >
-                  <div className="flex-4 min-w-0 space-y-1">
+                  <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">
                       Guru <strong>{event.user.name}</strong> belum mengupload
                       arsip untuk event <strong>{event.title}</strong>
                     </p>
                   </div>
-                  <span className="flex-1 shrink-0 text-xs font-medium text-primary/70">
+                  <span className="w-20 shrink-0 text-xs font-medium text-primary/70">
                     {formatRelativeTime(event.date)}
                   </span>
                 </div>
@@ -311,15 +311,23 @@ export default function Dashboard() {
               {teacherPendingUploads?.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                  className="flex items-center justify-between gap-5 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
                 >
-                  <div className="flex-4 min-w-0 space-y-1">
+                  <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">
-                      Event <strong>{event.title}</strong> belum diupload
-                      arsipnya
+                      Anda belum mengupload arsip untuk event {""}
+                      <strong>
+                        <Link
+                          className="hover:underline"
+                          to="/archives"
+                          state={{ openCreate: true, eventId: event.id }}
+                        >
+                          {event.title}
+                        </Link>
+                      </strong>
                     </p>
                   </div>
-                  <span className="flex-1 shrink-0 text-xs font-medium text-primary/70">
+                  <span className="w-20 shrink-0 text-xs font-medium text-primary/70">
                     {formatRelativeTime(event.date)}
                   </span>
                 </div>

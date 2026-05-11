@@ -72,7 +72,7 @@ export default function Settings() {
     <section className="space-y-5">
       <Header title="Pengaturan Profil Akun" />
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_0.85fr]">
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1fr_0.85fr]">
         <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-start justify-between gap-3">
