@@ -106,6 +106,7 @@ export default function AiChatWidget() {
         { role: "assistant", content: answer, type: "text" },
       ]);
     } catch (error) {
+      console.error("Error saat memanggil AI service:", error.response);
       const message =
         error?.response?.data?.error?.message ||
         error?.response?.data?.message ||
@@ -287,8 +288,8 @@ export default function AiChatWidget() {
         onClick={() => setOpen(true)}
         className="fixed right-6 bottom-6 z-40 h-11 w-auto rounded-full px-5 shadow-lg flex items-center gap-2 transition-all hover:scale-105"
       >
-        <Sparkles className="size-5" />
-        <span>Asisten AI</span>
+        <BotMessageSquare className="size-5" />
+        <span className="hidden md:block">Asisten AI</span>
       </Button>
 
       <Sheet open={open} onOpenChange={setOpen}>
@@ -328,8 +329,7 @@ export default function AiChatWidget() {
                     Halo! Saya Spentaru AI.
                   </p>
                   <p className="leading-relaxed">
-                    Tanyakan info seputar arsip sekolah, atau unggah dokumen
-                    (📎) untuk diekstrak teksnya.
+                    Tanyakan info seputar arsip sekolah.
                   </p>
                 </div>
               )}
@@ -469,7 +469,7 @@ export default function AiChatWidget() {
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   placeholder="Ketik pesan atau upload file..."
-                  className="h-10 py-2 rounded-full px-4 bg-muted/50 focus:bg-background transition-colors"
+                  className="h-10 py-2 text-sm rounded-full px-4 bg-muted/50 focus:bg-background transition-colors"
                   disabled={loading}
                 />
 
