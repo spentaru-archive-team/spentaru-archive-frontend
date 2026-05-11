@@ -2,7 +2,7 @@ name: Docker CI
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["dev"]
 
 jobs:
   build-and-push:
@@ -46,5 +46,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/spentaru-frontend:latest
+            ${{ secrets.DOCKER_USERNAME }}/spentaru-frontend:test
             ${{ secrets.DOCKER_USERNAME }}/spentaru-frontend:${{ github.sha }}
