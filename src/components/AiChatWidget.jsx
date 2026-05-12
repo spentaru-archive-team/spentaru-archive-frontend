@@ -64,9 +64,9 @@ const EXAMPLE_PROMPTS = [
 ];
 
 const WIDTH_PRESETS = [
-  { label: "Sempit", value: 320, icon: ChevronLeft },
+  { label: "Lebar", value: 500, icon: ChevronLeft },
   { label: "Sedang", value: 400, icon: MessageCircle },
-  { label: "Lebar", value: 500, icon: ChevronRight },
+  { label: "Sempit", value: 320, icon: ChevronRight },
 ];
 
 export default function AiChatWidget() {
