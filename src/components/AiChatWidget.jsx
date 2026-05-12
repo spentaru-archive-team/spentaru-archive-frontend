@@ -25,12 +25,13 @@ import {
   FileQuestion,
   Search,
   BookOpen,
+  ExternalLink,
   // GripLinesVertical,
 } from "lucide-react";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
+import { STORAGE_URL } from "@/config/api";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -53,7 +54,7 @@ const EXAMPLE_PROMPTS = [
   {
     icon: Search,
     label: "Cari arsip kegiatan",
-    text: "Apa saja arsip kegiatan tahun 2024?",
+    text: "Carikan saya arsip kegiatan tahun 2024",
   },
   {
     icon: BookOpen,
@@ -81,10 +82,19 @@ export default function AiChatWidget() {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const sheetContentRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+    }
+  }, [open]);
 
   useEffect(() => {
     const savedWidth = localStorage.getItem("ai-widget-width");
@@ -140,11 +150,15 @@ export default function AiChatWidget() {
       { role: "user", content: prompt, type: "text" },
     ]);
     setInput("");
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+    }
     setLoading(true);
 
     try {
       const aiResult = await askAi(prompt);
       const answer = aiResult?.answer?.trim();
+      const fileCards = aiResult?.file_cards;
 
       if (!answer) {
         throw new Error("Respons AI tidak valid.");
@@ -152,7 +166,12 @@ export default function AiChatWidget() {
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: answer, type: "text" },
+        {
+          role: "assistant",
+          content: answer,
+          type: "text",
+          file_cards: Array.isArray(fileCards) && fileCards.length > 0 ? fileCards : undefined,
+        },
       ]);
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -180,6 +199,23 @@ export default function AiChatWidget() {
 
   const handleExampleClick = (text) => {
     setInput(text);
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+      inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 120) + "px";
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+  };
+
+  const handleTextareaKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend(e);
+    }
   };
 
   const callLocalEasyOCR = async (base64Data) => {
@@ -573,6 +609,66 @@ export default function AiChatWidget() {
                         {formatText(message.content)}
                       </div>
 
+                      {message.file_cards && message.file_cards.length > 0 && (
+                        <div className="mt-3 space-y-2 border-t pt-3 border-border/50">
+                          {message.file_cards.map((card, idx) => (
+                            <div
+                              key={card.archive_id || idx}
+                              className="bg-background rounded-xl border p-3 space-y-1.5 shadow-xs"
+                            >
+                              <p className="font-semibold text-sm leading-tight text-foreground">
+                                {card.title || "(Tanpa judul)"}
+                              </p>
+                              <div className="text-xs text-muted-foreground space-y-0.5">
+                                {card.file_name && (
+                                  <p className="flex items-center gap-1">
+                                    <FileText className="size-3 shrink-0" />
+
+                                    <span className="truncate">
+                                      {card.file_name}
+                                    </span>
+                                  </p>
+                                )}
+                                {card.year && <p>{card.year}</p>}
+                                {card.category && (
+                                  <p>
+                                    {card.category}
+                                    {card.subcategory
+                                      ? ` — ${card.subcategory}`
+                                      : ""}
+                                  </p>
+                                )}
+                                {card.location && (
+                                  <p>
+                                    {[
+                                      card.location.cabinet_name,
+                                      card.location.rack_number != null &&
+                                        `Rak ${card.location.rack_number}`,
+                                      card.location.slot_number != null &&
+                                        `Slot ${card.location.slot_number}`,
+                                      card.location.label_code,
+                                    ]
+                                      .filter(Boolean)
+                                      .join(" · ")}
+                                  </p>
+                                )}
+                              </div>
+                              {card.file_url && (
+                                <a
+                                  href={`${STORAGE_URL}/api/v1/archives/${card.archive_id}/download`}
+                                  download={card.file_name || undefined}
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors"
+                                >
+                                  <ExternalLink className="size-3.5" />
+                                  Unduh File
+                                </a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       {message.type === "ocr_result" && message.engine && (
                         <div
                           className={`mt-4 p-3 rounded-xl border text-xs font-mono flex flex-col gap-1.5 ${
@@ -633,7 +729,7 @@ export default function AiChatWidget() {
             <div className="bg-background border-t p-3 z-10">
               <form
                 onSubmit={handleSend}
-                className="flex items-center gap-2 bg-muted/30 rounded-2xl p-1.5"
+                className="flex items-center gap-2 bg-muted/30 rounded-2xl p-1.5 focus-within:ring-2 focus-within:ring-primary/50"
               >
                 <input
                   type="file"
@@ -660,12 +756,15 @@ export default function AiChatWidget() {
                   </TooltipContent>
                 </Tooltip>
 
-                <Input
+                <textarea
+                  ref={inputRef}
                   value={input}
-                  onChange={(event) => setInput(event.target.value)}
+                  onChange={handleInputChange}
+                  onKeyDown={handleTextareaKeyDown}
                   placeholder="Ketik pesan Anda..."
-                  className="h-9 text-sm border-0 bg-transparent focus:bg-background focus:ring-1 focus:ring-primary/50 px-3"
+                  rows={1}
                   disabled={loading}
+                  className="flex-1 min-h-[36px] max-h-[120px] text-sm border-0 bg-transparent px-3 py-2 resize-none outline-none"
                 />
 
                 <Tooltip>
