@@ -25,6 +25,12 @@ import { useAuth } from "@/hooks/use-auth";
 
 const toFormId = (value) => {
   if (value === null || value === undefined || value === "") return "";
+  if (typeof value === "object") {
+    const objectId = value?.id;
+    return objectId === null || objectId === undefined || objectId === ""
+      ? ""
+      : String(objectId);
+  }
   return String(value);
 };
 
@@ -34,8 +40,8 @@ const createInitialArchiveFormData = (archive) => ({
   category_id: toFormId(archive?.category_id ?? archive?.category?.id),
   subcategory_id: toFormId(archive?.subcategory_id ?? archive?.subcategory?.id),
   notes: archive?.notes || "",
-  event_id: toFormId(archive?.event_id ?? archive?.event?.id),
-  uploader: toFormId(archive?.uploader ?? archive?.uploader?.id),
+  event_id: toFormId(archive?.event_id ?? ""),
+  uploader: toFormId(archive?.uploader ?? ""),
   file: null,
 });
 
@@ -256,6 +262,7 @@ function ArchiveModalFormContent({
   };
 
   const handleCreate = async () => {
+    console.log("Submitting form data:", formData);
     try {
       const res = await createArchives(formData);
       if (res.data.status === "success") {
