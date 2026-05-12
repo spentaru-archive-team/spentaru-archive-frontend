@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategoryHeader from "./CategoryHeader";
 import Pagination from "@/components/Pagination";
 import CategoryTable from "./CategoryTable";
@@ -22,6 +22,22 @@ export default function CategoryPage() {
   const [isDeletingCategory, setIsDeletingCategory] = useState(false);
   const [deleteErrorOpen, setDeleteErrorOpen] = useState(false);
   const [deleteErrorTitle, setDeleteErrorTitle] = useState("");
+
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+
+  const handleKeywordChange = (value) => {
+    setCurrentPage(1);
+    setKeyword(value);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword.trim());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
 
   const handleAddClick = () => {
     setSelectedCategory(null);
@@ -77,7 +93,10 @@ export default function CategoryPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await getCategories({ page: currentPage });
+      const res = await getCategories({
+        page: currentPage,
+        query: debouncedKeyword,
+      });
       return res.data.data; // Sesuaikan dengan struktur respons API Anda
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -86,7 +105,7 @@ export default function CategoryPage() {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["categories", currentPage],
+    queryKey: ["categories", currentPage, debouncedKeyword],
     queryFn: fetchCategories,
   });
 
@@ -116,7 +135,11 @@ export default function CategoryPage() {
         onClose={handleCloseDeleteConfirm}
       />
 
-      <CategoryHeader onAddClick={handleAddClick} />
+      <CategoryHeader
+        onAddClick={handleAddClick}
+        keyword={keyword}
+        setKeyword={handleKeywordChange}
+      />
 
       {isLoading ? (
         <CategoryTableSkeleton />

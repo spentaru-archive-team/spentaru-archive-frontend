@@ -1,6 +1,6 @@
 import api from "./axios";
 
-export function getCategories({ page = 1, all = false } = {}) {
+export function getCategories({ page = 1, all = false, query = null } = {}) {
   const params = {};
 
   if (all) {
@@ -8,6 +8,8 @@ export function getCategories({ page = 1, all = false } = {}) {
   } else {
     params.page = page;
   }
+
+  params.q = query;
 
   return api.get("/categories", { params });
 }
