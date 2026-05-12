@@ -220,8 +220,7 @@ export default function Dashboard() {
                         className="hover:underline"
                         to="/archives"
                         state={{
-                          openCreate: true,
-                          archiveId: archive.id,
+                          keyword: archive.title,
                         }}
                       >
                         {archive.title}

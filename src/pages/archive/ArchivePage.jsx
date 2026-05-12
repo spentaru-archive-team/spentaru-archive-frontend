@@ -81,6 +81,10 @@ export default function ArchivePage() {
       handleAddClick(state.eventId || null);
       navigate(location.pathname, { replace: true, state: {} });
     }
+    if (state?.keyword) {
+      setKeyword(state.keyword);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
   }, [location.state]);
 
   const handleEditClick = (archive) => {
