@@ -20,7 +20,7 @@ export default function ArchiveTableSkeleton({ rows = 10 }) {
             <TableHead>Tahun</TableHead>
             <TableHead>Kategori</TableHead>
             <TableHead>Subkategori</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Status Retensi</TableHead>
             <TableHead>File Arsip</TableHead>
             <TableHead>Aksi</TableHead>
           </TableRow>
@@ -33,7 +33,7 @@ export default function ArchiveTableSkeleton({ rows = 10 }) {
                 <Skeleton className="h-4 w-6" />
               </TableCell>
               <TableCell>
-                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-15" />
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-16" />

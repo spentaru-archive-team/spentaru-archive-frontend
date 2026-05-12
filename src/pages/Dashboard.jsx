@@ -249,7 +249,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 px-5 py-5">
+            <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
               {eventPendingUploads?.length === 0 && (
                 <div className="flex items-start justify-between gap-4 rounded-sm border border-green-100/80 bg-green-50 px-4 py-3">
                   <div className="min-w-0 space-y-1">
@@ -272,7 +272,7 @@ export default function Dashboard() {
                       arsip untuk event <strong>{event.title}</strong>
                     </p>
                   </div>
-                  <span className="w-20 shrink-0 text-xs font-medium text-primary/70">
+                  <span className="w-15 md:w-20 shrink-0 text-xs font-medium text-primary/70">
                     {formatRelativeTime(event.date)}
                   </span>
                 </div>

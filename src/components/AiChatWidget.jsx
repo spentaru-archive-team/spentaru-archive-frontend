@@ -368,13 +368,13 @@ export default function AiChatWidget() {
     <TooltipProvider delayDuration={300}>
       <Button
         onClick={() => setOpen(true)}
-        className="fixed right-6 bottom-6 z-40 h-12 w-auto rounded-full px-5 shadow-lg flex items-center gap-2.5 transition-all hover:scale-105 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground"
+        className="fixed right-6 bottom-6 z-40 h-15 md:h-12 w-auto rounded-full px-5 shadow-lg flex items-center gap-2.5 transition-all hover:scale-105 bg-linear-to-r from-primary to-primary/90 text-primary-foreground"
       >
         <div className="relative">
           <BotMessageSquare className="size-5" />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
         </div>
-        <span className="font-medium">Asisten AI</span>
+        <span className="font-medium hidden md:block">Asisten AI</span>
       </Button>
 
       <Sheet open={open} onOpenChange={setOpen}>
@@ -383,7 +383,7 @@ export default function AiChatWidget() {
           side="right"
           showCloseButton={false}
           showOverlay={false}
-          className="z-[80] h-dvh p-0 flex flex-col bg-background border-l shadow-2xl right-0 left-auto fixed"
+          className="z-80 h-dvh p-0 flex flex-col bg-background border-l shadow-2xl right-0 left-auto fixed"
           style={{ width: `${widgetWidth}px`, maxWidth: "100vw" }}
         >
           <div
@@ -397,7 +397,7 @@ export default function AiChatWidget() {
             </div>
           </div>
 
-          <SheetHeader className="border-b bg-gradient-to-r from-primary/5 to-transparent px-4 py-3 flex flex-row items-center justify-between z-10 shrink-0">
+          <SheetHeader className="border-b bg-linear-to-r from-primary/5 to-transparent px-4 py-3 flex flex-row items-center justify-between z-10 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
                 <BotMessageSquare className="size-5 text-primary" />
@@ -551,7 +551,7 @@ export default function AiChatWidget() {
                             )}
                           </div>
                           <span
-                            className="text-sm font-medium truncate max-w-[180px]"
+                            className="text-sm font-medium truncate max-w-45"
                             title={message.fileName}
                           >
                             {message.fileName}
@@ -569,7 +569,7 @@ export default function AiChatWidget() {
                         </div>
                       )}
 
-                      <div className="whitespace-pre-wrap break-words">
+                      <div className="whitespace-pre-wrap wrap-break-word">
                         {formatText(message.content)}
                       </div>
 
