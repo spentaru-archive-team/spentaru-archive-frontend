@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   BotMessageSquare,
   SendHorizontal,
@@ -149,10 +155,12 @@ export default function AiChatWidget() {
         { role: "assistant", content: answer, type: "text" },
       ]);
     } catch (error) {
-      console.error("Error saat memanggil AI service:", error.response);
+      const err = error instanceof Error ? error : new Error(String(error));
+      console.error("Error saat memanggil AI service:", err);
       const message =
         error?.response?.data?.error?.message ||
         error?.response?.data?.message ||
+        error?.message ||
         (error?.code === "ERR_NETWORK"
           ? "Tidak bisa terhubung ke AI service. Pastikan ai-service berjalan di http://localhost:5000."
           : "Maaf, terjadi kesalahan saat mengambil jawaban AI.");
@@ -172,7 +180,6 @@ export default function AiChatWidget() {
 
   const handleExampleClick = (text) => {
     setInput(text);
-    handleSend({ preventDefault: () => {} });
   };
 
   const callLocalEasyOCR = async (base64Data) => {
@@ -330,7 +337,10 @@ export default function AiChatWidget() {
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isDragging) return;
-      const newWidth = Math.max(280, Math.min(600, window.innerWidth - e.clientX));
+      const newWidth = Math.max(
+        280,
+        Math.min(600, window.innerWidth - e.clientX),
+      );
       setWidgetWidth(newWidth);
       localStorage.setItem("ai-widget-width", newWidth.toString());
     };
@@ -463,7 +473,7 @@ export default function AiChatWidget() {
             <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
               {messages.length === 0 && (
                 <div className="space-y-6">
-                  <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 border border-primary/10">
+                  <div className="bg-white rounded-2xl p-5 border border-primary/10">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 bg-primary/15 rounded-xl flex items-center justify-center">
                         <Sparkles className="size-5 text-primary" />
@@ -492,7 +502,7 @@ export default function AiChatWidget() {
                         <button
                           key={idx}
                           onClick={() => handleExampleClick(prompt.text)}
-                          className="flex items-center gap-3 p-3 rounded-xl border bg-background hover:bg-muted/50 hover:border-primary/30 transition-all text-left group"
+                          className="flex items-center gap-3 p-3 rounded-xl border bg-background hover:bg-muted/50 hover:border-primary/30 transition-all text-left group cursor-pointer"
                         >
                           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                             <prompt.icon className="size-4 text-primary" />
