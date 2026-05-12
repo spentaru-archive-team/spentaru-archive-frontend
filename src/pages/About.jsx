@@ -143,13 +143,13 @@ const featureCardStyles = [
   },
 ];
 
-const getInitials = (name) =>
-  name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+// const getInitials = (name) =>
+//   name
+//     .split(" ")
+//     .map((word) => word[0])
+//     .join("")
+//     .slice(0, 2)
+//     .toUpperCase();
 
 export default function About() {
   return (

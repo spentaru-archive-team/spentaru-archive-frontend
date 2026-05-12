@@ -69,7 +69,7 @@ const buildTraceId = (traceId) => {
 
 export async function askAi(
   message,
-  _context = null,
+  // _context = null,
   useSearch = false,
   traceId = null,
 ) {
