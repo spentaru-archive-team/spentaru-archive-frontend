@@ -9,13 +9,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { useAuth } from "@/hooks/use-auth";
 import { updateProfile } from "@/services/auth.service";
+import { useTheme } from "@/context/ThemeContext";
 import {
   BadgeCheck,
   ChevronRight,
   Info,
+  Moon,
   ShieldCheck,
+  Sun,
   UserRound,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -33,6 +37,7 @@ export default function Settings() {
     name: user?.name || "",
     username: user?.username || "",
   });
+  const { theme, setTheme } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,6 +220,41 @@ export default function Settings() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-semibold text-foreground">
+                Pilih Tema
+              </CardTitle>
+              <CardDescription className="text-sm leading-6">
+                Sesuaikan tampilan dashboard sesuai preferensi Anda.
+              </CardDescription>
+            </div>
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-primary/15 bg-primary/5 text-primary">
+              {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent className="px-5 py-5">
+          <div className="space-y-1.5">
+            <Label htmlFor="theme" className="text-sm font-medium text-foreground">
+              Mode Tampilan
+            </Label>
+            <NativeSelect
+              id="theme"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="w-full sm:w-48"
+            >
+              <NativeSelectOption value="system">Sistem</NativeSelectOption>
+              <NativeSelectOption value="light">Light</NativeSelectOption>
+              <NativeSelectOption value="dark">Dark</NativeSelectOption>
+            </NativeSelect>
+          </div>
+        </CardContent>
+      </Card>
 
       <Link
         to="/about"

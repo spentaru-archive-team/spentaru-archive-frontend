@@ -24,6 +24,7 @@ import Settings from "./pages/Settings";
 import NotFoundPage from "./pages/NotFoundPage";
 import ArchivePreviewPage from "./pages/archive/ArchivePreviewPage";
 import About from "./pages/About";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -45,38 +46,40 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <AuthProvider>
-      <TooltipProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="/login" element={<Login />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/login" element={<Login />} />
 
-            {/* Main App */}
-            <Route element={<BaseLayout />}>
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/events" element={<Event />} />
-                <Route path="/archives" element={<Archive />} />
-                <Route
-                  path="/archives/:archiveId/preview"
-                  element={<ArchivePreviewPage />}
-                />
-                <Route path="/categories" element={<Category />} />
-                <Route path="/archive-locations" element={<Location />} />
-                <Route path="/users" element={<User />} />
-                <Route path="/storage-rules" element={<StorageRule />} />
-                <Route path="/cabinets" element={<Cabinet />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/about" element={<About />} />
-                <Route path="*" element={<NotFoundPage />} />
+              {/* Main App */}
+              <Route element={<BaseLayout />}>
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/events" element={<Event />} />
+                  <Route path="/archives" element={<Archive />} />
+                  <Route
+                    path="/archives/:archiveId/preview"
+                    element={<ArchivePreviewPage />}
+                  />
+                  <Route path="/categories" element={<Category />} />
+                  <Route path="/archive-locations" element={<Location />} />
+                  <Route path="/users" element={<User />} />
+                  <Route path="/storage-rules" element={<StorageRule />} />
+                  <Route path="/cabinets" element={<Cabinet />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

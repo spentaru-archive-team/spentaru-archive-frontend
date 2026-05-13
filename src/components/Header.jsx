@@ -3,7 +3,7 @@ import React from "react";
 export default function Header({ title, desc, className, children }) {
   return (
     <header
-      className={`rounded-sm border border-border/80 bg-white p-7! sm:px-6 ${className}`}
+      className={`bg-background rounded-sm border border-border/80 bg-white p-7! sm:px-6 ${className}`}
     >
       <div className="flex flex-col gap-5 w-full">
         <div className="space-y-2">
