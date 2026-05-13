@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -78,6 +78,7 @@ function ArchiveModalFormContent({
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const formRef = useRef(null);
   const [fileError, setFileError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -94,6 +95,12 @@ function ArchiveModalFormContent({
       }));
     }
   }, [isOpen, initialEventId, archive]);
+
+  useEffect(() => {
+    if (error?.general && formRef.current) {
+      formRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [error?.general]);
 
   const selectedCategory = formData.category_id;
   const allowedExtensions = new Set([
@@ -359,6 +366,7 @@ function ArchiveModalFormContent({
 
         <form
           id="archive-form"
+          ref={formRef}
           onSubmit={handleSubmit}
           className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
         >
