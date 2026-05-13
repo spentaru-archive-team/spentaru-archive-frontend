@@ -154,7 +154,7 @@ npm -v
 Clone repository lalu masuk ke folder frontend:
 
 ```bash
-git clone <url-repository>
+git clone https://github.com/spentaru-archive-team/spentaru-archive-frontend.git
 cd spentaru-archive/frontend
 npm install
 ```
@@ -604,6 +604,6 @@ Sebelum menyerahkan proyek ke developer lain, pastikan:
 
 ## Kontak
 
-Dikembangkan oleh **Naufal Rafa**.
+Dikembangkan oleh **Muhammad Naufal Rafa Al As'ad**.
 
 - GitHub: [@Falrafa4](https://github.com/Falrafa4)
