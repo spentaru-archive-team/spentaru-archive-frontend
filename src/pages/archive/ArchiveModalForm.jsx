@@ -273,7 +273,7 @@ function ArchiveModalFormContent({
 
       return false;
     } catch (error) {
-      console.error("Error creating archive:", error.response);
+      console.error("Error creating archive:", error.response ?? error);
       setError({
         fields: error.response?.data?.errors || null,
         general: !error.response?.data?.errors
