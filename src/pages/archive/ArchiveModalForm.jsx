@@ -262,6 +262,13 @@ function ArchiveModalFormContent({
     staleTime: 1000 * 60 * 5, // cache 5 menit
   });
 
+  const subcategoryOptionsReady =
+    !!selectedCategory && !isLoadingSubcategories && !errorSubcategories;
+  const hasSubcategories =
+    subcategoryOptionsReady &&
+    Array.isArray(subcategories) &&
+    subcategories.length > 0;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (error) setError(null);
@@ -550,20 +557,22 @@ function ArchiveModalFormContent({
                   htmlFor="subcategory_id"
                   className="text-sm font-semibold"
                 >
-                  Sub Kategori <span className="text-red-500">*</span>
+                  Sub Kategori{hasSubcategories && <span className="text-red-500"> *</span>}
                 </Label>
                 <NativeSelect
                   id="subcategory_id"
                   name="subcategory_id"
                   value={formData.subcategory_id}
                   onChange={handleChange}
-                  required
+                  required={hasSubcategories}
+                  disabled={!selectedCategory || isLoadingSubcategories || !hasSubcategories}
                   className="w-full"
                 >
-                  <NativeSelectOption value="" disabled>
-                    Harap pilih kategori terlebih dahulu
-                  </NativeSelectOption>
-                  {isLoadingSubcategories ? (
+                  {!selectedCategory ? (
+                    <NativeSelectOption value="" disabled>
+                      Harap pilih kategori terlebih dahulu
+                    </NativeSelectOption>
+                  ) : isLoadingSubcategories ? (
                     <NativeSelectOption value="" disabled>
                       Memuat subkategori...
                     </NativeSelectOption>
@@ -571,16 +580,24 @@ function ArchiveModalFormContent({
                     <NativeSelectOption value="" disabled>
                       Gagal memuat subkategori
                     </NativeSelectOption>
+                  ) : !hasSubcategories ? (
+                    <NativeSelectOption value="" disabled>
+                      Tidak ada subkategori
+                    </NativeSelectOption>
                   ) : (
-                    Array.isArray(subcategories) &&
-                    subcategories.map((subcategory) => (
-                      <NativeSelectOption
-                        key={subcategory.id}
-                        value={String(subcategory.id)}
-                      >
-                        {subcategory.name}
+                    <>
+                      <NativeSelectOption value="" disabled>
+                        Pilih Subkategori
                       </NativeSelectOption>
-                    ))
+                      {subcategories.map((subcategory) => (
+                        <NativeSelectOption
+                          key={subcategory.id}
+                          value={String(subcategory.id)}
+                        >
+                          {subcategory.name}
+                        </NativeSelectOption>
+                      ))}
+                    </>
                   )}
                 </NativeSelect>
                 {error?.fields?.subcategory_id && (
