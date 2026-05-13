@@ -26,6 +26,7 @@ import {
   Search,
   BookOpen,
   ExternalLink,
+  Download,
   // GripLinesVertical,
 } from "lucide-react";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
@@ -44,6 +45,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Link } from "react-router";
 
 const EXAMPLE_PROMPTS = [
   {
@@ -170,7 +172,10 @@ export default function AiChatWidget() {
           role: "assistant",
           content: answer,
           type: "text",
-          file_cards: Array.isArray(fileCards) && fileCards.length > 0 ? fileCards : undefined,
+          file_cards:
+            Array.isArray(fileCards) && fileCards.length > 0
+              ? fileCards
+              : undefined,
         },
       ]);
     } catch (error) {
@@ -201,7 +206,8 @@ export default function AiChatWidget() {
     setInput(text);
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
-      inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 120) + "px";
+      inputRef.current.style.height =
+        Math.min(inputRef.current.scrollHeight, 120) + "px";
     }
   };
 
@@ -654,15 +660,30 @@ export default function AiChatWidget() {
                                 )}
                               </div>
                               {card.file_url && (
-                                <a
-                                  href={`${STORAGE_URL}/api/v1/archives/${card.archive_id}/download`}
-                                  download={card.file_name || undefined}
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors"
-                                >
-                                  <ExternalLink className="size-3.5" />
-                                  Unduh File
-                                </a>
+                                <>
+                                  <Link
+                                    to={`/archives/${card.archive_id}/preview?file_name=${encodeURIComponent(card?.files?.file_name || "")}&title=${encodeURIComponent(card?.title || "")}`}
+                                    state={{
+                                      archiveId: card.archive_id,
+                                      archiveTitle: card?.title || "",
+                                      fileUrl: card?.file_url || "",
+                                      fileName: card?.file_name || "",
+                                      fileSourceUrl: `${STORAGE_URL}${card?.file_url || ""}`,
+                                    }}
+                                    className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors mr-2"
+                                  >
+                                    <FileText size={16} />
+                                    Lihat File
+                                  </Link>
+                                  <a
+                                    href={`${STORAGE_URL}/api/v1/archives/${card.archive_id}/download`}
+                                    download={card.file_url || undefined}
+                                    className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors"
+                                  >
+                                    <Download className="size-3.5" />
+                                    Unduh File
+                                  </a>
+                                </>
                               )}
                             </div>
                           ))}
