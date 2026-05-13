@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -55,9 +55,16 @@ function CabinetModalFormContent({ onClose, cabinet = null, fetchCabinets }) {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const formRef = useRef(null);
   const [formData, setFormData] = useState(() =>
     createInitialFormData(cabinet),
   );
+
+  useEffect(() => {
+    if (error?.general && formRef.current) {
+      formRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [error?.general]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -215,8 +222,13 @@ function CabinetModalFormContent({ onClose, cabinet = null, fetchCabinets }) {
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-5 px-6 pb-6">
+        <form
+          id="cabinet-form"
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+        >
+          <div className="px-6 pb-6 space-y-5">
             {error?.general && (
               <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
                 {error.general}
@@ -342,30 +354,31 @@ function CabinetModalFormContent({ onClose, cabinet = null, fetchCabinets }) {
               )}
             </div>
           </div>
-
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan Lokasi"}
-            </Button>
-          </ModalFooter>
         </form>
+
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="cabinet-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan Lokasi"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

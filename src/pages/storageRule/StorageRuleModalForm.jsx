@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -75,9 +75,16 @@ function StorageRuleModalFormContent({
   const [subcategories, setSubcategories] = useState([]);
   const [cabinets, setCabinets] = useState([]);
   const [error, setError] = useState(null);
+  const formRef = useRef(null);
   const [formData, setFormData] = useState(() =>
     createInitialStorageRuleFormData(storageRule),
   );
+
+  useEffect(() => {
+    if (error?.general && formRef.current) {
+      formRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [error?.general]);
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -233,8 +240,13 @@ function StorageRuleModalFormContent({
           </ModalTitle>
         </ModalHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-5 px-6 pb-6">
+        <form
+          id="storage-rule-form"
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 overflow-y-auto pt-4 space-y-6"
+        >
+          <div className="px-6 pb-6 space-y-5">
             {error?.general && (
               <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
                 {error.general}
@@ -361,30 +373,31 @@ function StorageRuleModalFormContent({
               </div>
             </div>
           </div>
-
-          <ModalFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm border-border/80"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
-            >
-              {isSubmitting
-                ? "Menyimpan..."
-                : isEdit
-                  ? "Simpan Perubahan"
-                  : "Simpan Aturan"}
-            </Button>
-          </ModalFooter>
         </form>
+
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm border-border/80"
+          >
+            Batal
+          </Button>
+          <Button
+            form="storage-rule-form"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-1/2 rounded-sm bg-primary hover:bg-primary/90"
+          >
+            {isSubmitting
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Simpan Aturan"}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
