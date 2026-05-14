@@ -4,11 +4,9 @@ on:
   pull_request:
     branches:
       - main
-      - dev
   push:
     branches:
       - main
-      - dev
   workflow_dispatch:
 
 permissions:
@@ -21,82 +19,65 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci-staging:
-    name: CI (Staging env)
-    if: github.ref == 'refs/heads/dev' || (github.event_name == 'pull_request' && github.base_ref == 'dev')
+  testing:
+    name: CI ReactJS (Lint and Build)
     runs-on: ubuntu-latest
-    environment: staging
 
-    env:
-      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-      VITE_STORAGE_URL: ${{ secrets.VITE_STORAGE_URL }}
-      VITE_APP_NAME: ${{ vars.VITE_APP_NAME }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22]
+
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+
+      # Generate production env
+      - name: Create .env.production
+        run: |
+          echo "VITE_BASE_API_URL=${{ secrets.VITE_BASE_API_URL }}" >> .env.production
+          echo "VITE_STORAGE_URL=${{ secrets.VITE_STORAGE_URL }}" >> .env.production
+          echo "VITE_AI_SERVICE_URL=${{ secrets.VITE_AI_SERVICE_URL }}" >> .env.production
+          echo "VITE_USE_LARAVEL_AI_GATEWAY=${{ secrets.VITE_USE_LARAVEL_AI_GATEWAY }}" >> .env.production
+          echo "VITE_AI_TIMEOUT_MS=${{ secrets.VITE_AI_TIMEOUT_MS }}" >> .env.production
+          echo "VITE_APP_NAME=${{ secrets.VITE_APP_NAME }}" >> .env.production
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
+      - name: Run ESLint
         run: npm run lint
 
-      - name: Build app
+      - name: Build application
         run: npm run build
 
-  ci-production:
-    name: CI (Production env)
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
+  build:
+    needs: testing
+    name: Build and Deploy to Docker Hub
     runs-on: ubuntu-latest
-    environment: production
-
-    env:
-      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-      VITE_STORAGE_URL: ${{ secrets.VITE_STORAGE_URL }}
-      VITE_APP_NAME: ${{ vars.VITE_APP_NAME }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
         with:
-          node-version: 20
-          cache: npm
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Build app
-        run: npm run build
-
-      - name: Upload build artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+      - name: Build and push
+        uses: docker/build-push-action@v5
         with:
-          path: dist
-
-  deploy:
-    name: Deploy to GitHub Pages
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: ci-production
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/spentaru-archive-frontend:latest
