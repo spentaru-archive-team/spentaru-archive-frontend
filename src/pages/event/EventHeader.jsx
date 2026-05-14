@@ -31,7 +31,7 @@ export default function EventHeader({
             />
             <Input
               placeholder="Cari nama event atau deskripsi event"
-              className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
+              className="h-10 border-border/80 bg-card pl-9 py-2 text-sm shadow-none"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />

@@ -414,7 +414,7 @@ export default function AiChatWidget() {
       >
         <div className="relative">
           <BotMessageSquare className="size-5" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-success rounded-full animate-pulse" />
         </div>
         <span className="font-medium hidden md:block">Asisten AI</span>
       </Button>
@@ -434,7 +434,7 @@ export default function AiChatWidget() {
             }`}
             onMouseDown={handleMouseDown}
           >
-            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity bg-red-600">
+            <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity bg-destructive">
               <GripVertical className="size-4 text-primary/70" />
             </div>
           </div>
@@ -447,7 +447,7 @@ export default function AiChatWidget() {
               <div>
                 <SheetTitle className="text-base font-bold flex items-center gap-2">
                   Spentaru AI
-                  <span className="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full font-normal">
+                  <span className="text-[10px] px-1.5 py-0.5 bg-success text-success-foreground rounded-full font-normal">
                     Online
                   </span>
                 </SheetTitle>
@@ -515,7 +515,7 @@ export default function AiChatWidget() {
             <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
               {messages.length === 0 && (
                 <div className="space-y-6">
-                  <div className="bg-white rounded-2xl p-5 border border-primary/10">
+                  <div className="bg-card rounded-2xl p-5 border border-primary/10">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 bg-primary/15 rounded-xl flex items-center justify-center">
                         <Sparkles className="size-5 text-primary" />
@@ -694,10 +694,10 @@ export default function AiChatWidget() {
                         <div
                           className={`mt-4 p-3 rounded-xl border text-xs font-mono flex flex-col gap-1.5 ${
                             message.isFallback
-                              ? "bg-purple-500/10 border-purple-500/20 text-purple-600"
+                              ? "bg-accent border-accent/30 text-accent-foreground"
                               : message.engine.includes("Native")
-                                ? "bg-blue-500/10 border-blue-500/20 text-blue-600"
-                                : "bg-green-500/10 border-green-500/20 text-green-600"
+                                ? "bg-info border-info/30 text-info-foreground"
+                                : "bg-success border-success/30 text-success-foreground"
                           }`}
                         >
                           <div className="flex justify-between items-center">

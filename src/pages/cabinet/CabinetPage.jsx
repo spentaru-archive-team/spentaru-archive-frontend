@@ -116,7 +116,7 @@ export default function CabinetPage() {
             .fill(0)
             .map((_, i) => <CabinetSkeleton key={i} />)
         ) : error ? (
-          <div className="text-center text-red-500">Error: {error.message}</div>
+          <div className="text-center text-destructive">Error: {error.message}</div>
         ) : (
           data?.map((cabinet) => (
             <CabinetCard

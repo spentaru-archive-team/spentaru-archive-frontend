@@ -22,7 +22,7 @@ export default function DashboardSkeleton() {
         {statItems.map((_, index) => (
           <Card
             key={`stat-skeleton-${index}`}
-            className="rounded-sm border border-border/80 bg-white py-0 ring-0"
+            className="rounded-sm border border-border/80 bg-card py-0 ring-0"
           >
             <CardContent className="px-5 py-5">
               <div className="flex items-start justify-between gap-4">
@@ -40,7 +40,7 @@ export default function DashboardSkeleton() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_0.9fr]">
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-2">
@@ -66,7 +66,7 @@ export default function DashboardSkeleton() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div className="space-y-2">
@@ -79,7 +79,7 @@ export default function DashboardSkeleton() {
             {notificationItems.map((_, index) => (
               <div
                 key={`notification-skeleton-${index}`}
-                className="flex items-start justify-between gap-4 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                className="flex items-start justify-between gap-4 rounded-sm border border-warning/80 bg-warning px-4 py-3"
               >
                 <div className="min-w-0 flex-1 space-y-2">
                   <Skeleton className="h-4 w-[78%] rounded-sm" />

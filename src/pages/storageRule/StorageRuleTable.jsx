@@ -15,7 +15,7 @@ export default function StorageRuleTable({
   getNumRows,
 }) {
   return (
-    <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
+    <div className="overflow-hidden rounded-sm border border-border/80 bg-card">
       <Table className="text-sm text-muted-foreground">
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
@@ -28,7 +28,7 @@ export default function StorageRuleTable({
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {storageRules?.data?.map((rule, index) => (
             <StorageRuleRow
               index={getNumRows(index)}

@@ -31,7 +31,7 @@ export default function LocationTable({
             </TableRow>
           </TableHeader>
 
-          <TableBody className="bg-white">
+          <TableBody className="bg-card">
             {locations?.data?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-muted-foreground">

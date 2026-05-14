@@ -18,7 +18,7 @@ export default function UserTable({
   getNumRows,
 }) {
   return (
-    <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
+    <div className="overflow-hidden rounded-sm border border-border/80 bg-card">
       <Table className="text-sm text-muted-foreground">
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
@@ -33,7 +33,7 @@ export default function UserTable({
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {users?.data?.length === 0 ? (
             <TableRow>
               <TableCell

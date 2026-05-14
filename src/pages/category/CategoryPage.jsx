@@ -144,7 +144,7 @@ export default function CategoryPage() {
       {isLoading ? (
         <CategoryTableSkeleton />
       ) : error ? (
-        <div className="p-4 bg-red-100 text-red-700 rounded-md">
+        <div className="p-4 bg-destructive/10 text-destructive rounded-md">
           Terjadi kesalahan saat memuat data kategori.
         </div>
       ) : (

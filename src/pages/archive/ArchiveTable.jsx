@@ -34,7 +34,7 @@ export default function ArchiveTable({
             </TableRow>
           </TableHeader>
 
-          <TableBody className="bg-white">
+          <TableBody className="bg-card">
             {archives?.data?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-8">

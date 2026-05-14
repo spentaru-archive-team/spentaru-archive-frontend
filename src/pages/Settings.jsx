@@ -78,7 +78,7 @@ export default function Settings() {
       <Header title="Pengaturan Profil Akun" />
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1fr_0.85fr]">
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
@@ -113,7 +113,7 @@ export default function Settings() {
                   }
                 />
                 {error.fields?.name && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {error.fields.name[0]}
                   </p>
                 )}
@@ -135,7 +135,7 @@ export default function Settings() {
                   }
                 />
                 {error.fields?.username && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {error.fields.username[0]}
                   </p>
                 )}
@@ -157,7 +157,7 @@ export default function Settings() {
                   }
                 />
                 {error.fields?.password && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {error.fields.password[0]}
                   </p>
                 )}
@@ -175,7 +175,7 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
@@ -221,7 +221,7 @@ export default function Settings() {
         </Card>
       </div>
 
-      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+      <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
         <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
@@ -248,7 +248,6 @@ export default function Settings() {
               onChange={(e) => setTheme(e.target.value)}
               className="w-full sm:w-48"
             >
-              <NativeSelectOption value="system">Sistem</NativeSelectOption>
               <NativeSelectOption value="light">Light</NativeSelectOption>
               <NativeSelectOption value="dark">Dark</NativeSelectOption>
             </NativeSelect>
@@ -261,7 +260,7 @@ export default function Settings() {
         aria-label="Buka halaman Tentang Website"
         className="group block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
-        <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0 transition-colors group-hover:border-primary/35 group-hover:bg-primary/[0.03]">
+        <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0 transition-colors group-hover:border-primary/35 group-hover:bg-primary/[0.03]">
           <CardContent className="px-5 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-start gap-3">

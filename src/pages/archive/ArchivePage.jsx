@@ -12,10 +12,10 @@ import { useLocation, useNavigate } from "react-router";
 import PopUp from "@/components/PopUp";
 
 const statusStyles = {
-  active: "border-green-300 bg-green-100 text-green-800",
-  ready_for_destruction: "border-yellow-300 bg-yellow-100 text-yellow-800",
-  destroyed: "border-red-300 bg-red-100 text-red-800",
-  retained: "border-blue-300 bg-blue-100 text-blue-800",
+  active: "border-success bg-success text-success-foreground",
+  ready_for_destruction: "border-warning bg-warning text-warning-foreground",
+  destroyed: "border-destructive/30 bg-destructive/10 text-destructive",
+  retained: "border-info bg-info text-info-foreground",
 };
 
 export default function ArchivePage() {
@@ -220,7 +220,7 @@ export default function ArchivePage() {
       {isLoading ? (
         <ArchiveTableSkeleton />
       ) : error ? (
-        <div className="p-4 bg-red-100 text-red-700 rounded-md">
+        <div className="p-4 bg-destructive/10 text-destructive rounded-md">
           Terjadi kesalahan saat memuat data arsip.
         </div>
       ) : (

@@ -167,7 +167,7 @@ export default function OfficePreview({ archiveId, fileName }) {
     <div className="relative rounded-sm border border-border/80 bg-muted/10">
       {/* LOADING */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10">
+        <div className="absolute inset-0 flex items-center justify-center bg-card/70 z-10">
           <div className="flex flex-col items-center gap-2">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <p className="text-sm text-muted-foreground">Memuat preview...</p>

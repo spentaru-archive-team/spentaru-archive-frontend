@@ -16,7 +16,7 @@ export default function LocationHeader({ onAddClick, keyword, setKeyword }) {
             />
             <Input
               placeholder="Cari judul lokasi arsip"
-              className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
+              className="h-10 border-border/80 bg-card pl-9 py-2 text-sm shadow-none"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />

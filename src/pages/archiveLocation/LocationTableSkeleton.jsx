@@ -24,7 +24,7 @@ export default function LocationTableSkeleton({ rows = 8 }) {
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {[...Array(rows)].map((_, i) => (
             <TableRow key={i}>
               <TableCell>

@@ -23,7 +23,7 @@ export default function CategoryTableSkeleton({ rows = 10 }) {
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {[...Array(rows)].map((_, i) => (
             <TableRow key={i}>
               <TableCell>

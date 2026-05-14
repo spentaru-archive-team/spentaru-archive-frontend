@@ -48,11 +48,11 @@ export default function ArchiveModalDetail({
   const retentionStatusMap = {
     active: {
       label: "Aktif",
-      className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      className: "border-success bg-success text-success-foreground",
     },
     ready_for_destruction: {
       label: "Siap Dihapus",
-      className: "border-amber-200 bg-amber-50 text-amber-700",
+      className: "border-warning bg-warning text-warning-foreground",
     },
     destroyed: {
       label: "Dimusnahkan",
@@ -60,13 +60,13 @@ export default function ArchiveModalDetail({
     },
     retained: {
       label: "Ditahan",
-      className: "border-blue-200 bg-blue-50 text-blue-700",
+      className: "border-info bg-info text-info-foreground",
     },
   };
 
   const retentionInfo = retentionStatusMap[archive.retention_status] || {
     label: "-",
-    className: "border-slate-200 bg-slate-100 text-slate-700",
+    className: "border-muted bg-muted text-muted-foreground",
   };
 
   const canDecideRetention =
@@ -110,8 +110,8 @@ export default function ArchiveModalDetail({
     archive.status === "pending_upload" ? "Menunggu Upload" : "Telah Upload";
   const statusColor =
     archive.status === "pending_upload"
-      ? "bg-amber-100 text-amber-700 border-amber-200"
-      : "bg-emerald-100 text-emerald-700 border-emerald-200";
+      ? "bg-warning text-warning-foreground border-warning"
+      : "bg-success text-success-foreground border-success";
 
   return (
     <Modal open={isOpen} onOpenChange={onClose}>
@@ -338,7 +338,7 @@ export default function ArchiveModalDetail({
                   className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 hover:bg-muted/20 transition-colors group whitespace-pre-wrap"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-red-50 text-red-600 rounded-sm">
+                    <div className="p-2 bg-destructive/10 text-destructive rounded-sm">
                       <FileText size={20} />
                     </div>
                     <div>
@@ -362,7 +362,7 @@ export default function ArchiveModalDetail({
                 <div className="flex items-center justify-between p-4 rounded-sm border border-border bg-muted/10 cursor-not-allowed opacity-70">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-red-50 text-red-600 rounded-sm">
+                      <div className="p-2 bg-destructive/10 text-destructive rounded-sm">
                         <FileText size={20} />
                       </div>
                       <div>

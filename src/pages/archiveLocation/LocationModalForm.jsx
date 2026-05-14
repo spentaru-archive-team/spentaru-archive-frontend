@@ -224,14 +224,14 @@ function LocationModalFormContent({
         >
           <div className="space-y-5 px-6 pb-6">
             {error?.general && (
-              <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
+              <p className="mt-1 rounded-sm bg-destructive/[0.04] p-3 text-sm text-destructive">
                 {error.general}
               </p>
             )}
 
             <div className="space-y-2">
               <Label htmlFor="archive_id" className="text-sm font-semibold">
-                Arsip <span className="text-red-500">*</span>
+                Arsip <span className="text-destructive">*</span>
               </Label>
               {isEdit ? (
                 <Input
@@ -277,7 +277,7 @@ function LocationModalFormContent({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="cabinet_id" className="text-sm font-semibold">
-                  Lemari <span className="text-red-500">*</span>
+                  Lemari <span className="text-destructive">*</span>
                 </Label>
                 <NativeSelect
                   id="cabinet_id"
@@ -309,7 +309,7 @@ function LocationModalFormContent({
 
               <div className="space-y-2">
                 <Label htmlFor="rack_id" className="text-sm font-semibold">
-                  Rak <span className="text-red-500">*</span>
+                  Rak <span className="text-destructive">*</span>
                 </Label>
                 <NativeSelect
                   id="rack_id"
@@ -339,7 +339,7 @@ function LocationModalFormContent({
 
             <div className="space-y-2">
               <Label htmlFor="slot_number" className="text-sm font-semibold">
-                Nomor Slot <span className="text-red-500">*</span>
+                Nomor Slot <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="slot_number"
@@ -369,7 +369,7 @@ function LocationModalFormContent({
                 value={formData.notes}
                 onChange={handleChange}
                 placeholder="Catatan tambahan lokasi arsip (opsional)"
-                className="min-h-28 w-full rounded-sm border border-border bg-white px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="min-h-28 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               />
               {error?.fields?.notes && (
                 <p className="mt-1 text-xs text-destructive">

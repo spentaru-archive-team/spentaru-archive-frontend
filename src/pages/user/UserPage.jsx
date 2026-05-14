@@ -209,7 +209,7 @@ export default function UserPage() {
       {isLoading ? (
         <UserTableSkeleton />
       ) : error ? (
-        <div className="text-center text-red-500">Error: {error.message}</div>
+        <div className="text-center text-destructive">Error: {error.message}</div>
       ) : (
         <UserTable
           users={data}

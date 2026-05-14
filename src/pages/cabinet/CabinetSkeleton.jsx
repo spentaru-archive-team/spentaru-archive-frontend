@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CabinetSkeleton({ racks = 3 }) {
   return (
-    <Card className="py-0 rounded-sm border border-border/80 bg-white shadow-none ring-0 overflow-hidden">
+    <Card className="py-0 rounded-sm border border-border/80 bg-card shadow-none ring-0 overflow-hidden">
       {/* Header */}
       <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 pb-3 border-b border-border/50 bg-muted/10">
         <div className="flex items-center gap-3">

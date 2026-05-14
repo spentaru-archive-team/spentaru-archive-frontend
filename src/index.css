@@ -39,6 +39,12 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -73,6 +79,12 @@
   --chart-4: rgb(162 179 237);
   --chart-5: rgb(191 205 246);
   --radius: 0.625rem;
+  --success: rgb(220 252 231);
+  --success-foreground: rgb(22 101 52);
+  --warning: rgb(254 251 208);
+  --warning-foreground: rgb(133 77 14);
+  --info: rgb(219 234 254);
+  --info-foreground: rgb(29 78 216);
   --sidebar: rgb(241 245 255);
   --sidebar-foreground: rgb(21 30 62);
   --sidebar-primary: #243673;
@@ -107,6 +119,12 @@
   --chart-3: rgb(88 112 207);
   --chart-4: rgb(67 89 180);
   --chart-5: rgb(52 72 151);
+  --success: rgb(5 46 22);
+  --success-foreground: rgb(134 239 172);
+  --warning: rgb(66 32 6);
+  --warning-foreground: rgb(253 224 71);
+  --info: rgb(15 23 42);
+  --info-foreground: rgb(147 197 253);
   --sidebar: rgb(14 21 46);
   --sidebar-foreground: rgb(230 238 255);
   --sidebar-primary: rgb(111 137 235);

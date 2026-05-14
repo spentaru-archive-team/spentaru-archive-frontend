@@ -169,7 +169,7 @@ export default function LocationPage() {
       {isLoading ? (
         <LocationTableSkeleton rows={8} />
       ) : error ? (
-        <div className="rounded-sm border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="rounded-sm border border-destructive/30 bg-destructive/10 p-4 text-destructive">
           Terjadi kesalahan saat memuat data lokasi arsip.
         </div>
       ) : (

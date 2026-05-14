@@ -167,7 +167,7 @@ export default function About() {
         </div>
       </Header>
 
-      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+      <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
         <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
           <div className="space-y-1">
             <CardTitle className="text-lg font-semibold text-foreground">
@@ -194,7 +194,7 @@ export default function About() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+      <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
         <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
           <div className="space-y-1">
             <CardTitle className="text-lg font-semibold text-foreground">
@@ -235,7 +235,7 @@ export default function About() {
         </CardContent>
       </Card>
 
-      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0">
+      <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0">
         <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
@@ -277,7 +277,7 @@ export default function About() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Instagram ${member.name}`}
-                        className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-white px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <CircleUserRound size={14} />
                         Instagram
@@ -287,7 +287,7 @@ export default function About() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`GitHub ${member.name}`}
-                        className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-white px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <SquareArrowOutUpRight size={14} />
                         GitHub

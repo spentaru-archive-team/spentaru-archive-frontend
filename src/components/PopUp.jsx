@@ -42,7 +42,7 @@ export default function PopUp({
       aria-hidden={!open}
     >
       <div
-        className={`pointer-events-auto w-full max-w-sm rounded-sm border bg-white text-foreground shadow-[0_14px_40px_-24px_rgba(36,54,115,0.38)] transition-all duration-300 ease-out ${frameClassName} ${
+        className={`pointer-events-auto w-full max-w-sm rounded-sm border bg-card text-foreground shadow-[0_14px_40px_-24px_rgba(36,54,115,0.38)] transition-all duration-300 ease-out ${frameClassName} ${
           open
             ? "translate-y-0 opacity-100 sm:translate-x-0"
             : "-translate-y-4 opacity-0 sm:translate-x-96"

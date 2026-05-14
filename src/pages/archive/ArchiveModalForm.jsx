@@ -379,14 +379,14 @@ function ArchiveModalFormContent({
         >
           <div className="px-6 pb-6 space-y-5">
             {error?.general && (
-              <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
+              <p className="mt-1 rounded-sm bg-destructive/[0.04] p-3 text-sm text-destructive">
                 {error.general}
               </p>
             )}
 
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
-                Judul Arsip <span className="text-red-500">*</span>
+                Judul Arsip <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="title"
@@ -407,7 +407,7 @@ function ArchiveModalFormContent({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="year" className="text-sm font-semibold">
-                  Tahun <span className="text-red-500">*</span>
+                  Tahun <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="year"
@@ -504,7 +504,7 @@ function ArchiveModalFormContent({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="category_id" className="text-sm font-semibold">
-                  Kategori <span className="text-red-500">*</span>
+                  Kategori <span className="text-destructive">*</span>
                 </Label>
                 <NativeSelect
                   id="category_id"
@@ -557,7 +557,7 @@ function ArchiveModalFormContent({
                   htmlFor="subcategory_id"
                   className="text-sm font-semibold"
                 >
-                  Sub Kategori{hasSubcategories && <span className="text-red-500"> *</span>}
+                  Sub Kategori{hasSubcategories && <span className="text-destructive"> *</span>}
                 </Label>
                 <NativeSelect
                   id="subcategory_id"
@@ -610,7 +610,7 @@ function ArchiveModalFormContent({
 
             <div className="upload-archive space-y-2">
               <Label htmlFor="file" className="text-sm font-semibold">
-                Upload Arsip <span className="text-red-500">*</span>
+                Upload Arsip <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="file"
@@ -658,7 +658,7 @@ function ArchiveModalFormContent({
                   <p className="font-medium text-foreground">{fileInfo.name}</p>
                   <p className="text-xs">{fileInfo.size}</p>
                   {previewUrl ? (
-                    <div className="mt-2 overflow-hidden rounded-sm border border-border/70 bg-white">
+                    <div className="mt-2 overflow-hidden rounded-sm border border-border/70 bg-card">
                       <img
                         src={previewUrl}
                         alt={fileInfo.name}

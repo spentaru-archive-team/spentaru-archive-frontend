@@ -22,7 +22,7 @@ export default function CategoryTable({
             </TableRow>
           </TableHeader>
 
-          <TableBody className="bg-white">
+          <TableBody className="bg-card">
             {categories?.data?.map((category, index) => (
               <CategoryRow
                 index={getNumRows(index)}

@@ -11,7 +11,7 @@ import React from "react";
 
 export default function StorageRuleTableSkeleton({ rows = 5 }) {
   return (
-    <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
+    <div className="overflow-hidden rounded-sm border border-border/80 bg-card">
       <Table className="text-sm text-muted-foreground">
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
@@ -24,7 +24,7 @@ export default function StorageRuleTableSkeleton({ rows = 5 }) {
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {[...Array(rows)].map((_, i) => (
             <TableRow key={i}>
               <TableCell>

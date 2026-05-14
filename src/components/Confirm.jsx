@@ -33,7 +33,7 @@ export default function Confirm({
       aria-hidden={!open}
     >
       <div
-        className={`w-full max-w-md rounded-sm border border-primary/15 bg-white text-foreground shadow-[0_18px_56px_-26px_rgba(36,54,115,0.42)] transition-all duration-200 ease-out ${
+        className={`w-full max-w-md rounded-sm border border-primary/15 bg-card text-foreground shadow-[0_18px_56px_-26px_rgba(36,54,115,0.42)] transition-all duration-200 ease-out ${
           open ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
         }`}
         role="dialog"

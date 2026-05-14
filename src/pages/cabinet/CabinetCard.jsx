@@ -14,7 +14,7 @@ export default function CabinetCard({ cabinet, onEditClick, onDeleteClick }) {
   const racks = cabinet?.racks || [];
 
   return (
-    <Card className="py-0 rounded-sm border border-border/80 bg-white shadow-none ring-0 overflow-hidden transition-all hover:border-primary/30">
+    <Card className="py-0 rounded-sm border border-border/80 bg-card shadow-none ring-0 overflow-hidden transition-all hover:border-primary/30">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 pb-3 border-b border-border/50 bg-muted/10">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-primary/12 bg-primary/6 text-primary">

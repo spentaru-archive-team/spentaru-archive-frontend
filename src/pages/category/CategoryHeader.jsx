@@ -18,7 +18,7 @@ export default function CategoryHeader({ onAddClick, keyword, setKeyword }) {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Cari judul kategori"
-              className="h-10 border-border/80 bg-white pl-9 py-2 text-sm shadow-none"
+              className="h-10 border-border/80 bg-card pl-9 py-2 text-sm shadow-none"
             />
           </div>
         </div>

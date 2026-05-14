@@ -165,7 +165,7 @@ export default function Dashboard() {
           return (
             <Card
               key={item.title}
-              className="rounded-sm border border-border/80 bg-white py-0 ring-0"
+              className="rounded-sm border border-border/80 bg-card py-0 ring-0"
             >
               <CardContent className="px-5 py-5">
                 <div className="flex items-start justify-between gap-4">
@@ -190,7 +190,7 @@ export default function Dashboard() {
       </div>
 
       <div className="flex flex-col-reverse gap-4 xl:flex-row">
-        <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
+        <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-card py-0 ring-0">
           <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -235,7 +235,7 @@ export default function Dashboard() {
         </Card>
 
         {user.role === "admin" && (
-          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
+          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-card py-0 ring-0">
             <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -250,7 +250,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
               {eventPendingUploads?.length === 0 && (
-                <div className="flex items-start justify-between gap-4 rounded-sm border border-green-100/80 bg-green-50 px-4 py-3">
+                <div className="flex items-start justify-between gap-4 rounded-sm border border-success/80 bg-success px-4 py-3">
                   <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">
                       Semua guru sudah mengupload arsip untuk event yang sudah
@@ -263,7 +263,7 @@ export default function Dashboard() {
               {eventPendingUploads?.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between gap-5 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                  className="flex items-center justify-between gap-5 rounded-sm border border-warning bg-warning/70 px-4 py-3"
                 >
                   <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">
@@ -281,7 +281,7 @@ export default function Dashboard() {
         )}
 
         {user.role === "guru" && (
-          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-white py-0 ring-0">
+          <Card className="min-w-0 flex-1 rounded-sm border border-border/80 bg-card py-0 ring-0">
             <CardHeader className="gap-2 border-b border-border/70 px-5 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -297,7 +297,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="space-y-3 px-5 py-5">
               {teacherPendingUploads?.length === 0 && (
-                <div className="flex items-start justify-between gap-4 rounded-sm border border-green-100/80 bg-green-50 px-4 py-3">
+                <div className="flex items-start justify-between gap-4 rounded-sm border border-success/80 bg-success px-4 py-3">
                   <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">
                       Semua event sudah diupload arsipnya. Terima kasih atas
@@ -310,7 +310,7 @@ export default function Dashboard() {
               {teacherPendingUploads?.map((event) => (
                 <div
                   key={event.id}
-                  className="flex items-center justify-between gap-5 rounded-sm border border-yellow-100/80 bg-yellow-50 px-4 py-3"
+                  className="flex items-center justify-between gap-5 rounded-sm border border-warning/80 bg-warning px-4 py-3"
                 >
                   <div className="min-w-0 space-y-1">
                     <p className="text-sm text-foreground">

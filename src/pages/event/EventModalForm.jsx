@@ -166,14 +166,14 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
         <form onSubmit={handleSubmit}>
           <div className="space-y-5 px-6 pb-6">
             {error?.general && (
-              <p className="mt-1 rounded-sm bg-red-100/40 p-3 text-sm text-destructive">
+              <p className="mt-1 rounded-sm bg-destructive/[0.04] p-3 text-sm text-destructive">
                 {error.general}
               </p>
             )}
 
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
-                Judul Event <span className="text-red-500">*</span>
+                Judul Event <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="title"
@@ -194,7 +194,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="user_id" className="text-sm font-semibold">
-                  Penanggung Jawab <span className="text-red-500">*</span>
+                  Penanggung Jawab <span className="text-destructive">*</span>
                 </Label>
                 <NativeSelect
                   id="user_id"
@@ -225,7 +225,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
 
               <div className="space-y-2">
                 <Label htmlFor="date" className="text-sm font-semibold">
-                  Tanggal Event <span className="text-red-500">*</span>
+                  Tanggal Event <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="date"
@@ -254,7 +254,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
                 placeholder="Tambahkan keterangan singkat event (opsional)"
                 value={formData.description}
                 onChange={handleChange}
-                className="min-h-28 w-full rounded-sm border border-border bg-white px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="min-h-28 w-full rounded-sm border border-border bg-card px-3 py-2 text-sm outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               />
               {error?.fields?.description && (
                 <p className="mt-1 text-xs text-destructive">
@@ -265,7 +265,7 @@ function EventModalFormContent({ onClose, event = null, fetchEvents }) {
 
             <div className="space-y-2">
               <Label htmlFor="status" className="text-sm font-semibold">
-                Status <span className="text-red-500">*</span>
+                Status <span className="text-destructive">*</span>
               </Label>
               <NativeSelect
                 id="status"

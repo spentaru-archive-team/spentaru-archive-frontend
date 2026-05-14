@@ -109,7 +109,7 @@ export default function Login() {
         }}
       />
 
-      <div className="flex justify-center mx-5 mt-5 lg:hidden gap-2 items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+      <div className="flex justify-center mx-5 mt-5 lg:hidden gap-2 items-center rounded-full border border-primary/15 bg-card/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
         <img src={Logo} alt="Logo Spentaru Archive" className="w-10 h-10" />
         Arsip Digital SMP Negeri 1 Waru
       </div>
@@ -118,7 +118,7 @@ export default function Login() {
         <div className="grid w-full items-center gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
           <section className="hidden lg:block">
             <div className="max-w-xl space-y-6">
-              <div className="inline-flex gap-2 items-center rounded-full border border-primary/15 bg-white/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
+              <div className="inline-flex gap-2 items-center rounded-full border border-primary/15 bg-card/75 px-4 py-2 text-sm font-medium text-primary shadow-sm backdrop-blur">
                 <img
                   src={Logo}
                   alt="Logo Spentaru Archive"
@@ -143,7 +143,7 @@ export default function Login() {
           </section>
 
           <form className="w-full" onSubmit={handleLogin}>
-            <Card className="mx-auto w-full max-w-lg border-white/70 bg-white/90 shadow-[0_24px_80px_-32px_rgba(36,54,115,0.45)] backdrop-blur">
+            <Card className="mx-auto w-full max-w-lg border-border/70 bg-card/90 shadow-[0_24px_80px_-32px_rgba(36,54,115,0.45)] backdrop-blur">
               <CardHeader className="space-y-4 pb-2">
                 <div className="space-y-2">
                   <CardTitle className="mb-2 text-3xl font-semibold tracking-tight text-foreground">

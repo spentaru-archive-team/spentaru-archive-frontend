@@ -12,11 +12,11 @@ import EventModalDetail from "./EventModalDetail";
 import PopUp from "@/components/PopUp";
 
 const statusStyles = {
-  ongoing: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  done: "border-slate-200 bg-slate-100 text-slate-700",
-  completed: "border-slate-200 bg-slate-100 text-slate-700",
-  pending_upload: "border-yellow-200 bg-yellow-50 text-yellow-700",
-  uploaded: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  ongoing: "border-success bg-success text-success-foreground",
+  done: "border-muted bg-muted text-muted-foreground",
+  completed: "border-muted bg-muted text-muted-foreground",
+  pending_upload: "border-warning bg-warning text-warning-foreground",
+  uploaded: "border-success bg-success text-success-foreground",
 };
 
 export default function EventPage() {
@@ -182,7 +182,7 @@ export default function EventPage() {
       {isLoading ? (
         <EventTableSkeleton />
       ) : error ? (
-        <div className="p-4 bg-red-100 text-red-700 rounded-md">
+        <div className="p-4 bg-destructive/10 text-destructive rounded-md">
           Terjadi kesalahan saat memuat data event.
         </div>
       ) : (

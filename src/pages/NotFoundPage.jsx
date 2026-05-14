@@ -31,7 +31,7 @@ export default function NotFoundPage() {
         </div>
       </Header>
 
-      <Card className="rounded-sm border border-border/80 bg-white py-0 ring-0 shadow-none">
+      <Card className="rounded-sm border border-border/80 bg-card py-0 ring-0 shadow-none">
         <CardHeader className="border-b border-border/70 px-5 py-4">
           <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
             <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-primary/15 bg-primary/6 text-primary">

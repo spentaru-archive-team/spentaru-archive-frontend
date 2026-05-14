@@ -18,7 +18,7 @@ export default function EventTable({
   getNumRows,
 }) {
   return (
-    <div className="overflow-hidden rounded-sm border border-border/80 bg-white">
+    <div className="overflow-hidden rounded-sm border border-border/80 bg-card">
       <Table className="lg:overflow-x-hidden text-sm text-muted-foreground">
         <TableHeader className="bg-muted/35">
           <TableRow className="hover:bg-muted/35">
@@ -32,7 +32,7 @@ export default function EventTable({
           </TableRow>
         </TableHeader>
 
-        <TableBody className="bg-white">
+        <TableBody className="bg-card">
           {events?.data?.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="text-center text-muted-foreground">
