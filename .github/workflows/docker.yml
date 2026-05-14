@@ -51,13 +51,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_USERNAME }}/spentaru-frontend:dev
-            ${{ secrets.DOCKERHUB_USERNAME }}/spentaru-frontend:${{ github.sha }}
-
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ vars.DOCKERHUB_USERNAME }}/spentaru-archive-frontend:dev
