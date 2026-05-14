@@ -47,6 +47,10 @@ export function getArchives({
     params.sort = sort;
   }
 
+  if (filters?.retention_status) {
+    params["filters[retention_status][$eq]"] = filters.retention_status;
+  }
+
   if (filters?.category_id) {
     params["filters[category_id][$eq]"] = filters.category_id;
   }

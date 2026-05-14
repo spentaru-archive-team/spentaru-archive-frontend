@@ -28,8 +28,9 @@ export default function ArchivePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  const [sort, setSort] = useState("created_at:desc");
+  const [sort, setSort] = useState("retention_status:asc");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteArchive, setSelectedDeleteArchive] = useState(null);
   const [isDeletingArchive, setIsDeletingArchive] = useState(false);
@@ -62,6 +63,11 @@ export default function ArchivePage() {
   const handleCategoryFilterChange = (value) => {
     setCurrentPage(1);
     setCategoryFilter(value);
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setCurrentPage(1);
+    setStatusFilter(value);
   };
 
   const handleDetailClick = (archive) => {
@@ -141,7 +147,10 @@ export default function ArchivePage() {
         page: currentPage,
         query: debouncedKeyword || null,
         sort: sort || null,
-        filters: categoryFilter ? { category_id: categoryFilter } : null,
+        filters: {
+          category_id: categoryFilter || null,
+          retention_status: statusFilter || null,
+        },
       });
       return res.data.data;
     } catch (error) {
@@ -154,7 +163,7 @@ export default function ArchivePage() {
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["archives", currentPage, debouncedKeyword, sort, categoryFilter],
+    queryKey: ["archives", currentPage, debouncedKeyword, sort, categoryFilter, statusFilter],
     queryFn: fetchArchives,
   });
 
@@ -216,6 +225,8 @@ export default function ArchivePage() {
         setSort={handleSortFilterChange}
         categoryFilter={categoryFilter}
         setCategoryFilter={handleCategoryFilterChange}
+        statusFilter={statusFilter}
+        setStatusFilter={handleStatusFilterChange}
       />
       {isLoading ? (
         <ArchiveTableSkeleton />
