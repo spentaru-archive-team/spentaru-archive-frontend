@@ -1,7 +1,11 @@
 node_modules
 dist
 .git
+.github
 .env
+.env.local
+.env.production
+.env.*.local
 .gemini
 .playwright-mcp
 .vscode
