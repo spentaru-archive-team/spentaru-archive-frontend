@@ -24,6 +24,8 @@ Frontend untuk **Spentaru Archive**, sistem arsip digital dan fisik sekolah untu
 - [Routing Halaman](#routing-halaman)
 - [Integrasi API](#integrasi-api)
 - [Integrasi AI Assistant](#integrasi-ai-assistant)
+- [Dark Mode](#dark-mode)
+- [CI/CD Pipeline](#cicd-pipeline)
 - [Standar Pengembangan](#standar-pengembangan)
 - [Panduan Menambah Fitur](#panduan-menambah-fitur)
 - [Troubleshooting](#troubleshooting)
@@ -79,13 +81,29 @@ Frontend ini tidak berdiri sendiri. Aplikasi membutuhkan backend API yang kompat
 
 ### AI Assistant
 
-- Widget chat tersedia di layout utama.
+- Widget chat tersedia di layout utama, dengan tombol FAB di kanan bawah.
 - Mendukung mode gateway Laravel atau service AI langsung.
-- Mendukung request chat, OCR, dan ekstraksi PDF native sesuai konfigurasi environment.
+- Mendukung request chat, OCR, ekstraksi PDF native, dan unggah file (gambar, PDF, DOCX).
+- Panel chat dapat diatur lebarnya (3 preset: 320/400/500px + drag handle).
+- **File cards**: AI dapat menampilkan kartu arsip dengan metadata lengkap, link preview, dan link download.
+- **Trace ID**: Setiap request menyertakan `X-Trace-Id` untuk memudahkan debugging.
+- **Tooltips**: Semua tombol aksi memiliki tooltip.
+- Input teks auto-resize, kirim dengan Enter (Shift+Enter untuk baris baru).
+
+### Dark Mode
+
+- Toggle dark mode via `ThemeContext` yang menyimpan preferensi di `localStorage`.
+- Menggunakan class-based Tailwind (`dark` class pada `<html>`).
+- Seluruh komponen UI telah diadaptasi untuk dark mode.
 
 ### Pengaturan
 
 - Pengaturan profil atau data pengguna melalui endpoint `/users/me`.
+- Tersedia halaman **About** (tentang website dan tim pengembang) yang bisa diakses dari menu Settings.
+
+### Pencarian Kategori
+
+- Halaman kategori mendukung pencarian real-time untuk menemukan kategori dengan cepat.
 
 ## Role dan Hak Akses
 
@@ -115,6 +133,7 @@ Pembatasan akses diterapkan di `src/utils/ProtectedRoute.jsx`. Menu sidebar juga
 - Tailwind Merge
 - Class Variance Authority
 - Geist Variable font
+- Inter Variable font
 
 ### Data dan API
 
@@ -329,6 +348,10 @@ http://localhost:8080
 
 ```text
 frontend/
+|-- .dockerignore                   # File ignore untuk Docker build context
+|-- .github/workflows/              # GitHub Actions CI/CD
+|   |-- react-ci.yml                # Frontend CI (lint, build, deploy Pages)
+|   `-- docker.yml                  # Docker CI (build & push image)
 |-- public/                         # Aset publik seperti favicon, logo, dan icons
 |-- scripts/                        # Script utilitas proyek
 |   `-- export-ai-context.mjs       # Export konteks proyek untuk AI/debugging
@@ -336,7 +359,7 @@ frontend/
 |   |-- assets/                     # Aset internal React
 |   |-- components/                 # Komponen reusable aplikasi
 |   |   |-- ui/                     # UI primitives shadcn/Radix
-|   |   |-- AiChatWidget.jsx        # Widget chat AI
+|   |   |-- AiChatWidget.jsx        # Widget chat AI (file cards, OCR, PDF, tooltips, trace ID)
 |   |   |-- AppSidebar.jsx          # Sidebar dan menu berbasis role
 |   |   |-- Confirm.jsx             # Dialog konfirmasi
 |   |   |-- Header.jsx              # Header section halaman
@@ -344,9 +367,10 @@ frontend/
 |   |   |-- Pagination.jsx          # Komponen pagination
 |   |   `-- PopUp.jsx              # Feedback popup
 |   |-- config/                     # Konfigurasi aplikasi
-|   |   `-- api.js                 # Base API dan timeout
+|   |   `-- api.js                 # Base API dan timeout (30 detik)
 |   |-- context/                    # React context global
-|   |   `-- AuthContext.jsx        # State auth dan session user
+|   |   |-- AuthContext.jsx        # State auth dan session user
+|   |   `-- ThemeContext.jsx       # State tema (light/dark) dengan localStorage
 |   |-- hooks/                      # Custom hooks
 |   |   |-- use-auth.js             # Hook akses AuthContext
 |   |   `-- use-mobile.js           # Helper responsif
@@ -358,30 +382,33 @@ frontend/
 |   |   |-- archive/                # Manajemen arsip
 |   |   |-- archiveLocation/        # Manajemen lokasi fisik arsip
 |   |   |-- cabinet/                # Manajemen lemari
-|   |   |-- category/               # Manajemen kategori
+|   |   |-- category/               # Manajemen kategori (dengan pencarian)
 |   |   |-- event/                  # Manajemen event
 |   |   |-- storageRule/            # Manajemen storage rules
 |   |   |-- user/                   # Manajemen user
+|   |   |-- About.jsx               # Halaman tentang website dan tim
 |   |   |-- Dashboard.jsx           # Dashboard utama
 |   |   |-- Login.jsx               # Login
 |   |   |-- Settings.jsx            # Pengaturan
 |   |   `-- NotFoundPage.jsx        # Halaman tidak ditemukan
 |   |-- services/                   # Layer request API
 |   |   |-- axios.js                # Axios instance, CSRF, interceptor auth
-|   |   |-- ai.service.js           # Request AI service/gateway
+|   |   |-- ai.service.js           # Request AI service/gateway (dengan trace ID)
 |   |   |-- archive.service.js      # Endpoint arsip
 |   |   |-- auth.service.js         # Endpoint auth
 |   |   |-- dashboard.service.js    # Endpoint dashboard
 |   |   `-- *.service.js           # Service fitur lain
 |   |-- utils/                      # Utility routing/proteksi
 |   |   `-- ProtectedRoute.jsx      # Guard login dan role
-|   |-- App.jsx                     # Definisi routing utama
-|   |-- index.css                   # Tailwind, theme token, warna brand
+|   |-- App.jsx                     # Definisi routing utama (termasuk ScrollToTop, ThemeProvider)
+|   |-- index.css                   # Tailwind, theme token, warna brand, dark mode variables
 |   `-- main.jsx                   # Entry point React dan QueryClient
 |-- .env.example                    # Contoh konfigurasi environment
 |-- components.json                 # Konfigurasi shadcn/ui
+|-- Dockerfile                      # Multi-stage build (node -> nginx)
 |-- eslint.config.js                # Konfigurasi ESLint
 |-- jsconfig.json                   # Alias import `@/*`
+|-- nginx.conf                      # Konfigurasi Nginx SPA fallback
 |-- package.json                    # Script dan dependency
 |-- vite.config.js                  # Konfigurasi Vite
 `-- README.md                       # Dokumentasi proyek
@@ -435,6 +462,7 @@ Saat menambah atau memperbaiki UI, gunakan token warna dari file ini agar tampil
 | `/storage-rules` | Storage Rules | Hanya admin. |
 | `/cabinets` | Lemari | Tersedia untuk admin dan guru. |
 | `/settings` | Pengaturan | Tersedia untuk admin dan guru. |
+| `/about` | About | Tersedia untuk admin dan guru (tentang website dan tim). |
 | `*` | Not Found | Ditampilkan untuk route tidak dikenal dalam layout. |
 
 ## Integrasi API
@@ -446,6 +474,7 @@ File utama: `src/services/axios.js`.
 Perilaku penting:
 
 - `baseURL` diambil dari `VITE_BASE_API_URL`.
+- `timeout` diset **30 detik** (dinaikkan dari 10 detik untuk menangani request berat).
 - Request memakai `withCredentials: true` untuk session/cookie.
 - CSRF cookie diambil dari origin API melalui `/sanctum/csrf-cookie`.
 - Jika response `419`, request akan refresh CSRF lalu retry sekali.
@@ -479,6 +508,17 @@ AI Assistant berada di `src/components/AiChatWidget.jsx` dan dipasang di `src/la
 
 Konfigurasi ada di `src/services/ai.service.js`:
 
+### Fitur Chat Widget
+
+- **Trigger**: Tombol FAB di kanan bawah dengan label "Asisten AI".
+- **Panel samping**: Panel geser dari kanan, lebar dapat diatur (3 preset: 320/400/500px) plus drag handle.
+- **Input chat**: Textarea auto-resize; Enter untuk kirim, Shift+Enter untuk baris baru.
+- **Unggah file**: Tombol paperclip untuk upload gambar, PDF, DOCX. File diproses di client-side sebelum dikirim.
+- **File cards**: Response AI dapat menampilkan kartu arsip dengan metadata (judul, file, kategori, lokasi fisik, link preview/download).
+- **Trace ID**: Setiap request `askAi()` menyertakan header `X-Trace-Id` (UUID) untuk debugging.
+- **Tooltips**: Setiap tombol aksi memiliki tooltip.
+- **Dark mode**: Widget telah diadaptasi untuk tema gelap.
+
 ### Mode Service AI Langsung
 
 Gunakan konfigurasi berikut:
@@ -493,6 +533,7 @@ Endpoint yang dipakai:
 ```text
 /api/chat/ask
 /api/ocr/extract
+/api/ocr/extract-base64
 /api/pdf/extract-native
 ```
 
@@ -508,12 +549,61 @@ VITE_BASE_API_URL=http://localhost:8000/api/v1
 Endpoint yang dipakai:
 
 ```text
-/ai/chat/ask
+/chat/ask
 /ai/ocr/extract
 /ai/pdf/extract-native
 ```
 
 Pada mode gateway Laravel, request AI ikut memakai credential dan CSRF.
+
+### Fungsi Service
+
+| Fungsi | Deskripsi |
+| --- | --- |
+| `askAi(message, useSearch, traceId)` | Kirim pesan chat, dukung `use_search` flag dan `X-Trace-Id`. |
+| `extractOcr(file, traceId)` | Upload file untuk ekstraksi OCR (multipart). |
+| `extractOcrBase64(imageBase64)` | OCR dari base64 gambar (non-gateway only). |
+| `extractPdfNative(file)` | Ekstraksi teks dari PDF (multipart). |
+
+## Dark Mode
+
+Dark mode diimplementasikan menggunakan **class-based strategy** (Tailwind class `dark` pada `<html>`).
+
+### ThemeContext
+
+`src/context/ThemeContext.jsx` menyediakan state tema global:
+
+- Membaca preferensi dari `localStorage.getItem("theme")` dengan fallback `"light"`.
+- Toggle class `dark` pada `document.documentElement` saat tema berubah.
+- State dan setter diekspos via React Context (`useTheme()` hook).
+
+### CSS Variables
+
+`src/index.css` mendefinisikan variable CSS untuk kedua tema. Komponen menggunakan variable seperti `--primary`, `bg-background`, `text-foreground`, dan `bg-muted` agar otomatis menyesuaikan tema.
+
+### Cakupan
+
+Seluruh komponen UI (termasuk AiChatWidget, sidebar, tabel, form, modal) telah diadaptasi untuk dark mode.
+
+## CI/CD Pipeline
+
+Proyek ini menggunakan **GitHub Actions** untuk otomatisasi CI/CD.
+
+### Frontend CI (`react-ci.yml`)
+
+| Aspek | Detail |
+| --- | --- |
+| Pemicu | PR ke `main`/`dev`, push ke `main`/`dev`, manual `workflow_dispatch` |
+| Jobs | `ci-staging` (dev: lint + build), `ci-production` (main: lint + build + upload artifact), `deploy` (main: deploy ke GitHub Pages) |
+| Node | 20 |
+
+### Docker CI (`docker.yml`)
+
+| Aspek | Detail |
+| --- | --- |
+| Pemicu | Push ke branch `dev` |
+| Steps | `npm ci` → `npm run lint` → `npm run build` → Docker buildx → push ke Docker Hub |
+| Tag | `<user>/spentaru-frontend:dev` dan `<user>/spentaru-frontend:<sha>` |
 
 ## Standar Pengembangan
 
@@ -528,6 +618,7 @@ Ikuti standar ini agar proyek mudah diwariskan:
 - Gunakan komponen `src/components/ui/` jika style dasar berasal dari komponen UI turunan.
 - Jaga desain tetap formal, bersih, dan sesuai web arsip sekolah.
 - Gunakan warna utama `rgb(36 54 115)` atau token `primary` dari `src/index.css`.
+- Pastikan komponen mendukung **dark mode** dengan menggunakan CSS variable (`--primary`, `bg-background`, `text-foreground`, dll) dari `src/index.css`.
 - Hindari gradient, blur berat, shadow besar, radius besar, dan dekorasi berlebihan jika tidak diperlukan.
 - Jalankan `npm run lint` sebelum menyerahkan perubahan.
 
