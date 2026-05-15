@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
 import { STORAGE_URL } from "@/config/api";
+import Markdown from "react-markdown";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -612,7 +613,7 @@ export default function AiChatWidget() {
                       )}
 
                       <div className="whitespace-pre-wrap wrap-break-word">
-                        {formatText(message.content)}
+                        <Markdown>{message.content}</Markdown>
                       </div>
 
                       {message.file_cards && message.file_cards.length > 0 && (
