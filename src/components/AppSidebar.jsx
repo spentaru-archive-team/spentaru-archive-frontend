@@ -18,6 +18,7 @@ import Logo from "@/assets/logo.png";
 
 import {
   Archive,
+  Calendar,
   ChevronDown,
   ChevronRight,
   Clipboard,
@@ -57,6 +58,7 @@ const initMenus = [
 
 const guruMenus = [
   { name: "Dashboard", path: "/dashboard", icon: Home },
+  { name: "Event", path: "/events", icon: Calendar },
   { name: "Arsip", path: "/archives", icon: Archive },
   { name: "Lokasi Arsip", path: "/archive-locations", icon: MapPinSearch },
   { name: "Lemari", path: "/cabinets", icon: ShelvingUnit },
