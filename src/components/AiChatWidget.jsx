@@ -212,7 +212,7 @@ export default function AiChatWidget() {
         error?.response?.data?.message ||
         error?.message ||
         (error?.code === "ERR_NETWORK"
-          ? "Tidak bisa terhubung ke AI service. Pastikan ai-service berjalan di http://localhost:5000."
+          ? "Tidak bisa terhubung ke backend Laravel. Pastikan API berjalan dan VITE_BASE_API_URL sudah benar."
           : "Maaf, terjadi kesalahan saat mengambil jawaban AI.");
 
       setMessages((prev) => [
@@ -250,7 +250,7 @@ export default function AiChatWidget() {
     }
   };
 
-  const callLocalEasyOCR = async (base64Data) => {
+  const callOcrBase64 = async (base64Data) => {
     const result = await extractOcrBase64(base64Data);
     if (!result || typeof result.text !== "string") {
       throw new Error("EasyOCR processing failed");
@@ -364,7 +364,7 @@ export default function AiChatWidget() {
       setProcessStatus("Memproses gambar dengan EasyOCR...");
       const base64String = dataUrlToProcess.split(",")[1];
       try {
-        const easyOCRResult = await callLocalEasyOCR(base64String);
+        const easyOCRResult = await callOcrBase64(base64String);
 
         setMessages((prev) => [
           ...prev,

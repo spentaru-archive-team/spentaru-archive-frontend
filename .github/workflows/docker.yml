@@ -27,9 +27,6 @@ jobs:
         run: |
           echo "VITE_BASE_API_URL=${{ secrets.VITE_BASE_API_URL }}" >> .env.production
           echo "VITE_STORAGE_URL=${{ secrets.VITE_STORAGE_URL }}" >> .env.production
-          echo "VITE_AI_SERVICE_URL=${{ secrets.VITE_AI_SERVICE_URL }}" >> .env.production
-          echo "VITE_USE_LARAVEL_AI_GATEWAY=${{ secrets.VITE_USE_LARAVEL_AI_GATEWAY }}" >> .env.production
-          echo "VITE_AI_TIMEOUT_MS=${{ secrets.VITE_AI_TIMEOUT_MS }}" >> .env.production
           echo "VITE_APP_NAME=${{ secrets.VITE_APP_NAME }}" >> .env.production
 
       - name: Install dependencies

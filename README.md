@@ -204,9 +204,6 @@ Isi default yang tersedia:
 ```env
 VITE_BASE_API_URL=http://localhost:8000/api/v1
 VITE_STORAGE_URL=http://localhost:8000
-VITE_AI_SERVICE_URL=http://localhost:5000
-VITE_USE_LARAVEL_AI_GATEWAY=false
-VITE_AI_TIMEOUT_MS=30000
 VITE_APP_NAME=spentaru-archive-frontend
 ```
 
@@ -214,9 +211,6 @@ VITE_APP_NAME=spentaru-archive-frontend
 | --- | --- | --- |
 | `VITE_BASE_API_URL` | Ya | Base URL backend API. Digunakan oleh Axios utama di `src/services/axios.js`. |
 | `VITE_STORAGE_URL` | Ya | Base URL storage/file backend. Digunakan saat aplikasi perlu menampilkan atau mengambil file dari server. |
-| `VITE_AI_SERVICE_URL` | Opsional | Base URL service AI langsung, default `http://localhost:5000`. |
-| `VITE_USE_LARAVEL_AI_GATEWAY` | Opsional | Jika `true`, request AI diarahkan ke backend Laravel melalui `VITE_BASE_API_URL`. |
-| `VITE_AI_TIMEOUT_MS` | Opsional | Timeout request AI dalam milidetik. |
 | `VITE_APP_NAME` | Opsional | Nama aplikasi untuk kebutuhan identifikasi environment. |
 
 Catatan penting:
@@ -302,15 +296,12 @@ Kenapa pola ini dipakai:
 ### Build-time Environment (Vite)
 
 Variabel `VITE_*` dibaca saat proses build image, bukan saat container runtime.
-Gunakan `--build-arg` agar nilai API/AI sesuai environment server.
+Gunakan `--build-arg` agar nilai API sesuai environment server.
 
 Variabel yang umum dipakai:
 
 - `VITE_BASE_API_URL`
 - `VITE_STORAGE_URL`
-- `VITE_AI_SERVICE_URL`
-- `VITE_USE_LARAVEL_AI_GATEWAY` (production disarankan `true`)
-- `VITE_AI_TIMEOUT_MS`
 - `VITE_APP_NAME`
 
 Contoh build image:
@@ -319,9 +310,6 @@ Contoh build image:
 docker build -t spentaru/frontend:prod \
   --build-arg VITE_BASE_API_URL=https://domain-kamu/api/v1 \
   --build-arg VITE_STORAGE_URL=https://domain-kamu \
-  --build-arg VITE_AI_SERVICE_URL=https://domain-kamu/api/v1/ai \
-  --build-arg VITE_USE_LARAVEL_AI_GATEWAY=true \
-  --build-arg VITE_AI_TIMEOUT_MS=30000 \
   --build-arg VITE_APP_NAME=spentaru-archive-frontend \
   .
 ```
@@ -494,7 +482,7 @@ Perilaku penting:
 | `event.service.js` | `/events` |
 | `storageRule.service.js` | `/archive-storage-rules` |
 | `user.service.js` | `/users` |
-| `ai.service.js` | Gateway Laravel atau service AI langsung, tergantung `.env`. |
+| `ai.service.js` | Endpoint AI melalui backend Laravel. |
 
 ### Pola Data Fetching
 
@@ -506,7 +494,7 @@ Perilaku penting:
 
 AI Assistant berada di `src/components/AiChatWidget.jsx` dan dipasang di `src/layouts/BaseLayout.jsx`.
 
-Konfigurasi ada di `src/services/ai.service.js`:
+Konfigurasi API mengikuti `VITE_BASE_API_URL` dan instance Axios utama di `src/services/axios.js`.
 
 ### Fitur Chat Widget
 
@@ -519,30 +507,11 @@ Konfigurasi ada di `src/services/ai.service.js`:
 - **Tooltips**: Setiap tombol aksi memiliki tooltip.
 - **Dark mode**: Widget telah diadaptasi untuk tema gelap.
 
-### Mode Service AI Langsung
+### Endpoint Laravel
 
 Gunakan konfigurasi berikut:
 
 ```env
-VITE_USE_LARAVEL_AI_GATEWAY=false
-VITE_AI_SERVICE_URL=http://localhost:5000
-```
-
-Endpoint yang dipakai:
-
-```text
-/api/chat/ask
-/api/ocr/extract
-/api/ocr/extract-base64
-/api/pdf/extract-native
-```
-
-### Mode Gateway Laravel
-
-Gunakan konfigurasi berikut:
-
-```env
-VITE_USE_LARAVEL_AI_GATEWAY=true
 VITE_BASE_API_URL=http://localhost:8000/api/v1
 ```
 
@@ -551,10 +520,11 @@ Endpoint yang dipakai:
 ```text
 /chat/ask
 /ai/ocr/extract
+/ai/ocr/extract-base64
 /ai/pdf/extract-native
 ```
 
-Pada mode gateway Laravel, request AI ikut memakai credential dan CSRF.
+Request AI ikut memakai credential, CSRF, refresh 401/419, dan timeout dari Axios utama.
 
 ### Fungsi Service
 
@@ -562,7 +532,7 @@ Pada mode gateway Laravel, request AI ikut memakai credential dan CSRF.
 | --- | --- |
 | `askAi(message, useSearch, traceId)` | Kirim pesan chat, dukung `use_search` flag dan `X-Trace-Id`. |
 | `extractOcr(file, traceId)` | Upload file untuk ekstraksi OCR (multipart). |
-| `extractOcrBase64(imageBase64)` | OCR dari base64 gambar (non-gateway only). |
+| `extractOcrBase64(imageBase64, traceId)` | OCR dari base64 gambar melalui Laravel. |
 | `extractPdfNative(file)` | Ekstraksi teks dari PDF (multipart). |
 
 ## Dark Mode
@@ -659,10 +629,9 @@ Kemungkinan penyebab:
 
 Kemungkinan penyebab:
 
-- `VITE_AI_SERVICE_URL` salah atau service AI belum berjalan.
-- `VITE_USE_LARAVEL_AI_GATEWAY` tidak sesuai mode backend.
-- Timeout terlalu kecil untuk proses OCR/PDF.
-- Endpoint gateway Laravel belum tersedia.
+- `VITE_BASE_API_URL` salah atau backend Laravel belum berjalan.
+- Endpoint AI Laravel belum tersedia.
+- Timeout Axios utama terlalu kecil untuk proses OCR/PDF.
 
 ### Preview arsip gagal
 
