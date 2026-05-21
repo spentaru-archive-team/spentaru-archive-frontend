@@ -38,6 +38,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -477,34 +478,42 @@ export default function AiChatWidget() {
                     Online
                   </span>
                 </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Asisten arsip sekolah untuk chat, pencarian arsip, dan
+                  ekstraksi teks dari file.
+                </SheetDescription>
                 <p className="text-xs text-muted-foreground">
                   Asisten arsip sekolah
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowSettings(!showSettings)}
-                    className={`h-8 w-8 rounded-lg transition-colors ${
-                      showSettings
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted"
-                    }`}
-                  >
-                    <Settings className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Pengaturan lebar</p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="hidden md:block">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Pengaturan lebar"
+                      onClick={() => setShowSettings(!showSettings)}
+                      className={`h-8 w-8 rounded-lg transition-colors ${
+                        showSettings
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      <Settings className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Pengaturan lebar</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Tutup asisten"
                 onClick={() => setOpen(false)}
                 className="h-8 w-8 rounded-lg hover:bg-destructive/10 hover:text-destructive"
               >
@@ -799,6 +808,7 @@ export default function AiChatWidget() {
                       type="button"
                       variant="ghost"
                       size="icon"
+                      aria-label="Upload file"
                       onClick={() => fileInputRef.current.click()}
                       disabled={loading}
                       className="h-9 w-9 shrink-0 rounded-xl hover:bg-primary/10"
@@ -827,6 +837,7 @@ export default function AiChatWidget() {
                     <Button
                       type="submit"
                       size="icon"
+                      aria-label="Kirim pesan"
                       className="h-9 w-9 shrink-0 rounded-xl bg-primary hover:bg-primary/90"
                       disabled={isSendDisabled}
                     >
