@@ -31,11 +31,14 @@ import {
 } from "lucide-react";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
 import { STORAGE_URL } from "@/config/api";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -70,6 +73,44 @@ const WIDTH_PRESETS = [
   { label: "Sedang", value: 400, icon: MessageCircle },
   { label: "Sempit", value: 320, icon: ChevronRight },
 ];
+
+const USER_MARKDOWN_PROSE_CLASS = [
+  "[--tw-prose-body:var(--primary-foreground)]",
+  "[--tw-prose-headings:var(--primary-foreground)]",
+  "[--tw-prose-lead:var(--primary-foreground)]",
+  "[--tw-prose-links:var(--primary-foreground)]",
+  "[--tw-prose-bold:var(--primary-foreground)]",
+  "[--tw-prose-counters:var(--primary-foreground)]",
+  "[--tw-prose-bullets:var(--primary-foreground)]",
+  "[--tw-prose-hr:var(--primary-foreground)]",
+  "[--tw-prose-quotes:var(--primary-foreground)]",
+  "[--tw-prose-quote-borders:var(--primary-foreground)]",
+  "[--tw-prose-captions:var(--primary-foreground)]",
+  "[--tw-prose-kbd:var(--primary-foreground)]",
+  "[--tw-prose-code:var(--primary-foreground)]",
+  "[--tw-prose-pre-code:var(--primary-foreground)]",
+  "[--tw-prose-th:var(--primary-foreground)]",
+  "[--tw-prose-td:var(--primary-foreground)]",
+].join(" ");
+
+const ASSISTANT_MARKDOWN_PROSE_CLASS = [
+  "[--tw-prose-body:var(--foreground)]",
+  "[--tw-prose-headings:var(--foreground)]",
+  "[--tw-prose-lead:var(--muted-foreground)]",
+  "[--tw-prose-links:var(--primary)]",
+  "[--tw-prose-bold:var(--foreground)]",
+  "[--tw-prose-counters:var(--muted-foreground)]",
+  "[--tw-prose-bullets:var(--muted-foreground)]",
+  "[--tw-prose-hr:var(--border)]",
+  "[--tw-prose-quotes:var(--foreground)]",
+  "[--tw-prose-quote-borders:var(--border)]",
+  "[--tw-prose-captions:var(--muted-foreground)]",
+  "[--tw-prose-kbd:var(--foreground)]",
+  "[--tw-prose-code:var(--foreground)]",
+  "[--tw-prose-pre-code:var(--foreground)]",
+  "[--tw-prose-th:var(--foreground)]",
+  "[--tw-prose-td:var(--foreground)]",
+].join(" ");
 
 export default function AiChatWidget() {
   const [open, setOpen] = useState(false);
@@ -127,20 +168,6 @@ export default function AiChatWidget() {
     return loading || (!input.trim() && !processStatus);
   }, [input, loading, processStatus]);
 
-  const formatText = (text) => {
-    const parts = text.split(/(\*\*.*?\*\*)/g);
-    return parts.map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return (
-          <strong key={index} className="font-bold text-primary">
-            {part.slice(2, -2)}
-          </strong>
-        );
-      }
-      return <span key={index}>{part}</span>;
-    });
-  };
-
   const handleSend = async (event) => {
     if (event) event.preventDefault();
 
@@ -186,7 +213,7 @@ export default function AiChatWidget() {
         error?.response?.data?.message ||
         error?.message ||
         (error?.code === "ERR_NETWORK"
-          ? "Tidak bisa terhubung ke AI service. Pastikan ai-service berjalan di http://localhost:5000."
+          ? "Tidak bisa terhubung ke backend Laravel. Pastikan API berjalan dan VITE_BASE_API_URL sudah benar."
           : "Maaf, terjadi kesalahan saat mengambil jawaban AI.");
 
       setMessages((prev) => [
@@ -224,7 +251,7 @@ export default function AiChatWidget() {
     }
   };
 
-  const callLocalEasyOCR = async (base64Data) => {
+  const callOcrBase64 = async (base64Data) => {
     const result = await extractOcrBase64(base64Data);
     if (!result || typeof result.text !== "string") {
       throw new Error("EasyOCR processing failed");
@@ -338,7 +365,7 @@ export default function AiChatWidget() {
       setProcessStatus("Memproses gambar dengan EasyOCR...");
       const base64String = dataUrlToProcess.split(",")[1];
       try {
-        const easyOCRResult = await callLocalEasyOCR(base64String);
+        const easyOCRResult = await callOcrBase64(base64String);
 
         setMessages((prev) => [
           ...prev,
@@ -451,34 +478,42 @@ export default function AiChatWidget() {
                     Online
                   </span>
                 </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Asisten arsip sekolah untuk chat, pencarian arsip, dan
+                  ekstraksi teks dari file.
+                </SheetDescription>
                 <p className="text-xs text-muted-foreground">
                   Asisten arsip sekolah
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowSettings(!showSettings)}
-                    className={`h-8 w-8 rounded-lg transition-colors ${
-                      showSettings
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted"
-                    }`}
-                  >
-                    <Settings className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Pengaturan lebar</p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="hidden md:block">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Pengaturan lebar"
+                      onClick={() => setShowSettings(!showSettings)}
+                      className={`h-8 w-8 rounded-lg transition-colors ${
+                        showSettings
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      <Settings className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Pengaturan lebar</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Tutup asisten"
                 onClick={() => setOpen(false)}
                 className="h-8 w-8 rounded-lg hover:bg-destructive/10 hover:text-destructive"
               >
@@ -577,8 +612,8 @@ export default function AiChatWidget() {
                     <div
                       className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                         isUser
-                          ? "bg-primary text-primary-foreground rounded-br-md"
-                          : "bg-muted/50 text-foreground border rounded-bl-md"
+                          ? "bg-primary text-primary-foreground! rounded-br-md"
+                          : "bg-muted/50 text-foreground! border rounded-bl-md"
                       }`}
                     >
                       {message.type === "file" && (
@@ -611,8 +646,16 @@ export default function AiChatWidget() {
                         </div>
                       )}
 
-                      <div className="whitespace-pre-wrap wrap-break-word">
-                        {formatText(message.content)}
+                      <div
+                        className={`prose prose-sm max-w-none wrap-break-word ${
+                          isUser
+                            ? USER_MARKDOWN_PROSE_CLASS
+                            : ASSISTANT_MARKDOWN_PROSE_CLASS
+                        }`}
+                      >
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                          {message.content}
+                        </Markdown>
                       </div>
 
                       {message.file_cards && message.file_cards.length > 0 && (
@@ -765,6 +808,7 @@ export default function AiChatWidget() {
                       type="button"
                       variant="ghost"
                       size="icon"
+                      aria-label="Upload file"
                       onClick={() => fileInputRef.current.click()}
                       disabled={loading}
                       className="h-9 w-9 shrink-0 rounded-xl hover:bg-primary/10"
@@ -793,6 +837,7 @@ export default function AiChatWidget() {
                     <Button
                       type="submit"
                       size="icon"
+                      aria-label="Kirim pesan"
                       className="h-9 w-9 shrink-0 rounded-xl bg-primary hover:bg-primary/90"
                       disabled={isSendDisabled}
                     >

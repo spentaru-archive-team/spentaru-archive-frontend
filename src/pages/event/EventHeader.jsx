@@ -5,6 +5,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { useAuth } from "@/hooks/use-auth";
 import { Plus, Search } from "lucide-react";
 import React from "react";
 
@@ -17,6 +18,7 @@ export default function EventHeader({
   sort,
   setSort,
 }) {
+  const { user } = useAuth();
   return (
     <Header
       title="Manajemen Event"
@@ -69,14 +71,16 @@ export default function EventHeader({
           </NativeSelect>
         </div>
 
-        <Button
-          className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
-          onClick={onAddClick}
-          type="button"
-        >
-          <Plus />
-          Tambah Event
-        </Button>
+        {user?.role === "admin" && (
+          <Button
+            className="h-10 w-full px-4 py-2 text-sm shadow-none sm:w-fit"
+            onClick={onAddClick}
+            type="button"
+          >
+            <Plus />
+            Tambah Event
+          </Button>
+        )}
       </div>
     </Header>
   );

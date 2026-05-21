@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 import { CalendarDays, Edit, Eye, Trash2 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";
@@ -12,6 +18,7 @@ export default function EventRow({
   onEditClick,
   onDeleteClick,
 }) {
+  const { user } = useAuth();
   const eventDate = new Date(event.date);
   const option = { year: "numeric", month: "long", day: "numeric" };
   const formattedDate = eventDate.toLocaleDateString("id-ID", option);
@@ -60,32 +67,57 @@ export default function EventRow({
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
-          <Button
-            className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
-            variant="outline"
-            onClick={() => onDetailClick?.(event)}
-            type="button"
-          >
-            <Eye />
-          </Button>
-          <Button
-            className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-            variant="secondary"
-            size="sm"
-            onClick={() => onEditClick?.(event)}
-            type="button"
-          >
-            <Edit />
-          </Button>
-          <Button
-            className="h-9 w-fit px-3 py-2 text-sm shadow-none"
-            variant="destructive"
-            size="sm"
-            onClick={() => onDeleteClick?.(event)}
-            type="button"
-          >
-            <Trash2 />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="h-9 w-fit border-border/80 px-3 py-2 text-sm shadow-none"
+                variant="outline"
+                onClick={() => onDetailClick?.(event)}
+                type="button"
+              >
+                <Eye />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Lihat Detail</p>
+            </TooltipContent>
+          </Tooltip>
+          {user?.role === "admin" && (
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onEditClick?.(event)}
+                    type="button"
+                  >
+                    <Edit />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit Event</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-9 w-fit px-3 py-2 text-sm shadow-none"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDeleteClick?.(event)}
+                    type="button"
+                  >
+                    <Trash2 />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Hapus Event</p>
+                </TooltipContent>
+              </Tooltip>
+            </>
+          )}
         </div>
       </TableCell>
     </TableRow>

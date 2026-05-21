@@ -20,7 +20,7 @@
 
 ## Lingkungan dan konfigurasi
 - Semua variabel environment harus berawalan `VITE_` (lihat `.env.example`). Jangan commit file `.env`.
-- Variabel penting: `VITE_BASE_API_URL`, `VITE_STORAGE_URL`, `VITE_AI_SERVICE_URL`, `VITE_USE_LARAVEL_AI_GATEWAY`, `VITE_AI_TIMEOUT_MS`.
+- Variabel penting: `VITE_BASE_API_URL`, `VITE_STORAGE_URL`, `VITE_APP_NAME`.
 - NPM scripts penting:
   - `npm run dev` – jalankan dev server Vite (port 3000).
   - `npm run build` – build produksi ke `dist/`.

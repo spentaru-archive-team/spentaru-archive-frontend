@@ -12,7 +12,7 @@ import {
   getEventPendingUploads,
   getTeacherPendingUploads,
 } from "@/services/dashboard.service";
-import { Archive, BookOpenText, FolderKanban, UserRound } from "lucide-react";
+import { CirclePause, Clock3, FileCheck2, Files, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import DashboardSkeleton from "./DashboardSkeleton";
 import { useQuery } from "@tanstack/react-query";
@@ -51,35 +51,57 @@ const formatRelativeTime = (dateInput) => {
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [archiveTotal, setArchiveTotal] = useState(0);
-  const [categoryTotal, setCategoryTotal] = useState(0);
-  const [cabinetTotal, setCabinetTotal] = useState(0);
-  const [userTotal, setUserTotal] = useState(0);
+  const [activeTotal, setActiveTotal] = useState(0);
+  const [readyTotal, setReadyTotal] = useState(0);
+  const [retainedTotal, setRetainedTotal] = useState(0);
+  const [destroyedTotal, setDestroyedTotal] = useState(0);
   const { user } = useAuth();
 
   const stats = [
     {
       title: "Total Arsip",
       value: archiveTotal,
-      detail: "Dokumen aktif yang sudah terdigitalisasi",
-      icon: Archive,
+      icon: Files,
+      tone: {
+        icon: "border-info/50 bg-info text-info-foreground",
+        accent: "bg-info-foreground",
+      },
     },
     {
-      title: "Kategori Arsip",
-      value: categoryTotal,
-      detail: "Pembagian map dan jenis dokumen sekolah",
-      icon: FolderKanban,
+      title: "Arsip Aktif",
+      value: activeTotal,
+      icon: FileCheck2,
+      tone: {
+        icon: "border-success/70 bg-success text-success-foreground",
+        accent: "bg-success-foreground",
+      },
     },
     {
-      title: "Total Lemari",
-      value: cabinetTotal,
-      detail: "Lemari fisik yang terhubung dengan kode arsip",
-      icon: BookOpenText,
+      title: "Siap Retensi",
+      value: readyTotal,
+      icon: Clock3,
+      tone: {
+        icon: "border-warning/80 bg-warning text-warning-foreground",
+        accent: "bg-warning-foreground",
+      },
     },
     {
-      title: "Total Pengguna",
-      value: userTotal,
-      detail: "Guru dan admin yang memiliki akses sistem",
-      icon: UserRound,
+      title: "Arsip Ditahan",
+      value: retainedTotal,
+      icon: CirclePause,
+      tone: {
+        icon: "border-primary/20 bg-primary/10 text-primary",
+        accent: "bg-primary",
+      },
+    },
+    {
+      title: "Arsip Dihapus",
+      value: destroyedTotal,
+      icon: Trash2,
+      tone: {
+        icon: "border-destructive/30 bg-destructive/10 text-destructive",
+        accent: "bg-destructive",
+      },
     },
   ];
 
@@ -133,10 +155,11 @@ export default function Dashboard() {
       setLoading(true);
       try {
         const res = await getDashboardData();
-        setArchiveTotal(res.data.data.archive_total);
-        setCategoryTotal(res.data.data.archive_category_total);
-        setCabinetTotal(res.data.data.cabinet_total);
-        setUserTotal(res.data.data.user_total);
+        setArchiveTotal(res.data.data.total ?? 0);
+        setActiveTotal(res.data.data.active ?? 0);
+        setReadyTotal(res.data.data.ready ?? 0);
+        setRetainedTotal(res.data.data.retained ?? 0);
+        setDestroyedTotal(res.data.data.destroyed ?? 0);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -158,29 +181,30 @@ export default function Dashboard() {
         desc="Monitoring arsip dan aktivitas pengelolaan dalam satu tempat."
       />
 
-      <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {stats.map((item) => {
           const Icon = item.icon;
 
           return (
             <Card
               key={item.title}
-              className="rounded-sm border border-border/80 bg-card py-0 ring-0"
+              className="overflow-hidden rounded-sm border border-border/80 bg-card py-0 ring-0"
             >
-              <CardContent className="px-5 py-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {item.title}
-                      </p>
-                      <p className="text-3xl font-semibold tracking-tight text-foreground">
-                        {item.value}
-                      </p>
-                    </div>
+              <div className={`h-1 ${item.tone.accent}`} />
+              <CardContent className="px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0 space-y-1">
+                    <p className="truncate text-sm font-medium text-muted-foreground">
+                      {item.title}
+                    </p>
+                    <p className="text-3xl font-semibold tracking-tight text-foreground">
+                      {item.value}
+                    </p>
                   </div>
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-primary/12 bg-primary/6 text-primary">
-                    <Icon size={18} />
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border ${item.tone.icon}`}
+                  >
+                    <Icon size={18} strokeWidth={2.2} />
                   </div>
                 </div>
               </CardContent>

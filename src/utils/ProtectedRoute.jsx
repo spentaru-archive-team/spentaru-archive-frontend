@@ -6,10 +6,12 @@ import { Navigate, Outlet, useLocation } from "react-router";
 const ROLE_ALLOWED_PATHS = {
   guru: [
     "/dashboard",
+    "/events",
     "/archives",
     "/archive-locations",
     "/cabinets",
     "/settings",
+    "/about",
   ],
 };
 

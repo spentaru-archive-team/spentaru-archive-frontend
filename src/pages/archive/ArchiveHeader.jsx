@@ -14,10 +14,10 @@ export default function ArchiveHeader({
   onAddClick,
   keyword,
   setKeyword,
-  sort,
-  setSort,
   categoryFilter,
   setCategoryFilter,
+  statusFilter,
+  setStatusFilter,
 }) {
   const fetchCategories = async () => {
     try {
@@ -67,7 +67,7 @@ export default function ArchiveHeader({
             ))}
           </NativeSelect>
 
-          <NativeSelect
+          {/* <NativeSelect
             className="w-full sm:w-auto"
             name="sort"
             id="sort"
@@ -82,6 +82,20 @@ export default function ArchiveHeader({
             </NativeSelectOption>
             <NativeSelectOption value="title:asc">A-Z</NativeSelectOption>
             <NativeSelectOption value="title:desc">Z-A</NativeSelectOption>
+          </NativeSelect> */}
+
+          <NativeSelect
+            className="w-full sm:w-auto"
+            name="status"
+            id="status"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <NativeSelectOption value="">Semua Status</NativeSelectOption>
+            <NativeSelectOption value="active">Aktif</NativeSelectOption>
+            <NativeSelectOption value="ready_for_destruction">Siap Dihapus</NativeSelectOption>
+            <NativeSelectOption value="retained">Ditahan</NativeSelectOption>
+            <NativeSelectOption value="destroyed">Dimusnahkan</NativeSelectOption>
           </NativeSelect>
         </div>
 

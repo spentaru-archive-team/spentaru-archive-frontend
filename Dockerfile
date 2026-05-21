@@ -1,5 +1,4 @@
-# Build Stage
-FROM node:22-alpine AS builder
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -25,17 +24,6 @@ ENV VITE_APP_NAME=$VITE_APP_NAME
 
 RUN npm run build
 
-# Production Stage
-FROM nginx:1.27-alpine
+EXPOSE 3000
 
-RUN rm -rf /usr/share/nginx/html/*
-
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 CMD wget -q -O /dev/null http://127.0.0.1:80/ || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3000"]
