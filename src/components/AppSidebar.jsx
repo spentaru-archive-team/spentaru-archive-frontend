@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import Confirm from "@/components/Confirm";
 import { useAuth } from "@/hooks/use-auth";
-import Logo from "@/assets/logo.png";
+import Logo from "@/assets/logo.webp";
 
 import {
   Archive,
