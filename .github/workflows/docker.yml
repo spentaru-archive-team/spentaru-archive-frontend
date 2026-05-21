@@ -54,4 +54,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_USERNAME }}/spentaru-archive-frontend:dev
+            ${{ vars.DOCKERHUB_USERNAME }}/spentaru-archive-frontend:latest
