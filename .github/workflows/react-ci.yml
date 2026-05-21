@@ -91,3 +91,10 @@ jobs:
             VITE_APP_NAME=${{ secrets.VITE_APP_NAME }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trigger Main Deployment Repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MAIN_REPO_TRIGGER_PAT }}
+          repository: spentaru-archive-team/spentaru-archive-deploy
+          event-type: frontend_updated
