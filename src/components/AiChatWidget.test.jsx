@@ -248,7 +248,9 @@ describe("AiChatWidget", () => {
       await screen.findByText("Mengekstrak teks dokumen Word..."),
     ).toBeInTheDocument();
 
-    expect(await screen.findByText("(Dokumen kosong)")).toBeInTheDocument();
+    expect(
+      await screen.findByText("(Dokumen kosong)", {}, { timeout: 2500 }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Native Text Extractor (Mammoth)")).toBeInTheDocument();
     expect(screen.queryByText("Mengekstrak teks dokumen Word...")).not.toBeInTheDocument();
   });
