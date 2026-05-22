@@ -131,7 +131,7 @@ describe("AiChatWidget", () => {
     );
     expect(screen.getByText("Unduh File")).toHaveAttribute(
       "href",
-      "http://localhost:8000/api/v1/archives/arsip-1/download",
+      expect.stringContaining("/api/v1/archives/arsip-1/download"),
     );
   });
 

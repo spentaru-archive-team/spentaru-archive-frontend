@@ -29,8 +29,8 @@ import {
   Download,
   // GripLinesVertical,
 } from "lucide-react";
+import { buildApiUrl } from "@/config/api";
 import { askAi, extractOcrBase64 } from "@/services/ai.service";
-import { STORAGE_URL } from "@/config/api";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -711,7 +711,6 @@ export default function AiChatWidget() {
                                       archiveTitle: card?.title || "",
                                       fileUrl: card?.file_url || "",
                                       fileName: card?.file_name || "",
-                                      fileSourceUrl: `${STORAGE_URL}${card?.file_url || ""}`,
                                     }}
                                     className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors mr-2"
                                   >
@@ -719,7 +718,9 @@ export default function AiChatWidget() {
                                     Lihat File
                                   </Link>
                                   <a
-                                    href={`${STORAGE_URL}/api/v1/archives/${card.archive_id}/download`}
+                                    href={buildApiUrl(
+                                      `/archives/${card.archive_id}/download`,
+                                    )}
                                     download={card.file_url || undefined}
                                     className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors"
                                   >

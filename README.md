@@ -203,14 +203,12 @@ Isi default yang tersedia:
 
 ```env
 VITE_BASE_API_URL=http://localhost:8000/api/v1
-VITE_STORAGE_URL=http://localhost:8000
 VITE_APP_NAME=spentaru-archive-frontend
 ```
 
 | Variabel | Wajib | Deskripsi |
 | --- | --- | --- |
-| `VITE_BASE_API_URL` | Ya | Base URL backend API. Digunakan oleh Axios utama di `src/services/axios.js`. |
-| `VITE_STORAGE_URL` | Ya | Base URL storage/file backend. Digunakan saat aplikasi perlu menampilkan atau mengambil file dari server. |
+| `VITE_BASE_API_URL` | Ya | Base URL backend API. Digunakan oleh Axios utama di `src/services/axios.js` serta endpoint preview/download file arsip. |
 | `VITE_APP_NAME` | Opsional | Nama aplikasi untuk kebutuhan identifikasi environment. |
 
 Catatan penting:
@@ -301,7 +299,6 @@ Gunakan `--build-arg` agar nilai API sesuai environment server.
 Variabel yang umum dipakai:
 
 - `VITE_BASE_API_URL`
-- `VITE_STORAGE_URL`
 - `VITE_APP_NAME`
 
 Contoh build image:
@@ -309,7 +306,6 @@ Contoh build image:
 ```bash
 docker build -t spentaru/frontend:prod \
   --build-arg VITE_BASE_API_URL=https://domain-kamu/api/v1 \
-  --build-arg VITE_STORAGE_URL=https://domain-kamu \
   --build-arg VITE_APP_NAME=spentaru-archive-frontend \
   .
 ```

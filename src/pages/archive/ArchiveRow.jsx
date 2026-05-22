@@ -5,7 +5,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { STORAGE_URL } from "@/config/api";
 import { useAuth } from "@/hooks/use-auth";
 import { ArchiveX, Edit, Eye, FileEdit, FileText, Trash2 } from "lucide-react";
 import React from "react";
@@ -63,7 +62,6 @@ export default function ArchiveRow({
                   archiveTitle: archive?.title || "",
                   fileUrl: archive?.files?.file_url || "",
                   fileName: archive?.files?.file_name || "",
-                  fileSourceUrl: `${STORAGE_URL}${archive?.files?.file_url || ""}`,
                 }}
                 className="inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:text-primary/80 hover:underline"
               >
