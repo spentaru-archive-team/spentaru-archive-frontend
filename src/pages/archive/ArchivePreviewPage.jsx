@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { STORAGE_URL } from "@/config/api";
+import { buildApiUrl } from "@/config/api";
 import ArchivePreviewSkeleton from "@/pages/archive/ArchivePreviewSkeleton";
 import OfficePreview from "@/pages/archive/OfficePreview";
 import {
@@ -30,7 +30,7 @@ const getExtension = (fileName = "", filePath = "") => {
 const resolveFileUrl = (url = "") => {
   if (!url) return "";
   if (/^https?:\/\//i.test(url) || url.startsWith("blob:")) return url;
-  return `${STORAGE_URL}${url}`;
+  return url.startsWith("/") ? url : `/${url}`;
 };
 
 export default function ArchivePreviewPage() {
@@ -57,8 +57,8 @@ export default function ArchivePreviewPage() {
     location.state?.fileUrl || fileUrlFromQuery || archiveFilePath || "";
   const fileName =
     location.state?.fileName || fileNameFromQuery || archiveFileName || "";
-  const previewUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/preview`;
-  const downloadUrl = `${STORAGE_URL}/api/v1/archives/${archiveId}/download`;
+  const previewUrl = buildApiUrl(`/archives/${archiveId}/preview`);
+  const downloadUrl = buildApiUrl(`/archives/${archiveId}/download`);
   const [previewError, setPreviewError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
