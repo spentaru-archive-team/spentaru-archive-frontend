@@ -232,6 +232,16 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent className="max-h-72 space-y-3 overflow-y-auto px-5 py-5 pr-3">
+            {archivesRetentionReady?.length === 0 && (
+              <div className="flex items-start justify-between gap-4 rounded-sm border border-success/80 bg-success px-4 py-3">
+                <div className="min-w-0 space-y-1">
+                  <p className="text-sm text-foreground">
+                    Tidak ada arsip yang siap untuk retensi atau pemusnahan.
+                  </p>
+                </div>
+              </div>
+            )}
+            
             {archivesRetentionReady?.map((archive) => (
               <div
                 key={archive.id}
