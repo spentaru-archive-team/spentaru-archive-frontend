@@ -77,7 +77,7 @@ Frontend ini tidak berdiri sendiri. Aplikasi membutuhkan backend API yang kompat
 - Lemari penyimpanan.
 - Storage rules atau aturan penyimpanan arsip.
 - Event sekolah.
-- User admin dan guru.
+- User admin dan guru, termasuk reset password default dengan notifikasi sukses/gagal.
 
 ### AI Assistant
 
@@ -150,6 +150,8 @@ Pembatasan akses diterapkan di `src/utils/ProtectedRoute.jsx`. Menu sidebar juga
 ### Tooling
 
 - ESLint 9
+- Vitest 4
+- Testing Library
 - Vite React plugin
 
 ## Prasyarat
@@ -257,6 +259,20 @@ npm run lint
 
 Lint memakai konfigurasi di `eslint.config.js`.
 
+### Test
+
+```bash
+npm run test
+```
+
+Untuk laporan coverage:
+
+```bash
+npm run test:coverage
+```
+
+Test memakai Vitest dengan Testing Library.
+
 ### Export Konteks AI
 
 ```bash
@@ -334,8 +350,7 @@ http://localhost:8080
 frontend/
 |-- .dockerignore                   # File ignore untuk Docker build context
 |-- .github/workflows/              # GitHub Actions CI/CD
-|   |-- react-ci.yml                # Frontend CI (lint, build, deploy Pages)
-|   `-- docker.yml                  # Docker CI (build & push image)
+|   `-- react-ci.yml                # Frontend CI (lint, build, deploy Pages)
 |-- public/                         # Aset publik seperti favicon, logo, dan icons
 |-- scripts/                        # Script utilitas proyek
 |   `-- export-ai-context.mjs       # Export konteks proyek untuk AI/debugging
@@ -477,7 +492,7 @@ Perilaku penting:
 | `dashboard.service.js` | `/dashboard`, `/archives/without-location`, `/events/pending-uploads` |
 | `event.service.js` | `/events` |
 | `storageRule.service.js` | `/archive-storage-rules` |
-| `user.service.js` | `/users` |
+| `user.service.js` | `/users` untuk CRUD user dan reset password via update user |
 | `ai.service.js` | Endpoint AI melalui backend Laravel. |
 
 ### Pola Data Fetching
@@ -565,11 +580,7 @@ Proyek ini menggunakan **GitHub Actions** untuk otomatisasi CI/CD.
 
 ### Docker CI (`docker.yml`)
 
-| Aspek | Detail |
-| --- | --- |
-| Pemicu | Push ke branch `dev` |
-| Steps | `npm ci` → `npm run lint` → `npm run build` → Docker buildx → push ke Docker Hub |
-| Tag | `<user>/spentaru-frontend:dev` dan `<user>/spentaru-frontend:<sha>` |
+Belum ada workflow Docker terpisah di folder `.github/workflows/`. Build Docker saat ini dilakukan manual melalui `Dockerfile`, sedangkan validasi otomatis frontend berjalan lewat `react-ci.yml`.
 
 ## Standar Pengembangan
 
@@ -582,6 +593,7 @@ Ikuti standar ini agar proyek mudah diwariskan:
 - Gunakan TanStack Query untuk data server yang perlu cache, loading, refetch, atau invalidation.
 - Pertahankan pola halaman yang sudah ada: `Header`, `Table/Card`, `Row`, `ModalForm`, `Skeleton`.
 - Gunakan komponen `src/components/ui/` jika style dasar berasal dari komponen UI turunan.
+- Gunakan `src/components/PopUp.jsx` untuk feedback sukses/gagal setelah aksi mutasi penting seperti hapus data atau reset password.
 - Jaga desain tetap formal, bersih, dan sesuai web arsip sekolah.
 - Gunakan warna utama `rgb(36 54 115)` atau token `primary` dari `src/index.css`.
 - Pastikan komponen mendukung **dark mode** dengan menggunakan CSS variable (`--primary`, `bg-background`, `text-foreground`, dll) dari `src/index.css`.

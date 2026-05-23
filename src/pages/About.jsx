@@ -1,4 +1,9 @@
 import Header from "@/components/Header";
+import agungPhoto from "@/assets/teams/Agung.webp";
+import alanPhoto from "@/assets/teams/Alan.webp";
+import ezzarPhoto from "@/assets/teams/Ezzar.webp";
+import naufalPhoto from "@/assets/teams/Naufal.webp";
+import olvansPhoto from "@/assets/teams/Olvans.webp";
 import {
   Card,
   CardContent,
@@ -8,16 +13,11 @@ import {
 } from "@/components/ui/card";
 import {
   Bot,
-  CircleUserRound,
-  FileSearch,
   FileUp,
   FolderKanban,
-  History,
   LockKeyhole,
-  SquareArrowOutUpRight,
   ScanText,
   Search,
-  ShieldCheck,
   Sparkles,
   UsersRound,
 } from "lucide-react";
@@ -37,20 +37,9 @@ const featuresData = [
     icon: FolderKanban,
   },
   {
-    title: "Preview File",
-    description:
-      "Lihat isi dokumen langsung dari sistem sebelum diproses lanjut.",
-    icon: FileSearch,
-  },
-  {
     title: "Pencarian Arsip",
     description: "Temukan dokumen lebih cepat dengan pencarian kata kunci.",
     icon: Search,
-  },
-  {
-    title: "Kategorisasi Dokumen",
-    description: "Susun arsip agar konsisten, terstruktur, dan mudah diaudit.",
-    icon: ShieldCheck,
   },
   {
     title: "AI Semantic Search",
@@ -65,12 +54,6 @@ const featuresData = [
     icon: ScanText,
   },
   {
-    title: "Riwayat Aktivitas",
-    description:
-      "Pantau jejak aktivitas pengelolaan arsip oleh setiap pengguna.",
-    icon: History,
-  },
-  {
     title: "Authentication dan Role",
     description:
       "Kontrol akses pengguna berdasarkan peran untuk keamanan data arsip.",
@@ -83,6 +66,7 @@ const teamMembers = [
     name: "Muhammad Naufal Rafa Al As'ad",
     role: "Frontend Developer",
     bio: "Fokus pada antarmuka yang rapi, responsif, dan konsisten.",
+    photo: naufalPhoto,
     instagram: "https://instagram.com/naufal.rafaa",
     github: "https://github.com/Falrafa4",
   },
@@ -90,29 +74,33 @@ const teamMembers = [
     name: "Aliezzar Wijaya",
     role: "Backend Developer & DevOps",
     bio: "Menangani API, struktur data, dan integrasi layanan sistem.",
-    instagram: "https://instagram.com/aliezzarwijaya",
-    github: "https://github.com/aliezzarwijaya",
+    photo: ezzarPhoto,
+    instagram: "https://instagram.com/ezzarforschool",
+    github: "https://github.com/ezzarw",
   },
   {
     name: "Gregorius Olvans Adi Wicaksono",
     role: "AI Specialist",
     bio: "Mengelola OCR, ekstraksi teks, dan optimasi kualitas hasil AI.",
-    instagram: "https://instagram.com/gregoriusolvans",
-    github: "https://github.com/gregoriusolvans",
+    photo: olvansPhoto,
+    instagram: "https://instagram.com/vnzxtly.mp3",
+    github: "https://github.com/Itsmevnztxt",
   },
   {
     name: "Agung Dwi Saputra",
     role: "Prompt Engineer/Vibe Coder/VPS Specialist",
     bio: "Mengembangkan chatbot AI untuk membantu pengguna dengan pertanyaan terkait pengelolaan arsip.",
-    instagram: "https://instagram.com/agungdwisaputra",
-    github: "https://github.com/agungdwisaputra",
+    photo: agungPhoto,
+    instagram: "https://instagram.com/flaaress",
+    github: "https://github.com/Cidzzz",
   },
   {
     name: "Rifqi Tomy Alana",
     role: "Project Manager",
     bio: "Mengawal prioritas produk agar sesuai kebutuhan sekolah.",
-    instagram: "https://instagram.com/rifqitomy",
-    github: "https://github.com/rifqitomy",
+    photo: alanPhoto,
+    instagram: "https://instagram.com/alennareru",
+    github: "https://github.com/Allarrt",
   },
 ];
 
@@ -143,13 +131,47 @@ const featureCardStyles = [
   },
 ];
 
-// const getInitials = (name) =>
-//   name
-//     .split(" ")
-//     .map((word) => word[0])
-//     .join("")
-//     .slice(0, 2)
-//     .toUpperCase();
+function InstagramIcon({ size = 14, className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      height={size}
+      viewBox="0 0 24 24"
+      width={size}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="16"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="16"
+        x="4"
+        y="4"
+      />
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="2" />
+      <circle cx="17" cy="7" fill="currentColor" r="1" />
+    </svg>
+  );
+}
+
+function GithubIcon({ size = 14, className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+      height={size}
+      viewBox="0 0 24 24"
+      width={size}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12 2C6.48 2 2 6.58 2 12.23c0 4.52 2.87 8.35 6.84 9.71.5.09.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.96c.85 0 1.7.12 2.5.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.59.69.49A10.08 10.08 0 0 0 22 12.23C22 6.58 17.52 2 12 2Z" />
+    </svg>
+  );
+}
 
 export default function About() {
   return (
@@ -255,12 +277,11 @@ export default function About() {
                 className="rounded-sm border border-border/70 bg-muted/20 px-4 py-3"
               >
                 <div className="flex items-start gap-3">
-                  {/* <div
-                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-primary/20 bg-primary/10 text-xs font-semibold text-primary"
-                    aria-hidden="true"
-                  >
-                    {getInitials(member.name)}
-                  </div> */}
+                  <img
+                    src={member.photo}
+                    alt={`Foto ${member.name}`}
+                    className="h-14 w-14 shrink-0 rounded-sm border border-border/80 bg-muted object-cover"
+                  />
                   <div className="min-w-0">
                     <h3 className="text-sm font-semibold text-foreground">
                       {member.name}
@@ -279,7 +300,7 @@ export default function About() {
                         aria-label={`Instagram ${member.name}`}
                         className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <CircleUserRound size={14} />
+                        <InstagramIcon size={14} />
                         Instagram
                       </a>
                       <a
@@ -289,7 +310,7 @@ export default function About() {
                         aria-label={`GitHub ${member.name}`}
                         className="inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <SquareArrowOutUpRight size={14} />
+                        <GithubIcon size={14} />
                         GitHub
                       </a>
                     </div>

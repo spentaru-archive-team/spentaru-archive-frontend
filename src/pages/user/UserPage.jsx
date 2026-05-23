@@ -16,6 +16,8 @@ const roleStyles = {
   guru: "border-violet-200 bg-violet-50 text-violet-700",
 };
 
+const DEFAULT_PASSWORD = "Password123";
+
 export default function UserPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,6 +34,11 @@ export default function UserPage() {
   const [confirmResetPassword, setConfirmResetPassword] = useState(false);
   const [selectedResetUser, setSelectedResetUser] = useState(null);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [resetPasswordPopup, setResetPasswordPopup] = useState({
+    open: false,
+    title: "",
+    type: "success",
+  });
 
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selectedDeleteUser, setSelectedDeleteUser] = useState(null);
@@ -149,15 +156,27 @@ export default function UserPage() {
     try {
       await updateUsers(selectedResetUser.id, {
         name: selectedResetUser.name,
+        subject: selectedResetUser.subject,
+        position: selectedResetUser.position,
         username: selectedResetUser.username,
         role: selectedResetUser.role,
-        password: "Password123",
+        password: DEFAULT_PASSWORD,
       });
       await refetch();
       setConfirmResetPassword(false);
+      setResetPasswordPopup({
+        open: true,
+        title: `Password user "${selectedResetUser.name}" berhasil direset menjadi ${DEFAULT_PASSWORD}.`,
+        type: "success",
+      });
       setSelectedResetUser(null);
     } catch (error) {
       console.error("Error resetting user password:", error.response);
+      setResetPasswordPopup({
+        open: true,
+        title: `Gagal mereset password user "${selectedResetUser?.name || "ini"}". ${error.response?.data?.message || "Terjadi kesalahan."}`,
+        type: "error",
+      });
     } finally {
       setIsResettingPassword(false);
     }
@@ -171,6 +190,19 @@ export default function UserPage() {
   return (
     <section className="space-y-6">
       <PopUp
+        open={resetPasswordPopup.open}
+        title={resetPasswordPopup.title}
+        type={resetPasswordPopup.type}
+        duration={resetPasswordPopup.type === "error" ? 4000 : 3000}
+        onClose={() =>
+          setResetPasswordPopup((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
+
+      <PopUp
         open={deleteErrorOpen}
         title={deleteErrorTitle}
         type="error"
@@ -181,7 +213,7 @@ export default function UserPage() {
       <Confirm
         open={confirmResetPassword}
         title="Konfirmasi Reset Password"
-        description={`Apakah Anda yakin ingin mereset password user "${selectedResetUser?.name || "ini"}"? Password akan direset ke nilai default.`}
+        description={`Apakah Anda yakin ingin mereset password user "${selectedResetUser?.name || "ini"}"? Password akan direset ke nilai default: ${DEFAULT_PASSWORD}.`}
         confirmLabel="Ya, Reset"
         cancelLabel="Batalkan"
         loading={isResettingPassword}
