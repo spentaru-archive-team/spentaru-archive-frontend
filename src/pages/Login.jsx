@@ -48,8 +48,10 @@ export default function Login() {
     setError(null);
 
     try {
-      const { response, userLoaded } = await syncLoginState(form);
-      if (response?.data?.status == "success" && userLoaded) {
+      const { response, user, userLoaded } = await syncLoginState(form);
+      const isSuccess = response?.data?.status === "success" || Boolean(user || userLoaded);
+
+      if (isSuccess) {
         setHasNavigatedAfterLogin(true);
         setLocalPopup({
           title: "Login berhasil",
@@ -61,10 +63,6 @@ export default function Login() {
         window.setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 1500);
-      } else if (response?.data?.status == "success" && !userLoaded) {
-        setError(
-          "Login berhasil, tetapi sesi belum terbaca. Silakan coba lagi atau hubungi admin.",
-        );
       } else {
         setError(response?.data?.message || "Login gagal. Silakan coba lagi.");
       }
