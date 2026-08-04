@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_BASE_API_URL,
-  TIME_OUT: 30000,
+  TIME_OUT: 60000,
 };
 
 export const buildApiUrl = (path = "") => {
