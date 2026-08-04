@@ -45,7 +45,7 @@ api.interceptors.response.use(
 
     if (status === 419 && !originalRequest?._retry) {
       originalRequest._retry = true;
-      await refreshCsrfCookie();
+      await refreshCsrfCookie().catch(() => null);
       return api(originalRequest);
     }
 
