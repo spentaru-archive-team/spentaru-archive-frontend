@@ -50,14 +50,25 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    await csrf();
+    await csrf().catch(() => null);
     const response = await loginRequest(credentials);
-    const nextUser = await fetchUser({ silent: true }).catch(() => null);
+    const token = response?.data?.data?.token;
+    if (token) {
+      localStorage.setItem("auth_token", token);
+    }
+    const userFromLogin = response?.data?.data;
+    const nextUser = (await fetchUser({ silent: true }).catch(() => null)) || userFromLogin;
+
+    if (userFromLogin && !nextUser) {
+      setUser(userFromLogin);
+    }
+
+    const finalUser = nextUser || userFromLogin || null;
 
     return {
       response,
-      user: nextUser,
-      userLoaded: Boolean(nextUser),
+      user: finalUser,
+      userLoaded: Boolean(finalUser),
     };
   };
 
@@ -67,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // Keep local state clean even if server session is already invalid.
     }
+    localStorage.removeItem("auth_token");
     setUser(null);
   };
 
