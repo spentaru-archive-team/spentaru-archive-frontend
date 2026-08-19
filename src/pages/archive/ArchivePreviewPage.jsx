@@ -57,8 +57,10 @@ export default function ArchivePreviewPage() {
     location.state?.fileUrl || fileUrlFromQuery || archiveFilePath || "";
   const fileName =
     location.state?.fileName || fileNameFromQuery || archiveFileName || "";
-  const previewUrl = buildApiUrl(`/archives/${archiveId}/preview`);
-  const downloadUrl = buildApiUrl(`/archives/${archiveId}/download`);
+  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  const tokenQuery = token ? `?token=${encodeURIComponent(token)}` : "";
+  const previewUrl = buildApiUrl(`/archives/${archiveId}/preview${tokenQuery}`);
+  const downloadUrl = buildApiUrl(`/archives/${archiveId}/download${tokenQuery}`);
   const [previewError, setPreviewError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
