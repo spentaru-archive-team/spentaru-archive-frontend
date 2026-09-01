@@ -145,7 +145,7 @@ export default function Login() {
               <CardHeader className="space-y-4 pb-2">
                 <div className="space-y-2">
                   <CardTitle className="mb-2 text-3xl font-semibold tracking-tight text-foreground">
-                    Login Arsip
+                    Login Spentaru Archive
                   </CardTitle>
                 </div>
               </CardHeader>
